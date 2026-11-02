@@ -101,6 +101,11 @@ async function bootstrap() {
     allowedHeaders: [
       'Content-Type',
       'Accept',
+      'Authorization',
+      'X-Request-Id',
+    ],
+
+    exposedHeaders: [
       'X-Request-Id',
     ],
 

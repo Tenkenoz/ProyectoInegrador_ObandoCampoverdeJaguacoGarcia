@@ -10,7 +10,6 @@ Desde la raíz del proyecto, con PostgreSQL disponible y `.env` configurado:
 npm run migration:show
 npm run migration:run
 npm run migration:check
-npm run seed
 npm run start:dev
 ```
 
