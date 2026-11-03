@@ -1,5 +1,6 @@
 import {
   ClassSerializerInterceptor,
+  RequestMethod,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
@@ -167,9 +168,20 @@ async function bootstrap() {
 
   /*
    * /api/v1/...
+   *
+   * JWKS is published at the root because STEGO
+   * consumes it as /.well-known/jwks.json.
    */
   app.setGlobalPrefix(
     'api',
+    {
+      exclude: [
+        {
+          path: '.well-known/jwks.json',
+          method: RequestMethod.GET,
+        },
+      ],
+    },
   );
 
   app.enableVersioning({

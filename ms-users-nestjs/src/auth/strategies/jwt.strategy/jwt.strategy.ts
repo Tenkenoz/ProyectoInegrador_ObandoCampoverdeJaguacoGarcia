@@ -7,12 +7,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../../interfaces/jwt-payload/jwt-payload.interface.js';
 import { AuthenticatedUser } from '../../interfaces/authenticated-user/authenticated-user.interface.js';
+import { JwtKeyService } from '../../jwt-keys/jwt-key.service.js';
 import { UsersService } from '../../../users/users.service.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
+
+    jwtKeyService: JwtKeyService,
 
     private readonly usersService: UsersService,
   ) {
@@ -25,13 +28,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
       ignoreExpiration: false,
 
-      secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
+      secretOrKey: jwtKeyService.getPublicKeyPem(),
 
       issuer: configService.getOrThrow<string>('JWT_ISSUER'),
 
       audience: configService.getOrThrow<string>('JWT_AUDIENCE'),
 
-      algorithms: ['HS256'],
+      algorithms: ['RS256'],
+
+      jsonWebTokenOptions: {
+        clockTolerance:
+          configService.get<number>('JWT_CLOCK_TOLERANCE_SECONDS') ?? 5,
+      },
     });
   }
 

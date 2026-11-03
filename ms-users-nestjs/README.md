@@ -11,7 +11,7 @@
 cp example.env.dist .env
 ```
 
-Ajuste `DB_PASSWORD` y `JWT_SECRET` en `.env` antes de continuar.
+Ajuste `DB_PASSWORD` y genere las claves JWT antes de continuar.
 
 ## Instalación
 
@@ -28,6 +28,26 @@ pnpm migration:run
 
 `migration:run` crea las tablas `users`, `roles` y `user_roles`. No hay seeder:
 los datos se ingresan después mediante la API o directamente en PostgreSQL.
+
+## Claves JWT (RS256)
+
+Genere el par de claves RSA localmente:
+
+```bash
+pnpm keys:generate
+```
+
+El comando escribe `keys/jwt-private.pem` y `keys/jwt-public.pem`, y muestra el
+`kid` calculado. Copie los valores impresos a `.env`:
+
+```dotenv
+JWT_PRIVATE_KEY_PATH=keys/jwt-private.pem
+JWT_PUBLIC_KEY_PATH=keys/jwt-public.pem
+JWT_KEY_ID=<kid-generado>
+```
+
+La clave privada nunca se versiona y no se comparte con STEGO. STEGO solo consume
+la clave pública publicada en `GET /.well-known/jwks.json`.
 
 ## Ejecutar la aplicación
 
@@ -59,6 +79,7 @@ Las convenciones de código, commits, casing y manejo de secretos están en
 
 - API: `http://localhost:3001/api/v1`
 - Health: `http://localhost:3001/api/v1/health`
+- JWKS: `http://localhost:3001/.well-known/jwks.json`
 - Swagger: `http://localhost:3001/docs`
 
 ## Insertar el primer administrador
