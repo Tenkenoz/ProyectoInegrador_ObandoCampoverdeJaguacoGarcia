@@ -1,3 +1,4 @@
+import { AuditModule } from './audit/audit.module.js';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +13,7 @@ import { databaseOptions } from './database/database-options.js';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
     AuthModule,
+    AuditModule,
     SteganographyModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
