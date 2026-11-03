@@ -1,7 +1,7 @@
 # STEGO
 
 Microservicio NestJS independiente, administrado con pnpm, con PostgreSQL propio.
-Esta etapa implementa configuración validada, conexión, migraciones, salud y Swagger.
+Includes validated configuration, migrations, health, Swagger and the STEGO pipeline.
 Authentication and authorization are implemented; see [Security](docs/SECURITY.md).
 Authorized image upload validation is implemented; see [Image uploads](docs/UPLOADS.md).
 Statistical LSB detection is implemented; see [LSB technique](docs/TECNICA_LSB.md).
@@ -162,10 +162,11 @@ pnpm test
 pnpm test:e2e
 ```
 
-Unit tests cover configuration, health, HTTPS, HMAC, JWT/JWKS and authorization.
-HTTP tests verify the security boundary against an HTTPS AUTH fixture with real
-RSA keys. They do not require PostgreSQL. Database migrations and connectivity
-must be checked separately using an independent PostgreSQL instance.
+Unit tests cover configuration, health, cryptography, upload validation, LSB logic,
+policies and storage. HTTP tests verify the security boundary and processing against
+an HTTPS AUTH fixture with real RSA keys; these use in-memory persistence.
+`pnpm test:integration` verifies real migrations, transactions, ownership, retention
+and recovery against isolated PostgreSQL Docker containers.
 
 Security tests require OpenSSL and include an HTTPS AUTH fixture. See
 [Security verification](docs/SECURITY.md#verification-and-integration-limits) for
@@ -179,3 +180,17 @@ The retention migration also creates `audit_events` and preserves legacy rows.
 Run `pnpm test:integration` for isolated Docker/PostgreSQL tests and
 `pnpm quarantine:cleanup` for manual retention maintenance. Configuration, failure
 behavior and volume setup are documented in [Results and storage](docs/RESULTS_STORAGE.md).
+
+## Delivery and rehearsal
+
+```bash
+pnpm openapi:export
+pnpm evidence:generate
+```
+
+These commands require Docker and OpenSSL and run against isolated local fixtures.
+They export [OpenAPI YAML](docs/openapi/stego.yaml) and generate [local evidence](docs/evidence/README.md),
+without connecting to the team's AUTH or modifying Postman. See the
+[delivery checklist](docs/DELIVERY.md) for pending dependencies and the
+[demonstration guide](docs/DEMONSTRATION.md) for the rehearsal sequence.
+Postman collection work and final screenshots remain pending the Postman MCP connection.
