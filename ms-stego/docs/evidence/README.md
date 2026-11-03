@@ -68,11 +68,13 @@ audit events correlated by resource and request ID. It does not select image
 bytes, filenames or credentials. Have the database operator run it if direct
 database access is unavailable. Keep this output with the matching HTTP capture.
 
-## Capture requirements after connecting Postman MCP
+## Final Postman capture requirements
 
-Postman work is intentionally pending. Once the MCP is connected, create a
-collection from the OpenAPI contract and configure service origins and tokens in
-local environment values. Use the case matrix above as the execution order.
+Postman MCP is connected. The [Spanish collection and environments](../../postman/README.md)
+are created and exported, with all shared tokens empty. Configure service origins,
+local tokens and file paths before execution. The exported collection has also been
+run through Newman with an isolated database and AUTH fixture; this remains local
+verification. Use the case matrix above for final integrated captures.
 
 Each final capture should show the test ID, method, route, sample name when
 applicable, HTTP status, response body and `X-Request-Id`. For T07, show both

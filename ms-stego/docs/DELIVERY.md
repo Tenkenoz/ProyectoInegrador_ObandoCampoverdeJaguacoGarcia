@@ -21,24 +21,28 @@ storage and utility functions. The application uses pnpm.
 | Local HTTP results and actual persisted audit | [Report](evidence/local/report.json) and [audit](evidence/local/audit.json) |
 | Correlated database evidence | [Read-only SQL](evidence/audit-review.sql) |
 | Presentation sequence and manual requests | [Demonstration rehearsal](DEMONSTRATION.md) |
+| Spanish Postman collection and two credential-free environments | [Postman guide and exports](../postman/README.md) |
 
 The local suite contains 208 unit tests, 48 HTTP tests and 24 PostgreSQL integration
 tests. The delivery commands add two artifact checks: OpenAPI export and 22 local
-HTTP evidence scenarios. Build and lint are required alongside these checks.
+HTTP evidence scenarios. The Postman checks also validate the exported collection,
+example provenance and 38 Newman requests against an isolated STEGO instance.
+Build and lint are required alongside these checks.
 The previous storage runtime verification also confirmed Docker volume persistence
 after API recreation and standalone expiry cleanup without AUTH.
 
 Local evidence uses a temporary AUTH fixture with real cryptographic operations.
 It does not establish compatibility with the team's running AUTH or constitute
-the assignment's final Postman captures. No external workspace has been modified
-and no material has been sent to teammates by these changes.
+the assignment's final Postman captures. The Spanish collection and two empty-token
+environments are now created in Mateo Garcia's Workspace through Postman MCP.
+Their exported JSON is committed under `postman/`. No material has been sent to teammates.
 
 ## Pending tasks
 
 | Status | Task | Dependency and completion evidence |
 | --- | --- | --- |
-| Pending | Connect Postman MCP. | Mateo connects the intended Postman account/workspace. |
-| Pending | Create/import the STEGO collection and environments through MCP. | Postman connection; use the generated OpenAPI and capture matrix. |
+| Complete | Connect Postman MCP. | Authenticated connection to Mateo Garcia's Workspace verified. |
+| Complete | Create/import the STEGO collection and environments through MCP. | 38 Spanish requests, nine local examples and two empty-token environments created and exported. |
 | Pending | Capture T03, T04, T07, T09, T10, T11 and T12 in Postman. | Connected MCP, real AUTH accounts/roles and the integrated deployment. |
 | Pending | Verify real JWT issuance, JWKS and current permission checks. | Jonathan exposes the agreed HTTPS/JWKS/HMAC endpoints and provides test accounts. |
 | Pending | Demonstrate real role removal with the unchanged JWT. | Jonathan removes a role; the next STEGO operation returns 403 without a new analysis. |

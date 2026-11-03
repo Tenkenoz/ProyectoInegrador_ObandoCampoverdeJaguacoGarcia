@@ -85,7 +85,9 @@ curl --fail-with-body -i \
 Use the returned ID for `ANALYSIS_ID`; each POST creates a new analysis. Compare
 numbers against [samples/manifest.json](../samples/manifest.json), not a screenshot
 from a different configuration. Do not change thresholds to hide the noise result.
-Postman execution and final screenshots remain pending the MCP connection.
+The [Spanish Postman collection](../postman/README.md) is available through MCP
+and as exported JSON. Final execution screenshots remain pending real AUTH and
+the integrated environment.
 
 ## Answers to likely questions
 

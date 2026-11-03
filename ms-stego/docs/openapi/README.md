@@ -25,6 +25,6 @@ Regenerate after changing routes, DTOs or Swagger decorators. Review the YAML di
 and commit the artifact with the corresponding contract change. Runtime Swagger
 remains available at `/docs`, with JSON at `/docs-json` and YAML at `/docs-yaml`.
 
-Postman import, collection creation, environment configuration and captures remain
-pending until the Postman MCP is connected. This artifact is ready for that step;
-no Postman workspace has been created or modified.
+The Spanish Postman collection and two credential-free environments are created
+through MCP and exported under [postman/](../../postman/README.md). Final captures
+against real AUTH and the team's deployment remain pending.

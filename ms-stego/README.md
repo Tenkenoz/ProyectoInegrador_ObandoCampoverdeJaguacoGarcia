@@ -193,4 +193,7 @@ They export [OpenAPI YAML](docs/openapi/stego.yaml) and generate [local evidence
 without connecting to the team's AUTH or modifying Postman. See the
 [delivery checklist](docs/DELIVERY.md) for pending dependencies and the
 [demonstration guide](docs/DEMONSTRATION.md) for the rehearsal sequence.
-Postman collection work and final screenshots remain pending the Postman MCP connection.
+The [Spanish Postman collection](postman/README.md) and two empty-token environments
+are created through MCP and exported as JSON. Run `pnpm test:postman` to verify the
+export against isolated STEGO and AUTH fixtures. Final screenshots remain pending
+real AUTH and the integrated deployment.
