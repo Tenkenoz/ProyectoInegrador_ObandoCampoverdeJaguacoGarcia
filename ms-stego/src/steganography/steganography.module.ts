@@ -7,6 +7,8 @@ import {
   type UploadConfiguration,
 } from './config/upload.config.js';
 import { UploadBoundaryInterceptor } from './interceptors/upload-boundary.interceptor.js';
+import { LsbConfigModule } from './lsb/config/lsb-config.module.js';
+import { LsbDetectorService } from './lsb/lsb-detector.service.js';
 import { ImageWorkerService } from './services/image-worker.service.js';
 import { ImageDecoderService } from './services/image-decoder.service.js';
 import { UploadCapacityService } from './services/upload-capacity.service.js';
@@ -17,6 +19,7 @@ import { createUploadOptions } from './utils/upload-options.js';
 @Module({
   imports: [
     UploadConfigModule,
+    LsbConfigModule,
     MulterModule.registerAsync({
       imports: [UploadConfigModule],
       inject: [UPLOAD_CONFIG],
@@ -31,6 +34,7 @@ import { createUploadOptions } from './utils/upload-options.js';
     },
     ImageDecoderService,
     ImageWorkerService,
+    LsbDetectorService,
     UploadCapacityService,
     UploadBoundaryInterceptor,
     SteganographyService,

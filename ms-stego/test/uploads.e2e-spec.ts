@@ -11,7 +11,7 @@ import {
   validateUploadConfiguration,
 } from '../src/steganography/config/upload.config.js';
 import { UploadBoundaryInterceptor } from '../src/steganography/interceptors/upload-boundary.interceptor.js';
-import { ImageDecoderService } from '../src/steganography/services/image-decoder.service.js';
+import { LsbDetectorService } from '../src/steganography/lsb/lsb-detector.service.js';
 import { UploadCapacityService } from '../src/steganography/services/upload-capacity.service.js';
 import { SteganographyModule } from '../src/steganography/steganography.module.js';
 import { createAuthFixture } from './helpers/auth-fixture.js';
@@ -39,7 +39,7 @@ describe('Authorized image uploads', () => {
   let auth: Awaited<ReturnType<typeof createAuthFixture>>;
   let app: INestApplication;
   let token: string;
-  let decoder: ImageDecoderService;
+  let decoder: LsbDetectorService;
   let capacity: UploadCapacityService;
   let decode: ReturnType<typeof vi.spyOn>;
   let boundary: ReturnType<typeof vi.spyOn>;
@@ -66,9 +66,9 @@ describe('Authorized image uploads', () => {
     app = module.createNestApplication();
     setupApp(app);
     await app.init();
-    decoder = module.get(ImageDecoderService);
+    decoder = module.get(LsbDetectorService);
     capacity = module.get(UploadCapacityService);
-    decode = vi.spyOn(decoder, 'decode');
+    decode = vi.spyOn(decoder, 'analyze');
     boundary = vi.spyOn(UploadBoundaryInterceptor.prototype, 'intercept');
   });
   afterEach(async () => {
@@ -80,7 +80,7 @@ describe('Authorized image uploads', () => {
   });
 
   it.each(['png', 'bmp'] as const)(
-    'validates a real %s image without claiming detection',
+    'analyzes a real %s image and reports insufficient evidence',
     async (format) => {
       const image = format === 'png' ? createPngFixture() : createBmpFixture();
       const response = await request(app.getHttpServer())
@@ -92,7 +92,7 @@ describe('Authorized image uploads', () => {
         })
         .expect(200);
       expect(response.body).toMatchObject({
-        status: 'validated',
+        status: 'no_concluyente',
         user_id: auth.signing.userId,
         original_filename: `original.${format}`,
         format,
@@ -106,7 +106,12 @@ describe('Authorized image uploads', () => {
       );
       expect(response.body.upload_id).toMatch(/^[a-f0-9-]{36}$/);
       expect(response.body).not.toHaveProperty('analysis_id');
-      expect(response.body).not.toHaveProperty('indicators');
+      expect(response.body.indicators).toMatchObject({
+        pixel_count: 6,
+        sample_count: 18,
+        p_value: null,
+      });
+      expect(response.body.technique).toBe('lsb_chi_square_v1');
     },
   );
 

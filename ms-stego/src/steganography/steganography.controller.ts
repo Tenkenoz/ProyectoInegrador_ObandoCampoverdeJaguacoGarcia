@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { RequireAuthorization } from '../auth/decorators/require-authorization.decorator.js';
 import type { SecurityRequest } from '../auth/interfaces/security-request.js';
-import { ValidatedImageDto } from './dto/validated-image.dto.js';
+import { AnalysisResultDto } from './dto/analysis-result.dto.js';
 import { UploadBoundaryInterceptor } from './interceptors/upload-boundary.interceptor.js';
 import { SteganographyService } from './steganography.service.js';
 
@@ -37,9 +37,9 @@ export class SteganographyController {
   @RequireAuthorization('steganography.analyze')
   @UseInterceptors(UploadBoundaryInterceptor, FileInterceptor('file'))
   @ApiOperation({
-    summary: 'Upload and validate a supported image',
+    summary: 'Analyze a supported image for statistical LSB indicators',
     description:
-      'Validates image integrity and processing limits. Detection and persistent analysis results are not implemented yet.',
+      'Validates the image and runs statistical LSB analysis. Results are indicative, not proof of hidden data. Persistence and quarantine are not implemented yet.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -50,7 +50,7 @@ export class SteganographyController {
       properties: { file: { type: 'string', format: 'binary' } },
     },
   })
-  @ApiOkResponse({ type: ValidatedImageDto })
+  @ApiOkResponse({ type: AnalysisResultDto })
   @ApiBadRequestResponse({
     description: 'Missing, corrupt, inconsistent or malformed image upload.',
   })
@@ -64,6 +64,6 @@ export class SteganographyController {
     @UploadedFile() file: Express.Multer.File | undefined,
     @Req() request: SecurityRequest,
   ) {
-    return this.service.validateImage(file, request.subject!);
+    return this.service.analyzeImage(file, request.subject!);
   }
 }

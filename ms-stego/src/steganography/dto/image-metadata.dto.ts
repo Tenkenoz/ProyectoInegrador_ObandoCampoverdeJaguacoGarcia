@@ -1,10 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import type { ImageFormat } from '../interfaces/image.js';
 
-export class ValidatedImageDto {
-  @ApiProperty({ enum: ['validated'] })
-  status!: 'validated';
-
+export class ImageMetadataDto {
   @ApiProperty({ format: 'uuid' })
   upload_id!: string;
 
