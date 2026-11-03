@@ -76,8 +76,67 @@ Matriz de permisos:
 | `USER` | No | Solo el propio | No | No |
 
 Los endpoints de administración de AUTH exigen `ADMIN`. Cualquier usuario
-autenticado puede consultar únicamente su propio perfil. La autorización
-`own`/`any` de STEGO se resolverá en el endpoint interno de la Fase 4.
+autenticado puede consultar únicamente su propio perfil.
+
+## Autorización interna AUTH–STEGO
+
+AUTH expone fuera del prefijo `/api/v1`:
+
+```http
+POST /internal/authorization/check
+```
+
+La solicitud usa autenticación HMAC-SHA256 con las cabeceras:
+
+```text
+X-Service-Id: stego
+X-Service-Timestamp: <segundos Unix>
+X-Service-Nonce: <32 bytes aleatorios en 64 caracteres hexadecimales>
+X-Service-Signature: <HMAC-SHA256 en 64 caracteres hexadecimales>
+```
+
+El secreto se comparte con STEGO y se configura con
+`AUTH_SERVICE_SECRET` (64 caracteres hexadecimales):
+
+```bash
+openssl rand -hex 32
+```
+
+Variables relacionadas:
+
+```dotenv
+AUTH_SERVICE_ID=stego
+AUTH_SERVICE_SECRET=<secreto-compartido>
+AUTH_HMAC_CLOCK_SKEW_SECONDS=30
+AUTH_HMAC_NONCE_TTL_SECONDS=60
+AUTH_HMAC_NONCE_CACHE_SIZE=10000
+```
+
+Contrato de ejemplo:
+
+```json
+{
+  "subject_token": "<JWT_RS256>",
+  "action": "steganography.analyze",
+  "resource_id": null
+}
+```
+
+La respuesta es `200` tanto para permitir como para denegar por permisos:
+
+```json
+{
+  "subject_id": "<uuid>",
+  "action": "steganography.analyze",
+  "resource_id": null,
+  "allowed": true,
+  "scope": "any",
+  "reason": "active_role_grants_permission"
+}
+```
+
+La caché de nonces es en memoria y está pensada para una sola instancia de AUTH.
+Con varias réplicas se requiere almacenamiento compartido.
 
 ## Ejecutar la aplicación
 

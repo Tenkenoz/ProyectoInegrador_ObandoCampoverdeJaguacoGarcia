@@ -40,6 +40,9 @@ async function bootstrap() {
     await NestFactory
       .create<NestExpressApplication>(
         AppModule,
+        {
+          rawBody: true,
+        },
       );
 
   const config =
@@ -179,6 +182,10 @@ async function bootstrap() {
         {
           path: '.well-known/jwks.json',
           method: RequestMethod.GET,
+        },
+        {
+          path: 'internal/authorization/check',
+          method: RequestMethod.POST,
         },
       ],
     },

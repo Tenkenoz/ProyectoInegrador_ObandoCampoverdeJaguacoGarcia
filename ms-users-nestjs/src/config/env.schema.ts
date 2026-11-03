@@ -60,4 +60,38 @@ export const envSchema = z.object({
     .min(0)
     .max(60)
     .default(5),
+
+  /*
+   * Internal service authentication
+   */
+
+  AUTH_SERVICE_ID: z.literal('stego').default('stego'),
+
+  AUTH_SERVICE_SECRET: z
+    .string()
+    .regex(
+      /^[a-fA-F0-9]{64}$/,
+      'AUTH_SERVICE_SECRET must contain exactly 64 hexadecimal characters',
+    ),
+
+  AUTH_HMAC_CLOCK_SKEW_SECONDS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(300)
+    .default(30),
+
+  AUTH_HMAC_NONCE_TTL_SECONDS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(600)
+    .default(60),
+
+  AUTH_HMAC_NONCE_CACHE_SIZE: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(1_000_000)
+    .default(10_000),
 });

@@ -13,6 +13,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles/roles.guard.js';
 import { AppController } from './app.controller.js';
 import { AuthorizationModule } from './authorization/authorization.module.js';
+import { InternalAuthorizationModule } from './internal/authorization/internal-authorization.module.js';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { AuthorizationModule } from './authorization/authorization.module.js';
     UserRolesModule,
     AuthModule,
     AuthorizationModule,
+    InternalAuthorizationModule,
   ],
   controllers: [AppController],
   providers: [
