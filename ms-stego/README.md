@@ -2,7 +2,8 @@
 
 Microservicio NestJS independiente, administrado con pnpm, con PostgreSQL propio.
 Esta etapa implementa configuración validada, conexión, migraciones, salud y Swagger.
-La autenticación, autorización, carga de imágenes y detección LSB siguen pendientes.
+Authentication and authorization are implemented; see [Security](docs/SECURITY.md).
+Image uploads and LSB detection are pending.
 
 ## Requisitos
 
@@ -91,6 +92,10 @@ pnpm build
 pnpm start:prod
 ```
 
+The application requires PostgreSQL, a valid AUTH service secret and a readable
+AUTH CA certificate to start. Configure the AUTH variables in `.env` as described
+in [Security](docs/SECURITY.md).
+
 La aplicación debe poder conectarse a PostgreSQL para iniciar. Las migraciones se
 ejecutan por separado antes de habilitar las operaciones de análisis.
 
@@ -128,6 +133,7 @@ Luego inicie STEGO:
 ```bash
 docker run -d --name stego --network stego-local --env-file .env \
   -e DB_HOST=stego-db -e DB_PORT=5432 \
+  --mount type=bind,src="$(pwd)/certs/auth-ca.pem",dst=/run/certs/auth-ca.pem,readonly \
   -p 127.0.0.1:3002:3002 ms-stego:local
 ```
 
@@ -146,7 +152,11 @@ pnpm test
 pnpm test:e2e
 ```
 
-Las pruebas unitarias cubren configuración y salud. Las pruebas HTTP verifican
-salud, respuesta `503` y publicación de OpenAPI usando una conexión simulada; no
-requieren PostgreSQL. Las migraciones y la conexión real deben comprobarse con una
-instancia de PostgreSQL independiente siguiendo los comandos anteriores.
+Unit tests cover configuration, health, HTTPS, HMAC, JWT/JWKS and authorization.
+HTTP tests verify the security boundary against an HTTPS AUTH fixture with real
+RSA keys. They do not require PostgreSQL. Database migrations and connectivity
+must be checked separately using an independent PostgreSQL instance.
+
+Security tests require OpenSSL and include an HTTPS AUTH fixture. See
+[Security verification](docs/SECURITY.md#verification-and-integration-limits) for
+the current coverage and pending joint integration.
