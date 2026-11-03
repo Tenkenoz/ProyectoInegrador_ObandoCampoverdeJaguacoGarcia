@@ -1,3 +1,4 @@
+import { createPersistenceFixture } from './helpers/persistence-fixture.js';
 import { Logger, type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
@@ -23,6 +24,7 @@ describe('Reproducible LSB analysis through HTTP', () => {
   let auth: Awaited<ReturnType<typeof createAuthFixture>>;
   let suite: ReturnType<typeof createSampleSuite>;
   let app: INestApplication;
+  let persistence: ReturnType<typeof createPersistenceFixture>;
   let token: string;
 
   beforeAll(async () => {
@@ -34,7 +36,10 @@ describe('Reproducible LSB analysis through HTTP', () => {
     auth.state.scope = 'own';
     token = await auth.signing.issue();
     vi.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
-    const module = await Test.createTestingModule({
+    persistence = createPersistenceFixture();
+    vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    const builder = Test.createTestingModule({
       imports: [AuthModule, SteganographyModule],
     })
       .overrideProvider(AUTH_CONFIG)
@@ -49,14 +54,15 @@ describe('Reproducible LSB analysis through HTTP', () => {
           '../dist/steganography/workers/image-decoder.worker.js',
           import.meta.url,
         ),
-      )
-      .compile();
+      );
+    const module = await persistence.configure(builder).compile();
     app = module.createNestApplication();
     setupApp(app);
     await app.init();
   });
   afterEach(async () => {
     await app.close();
+    await persistence.dispose();
     vi.restoreAllMocks();
   });
   afterAll(async () => {
@@ -91,7 +97,7 @@ describe('Reproducible LSB analysis through HTTP', () => {
     expect(response.body.sha256).toBe(sample.sha256);
     expect(response.body.technique).toBe('lsb_chi_square_v1');
     expect(response.body.limitations.join(' ')).toContain('not proof');
-    expect(response.body).not.toHaveProperty('analysis_id');
+    expect(response.body.analysis_id).toBe(response.body.upload_id);
   });
 
   it.each([

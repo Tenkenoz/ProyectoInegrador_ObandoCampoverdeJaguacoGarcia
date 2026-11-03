@@ -72,16 +72,20 @@ export class QuarantineMaintenanceService {
         this.config.QUARANTINE_ORPHAN_GRACE_SECONDS * 1000
       )
         continue;
-      const row = await this.analyses.findById(file.key);
-      if (row && row.quarantineState !== 'deleted') continue;
-      await this.files.remove(file.key);
-      await this.audit.record({
+      const removed = await this.analyses.removeOrphan(
+        file.key,
         requestId,
-        resourceId: file.key,
-        event: 'quarantine.orphan_deleted',
-        outcome: 'allowed',
-      });
-      report.orphans++;
+        () => this.files.remove(file.key),
+      );
+      if (removed) {
+        this.audit.log({
+          requestId,
+          resourceId: file.key,
+          event: 'quarantine.orphan_deleted',
+          outcome: 'allowed',
+        });
+        report.orphans++;
+      }
     }
     return report;
   }

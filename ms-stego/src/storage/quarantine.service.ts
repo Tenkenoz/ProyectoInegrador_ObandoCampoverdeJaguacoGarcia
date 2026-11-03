@@ -184,7 +184,13 @@ export class QuarantineService implements OnModuleInit {
     try {
       for (const filename of await readdir(this.root)) {
         const key = parseStorageFilename(filename);
-        const file = await lstat(join(this.root, filename));
+        const file = await lstat(join(this.root, filename)).catch(
+          (error: NodeJS.ErrnoException) => {
+            if (error.code === 'ENOENT') return null;
+            throw error;
+          },
+        );
+        if (!file) continue;
         if (
           !key ||
           !file.isFile() ||

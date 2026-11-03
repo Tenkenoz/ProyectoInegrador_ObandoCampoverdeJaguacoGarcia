@@ -11,21 +11,21 @@ export class ImageMetadataDto {
   @ApiProperty()
   filename!: string;
 
-  @ApiProperty()
-  original_filename!: string;
+  @ApiProperty({ type: 'string', nullable: true })
+  original_filename!: string | null;
 
   @ApiProperty({ minLength: 64, maxLength: 64 })
   sha256!: string;
 
-  @ApiProperty({ enum: ['png', 'bmp'] })
-  format!: ImageFormat;
+  @ApiProperty({ enum: ['png', 'bmp'], nullable: true })
+  format!: ImageFormat | null;
 
-  @ApiProperty({ minimum: 1 })
-  size_bytes!: number;
+  @ApiProperty({ type: 'number', minimum: 1, nullable: true })
+  size_bytes!: number | null;
 
-  @ApiProperty({ minimum: 1 })
-  width!: number;
+  @ApiProperty({ type: 'number', minimum: 1, nullable: true })
+  width!: number | null;
 
-  @ApiProperty({ minimum: 1 })
-  height!: number;
+  @ApiProperty({ type: 'number', minimum: 1, nullable: true })
+  height!: number | null;
 }

@@ -1,3 +1,8 @@
+import {
+  lockAnalysisKey,
+  lockQuarantineCapacity,
+  tryLockAnalysisKey,
+} from './utils/advisory-lock.js';
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -11,8 +16,16 @@ export type AnalysisDraft = Omit<Analysis, 'createdAt'>;
 export class AnalysisRepository {
   constructor(@InjectDataSource() private readonly database: DataSource) {}
 
-  async create(draft: AnalysisDraft, requestId: string): Promise<Analysis> {
+  async create(
+    draft: AnalysisDraft,
+    requestId: string,
+    prepare?: () => Promise<void>,
+  ): Promise<Analysis> {
     return this.database.transaction(async (manager) => {
+      if (draft.quarantineState === 'stored')
+        await lockQuarantineCapacity(manager);
+      await lockAnalysisKey(manager, draft.id);
+      await prepare?.();
       const analysis = await manager
         .getRepository(Analysis)
         .save(manager.getRepository(Analysis).create(draft));
@@ -54,19 +67,17 @@ export class AnalysisRepository {
     requestId: string,
   ): Promise<void> {
     await this.database.transaction(async (manager) => {
-      await manager
-        .getRepository(AuditEvent)
-        .insert(
-          sanitizeAudit({
-            requestId,
-            subjectId,
-            resourceId: id,
-            event: 'analysis.read',
-            action: 'steganography.results.read',
-            outcome: 'allowed',
-            httpStatus: 200,
-          }),
-        );
+      await manager.getRepository(AuditEvent).insert(
+        sanitizeAudit({
+          requestId,
+          subjectId,
+          resourceId: id,
+          event: 'analysis.read',
+          action: 'steganography.results.read',
+          outcome: 'allowed',
+          httpStatus: 200,
+        }),
+      );
     });
   }
 
@@ -80,6 +91,29 @@ export class AnalysisRepository {
       .orderBy('analysis.quarantine_expires_at', 'ASC')
       .take(1000)
       .getMany();
+  }
+
+  async removeOrphan(
+    key: string,
+    requestId: string,
+    remove: () => Promise<boolean>,
+  ): Promise<boolean> {
+    return this.database.transaction(async (manager) => {
+      if (!(await tryLockAnalysisKey(manager, key))) return false;
+      const row = await manager.getRepository(Analysis).findOneBy({ id: key });
+      if (row && row.quarantineState !== 'deleted') return false;
+      const removed = await remove();
+      if (removed)
+        await manager.getRepository(AuditEvent).insert(
+          sanitizeAudit({
+            requestId,
+            resourceId: key,
+            event: 'quarantine.orphan_deleted',
+            outcome: 'allowed',
+          }),
+        );
+      return removed;
+    });
   }
 
   async markFileState(
@@ -101,18 +135,16 @@ export class AnalysisRepository {
       row.quarantineState = state;
       if (state === 'deleted') row.quarantineDeletedAt = at;
       await manager.getRepository(Analysis).save(row);
-      await manager
-        .getRepository(AuditEvent)
-        .insert(
-          sanitizeAudit({
-            requestId,
-            subjectId: row.userId,
-            resourceId: id,
-            event:
-              state === 'deleted' ? 'quarantine.deleted' : 'quarantine.missing',
-            outcome: state === 'deleted' ? 'allowed' : 'failed',
-          }),
-        );
+      await manager.getRepository(AuditEvent).insert(
+        sanitizeAudit({
+          requestId,
+          subjectId: row.userId,
+          resourceId: id,
+          event:
+            state === 'deleted' ? 'quarantine.deleted' : 'quarantine.missing',
+          outcome: state === 'deleted' ? 'allowed' : 'failed',
+        }),
+      );
     });
   }
 }

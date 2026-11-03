@@ -74,6 +74,6 @@ export class LsbDetectorService {
         throw new ServiceUnavailableException('Inconsistent LSB evidence');
       }
     }
-    return { ...image, detection };
+    return { ...image, detection, parameters: { ...this.config } };
   }
 }

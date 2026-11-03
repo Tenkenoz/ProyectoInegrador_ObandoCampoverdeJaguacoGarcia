@@ -1,5 +1,7 @@
 import {
   Controller,
+  Get,
+  Param,
   HttpCode,
   Inject,
   Post,
@@ -7,12 +9,16 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
+import { AnalysisResultsService } from './services/analysis-results.service.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConsumes,
   ApiOkResponse,
+  ApiNotFoundResponse,
+  ApiParam,
   ApiOperation,
   ApiPayloadTooLargeResponse,
   ApiTags,
@@ -30,6 +36,8 @@ export class SteganographyController {
   constructor(
     @Inject(SteganographyService)
     private readonly service: SteganographyService,
+    @Inject(AnalysisResultsService)
+    private readonly results: AnalysisResultsService,
   ) {}
 
   @Post('analyze')
@@ -39,7 +47,7 @@ export class SteganographyController {
   @ApiOperation({
     summary: 'Analyze a supported image for statistical LSB indicators',
     description:
-      'Validates the image and runs statistical LSB analysis. Results are indicative, not proof of hidden data. Persistence and quarantine are not implemented yet.',
+      'Validates the image and runs statistical LSB analysis. Results are indicative, not proof of hidden data. Results and applied policies are persisted. Original files are retained only when the applied policy selects quarantine.',
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -64,6 +72,34 @@ export class SteganographyController {
     @UploadedFile() file: Express.Multer.File | undefined,
     @Req() request: SecurityRequest,
   ) {
-    return this.service.analyzeImage(file, request.subject!);
+    return this.service.analyzeImage(
+      file,
+      request.subject!,
+      request.requestId ?? randomUUID(),
+    );
+  }
+  @Get('results/:id')
+  @ApiParam({
+    name: 'id',
+    format: 'uuid',
+    description: 'Persisted analysis identifier.',
+  })
+  @ApiBadRequestResponse({ description: 'A valid analysis UUID is required.' })
+  @RequireAuthorization('steganography.results.read', 'id')
+  @ApiOperation({
+    summary:
+      'Read a persisted analysis under current authorization and ownership rules',
+  })
+  @ApiOkResponse({ type: AnalysisResultDto })
+  @ApiNotFoundResponse({
+    description: 'The authorized analysis does not exist.',
+  })
+  result(@Param('id') id: string, @Req() request: SecurityRequest) {
+    return this.results.find(
+      id,
+      request.subject!,
+      request.authorizationGrant!,
+      request.requestId ?? randomUUID(),
+    );
   }
 }

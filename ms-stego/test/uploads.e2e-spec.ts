@@ -1,3 +1,4 @@
+import { createPersistenceFixture } from './helpers/persistence-fixture.js';
 import { Logger, type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { createHash } from 'node:crypto';
@@ -38,6 +39,7 @@ const endpoint = '/api/v1/steganography/analyze';
 describe('Authorized image uploads', () => {
   let auth: Awaited<ReturnType<typeof createAuthFixture>>;
   let app: INestApplication;
+  let persistence: ReturnType<typeof createPersistenceFixture>;
   let token: string;
   let decoder: LsbDetectorService;
   let capacity: UploadCapacityService;
@@ -53,7 +55,10 @@ describe('Authorized image uploads', () => {
     auth.state.jwksUnavailable = false;
     token = await auth.signing.issue();
     vi.spyOn(Logger.prototype, 'warn').mockImplementation(() => {});
-    const module = await Test.createTestingModule({
+    persistence = createPersistenceFixture();
+    vi.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    vi.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
+    const builder = Test.createTestingModule({
       imports: [AuthModule, SteganographyModule],
     })
       .overrideProvider(AUTH_CONFIG)
@@ -61,8 +66,8 @@ describe('Authorized image uploads', () => {
       .overrideProvider(UPLOAD_CONFIG)
       .useValue(config)
       .overrideProvider(IMAGE_WORKER_URL)
-      .useValue(workerUrl)
-      .compile();
+      .useValue(workerUrl);
+    const module = await persistence.configure(builder).compile();
     app = module.createNestApplication();
     setupApp(app);
     await app.init();
@@ -73,6 +78,7 @@ describe('Authorized image uploads', () => {
   });
   afterEach(async () => {
     await app.close();
+    await persistence.dispose();
     vi.restoreAllMocks();
   });
   afterAll(async () => {
@@ -105,7 +111,7 @@ describe('Authorized image uploads', () => {
         `${response.body.upload_id}.${format}`,
       );
       expect(response.body.upload_id).toMatch(/^[a-f0-9-]{36}$/);
-      expect(response.body).not.toHaveProperty('analysis_id');
+      expect(response.body.analysis_id).toBe(response.body.upload_id);
       expect(response.body.indicators).toMatchObject({
         pixel_count: 6,
         sample_count: 18,

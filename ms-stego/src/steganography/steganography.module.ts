@@ -1,3 +1,11 @@
+import { AuditModule } from '../audit/audit.module.js';
+import { PersistenceModule } from '../persistence/persistence.module.js';
+import { StorageModule } from '../storage/storage.module.js';
+import { QuarantineScheduler } from '../storage/quarantine-scheduler.js';
+import { PolicyConfigModule } from './policy/config/policy-config.module.js';
+import { PolicyService } from './policy/policy.service.js';
+import { AnalysisPersistenceService } from './services/analysis-persistence.service.js';
+import { AnalysisResultsService } from './services/analysis-results.service.js';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { UploadConfigModule } from './config/upload-config.module.js';
@@ -19,6 +27,10 @@ import { createUploadOptions } from './utils/upload-options.js';
 @Module({
   imports: [
     UploadConfigModule,
+    AuditModule,
+    PersistenceModule,
+    StorageModule,
+    PolicyConfigModule,
     LsbConfigModule,
     MulterModule.registerAsync({
       imports: [UploadConfigModule],
@@ -38,6 +50,10 @@ import { createUploadOptions } from './utils/upload-options.js';
     UploadCapacityService,
     UploadBoundaryInterceptor,
     SteganographyService,
+    PolicyService,
+    AnalysisPersistenceService,
+    AnalysisResultsService,
+    QuarantineScheduler,
   ],
 })
 export class SteganographyModule {}
