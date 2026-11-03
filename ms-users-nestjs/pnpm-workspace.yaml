@@ -1,0 +1,4 @@
+allowBuilds:
+  argon2: true
+  '@nestjs/core': false
+  '@scarf/scarf': false

@@ -15,11 +15,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "oxlint --type-aware src/",
-    "migration:generate": "npm run build && typeorm migration:generate -d dist/database/data-source.js",
-    "migration:run": "npm run build && typeorm migration:run -d dist/database/data-source.js",
-    "migration:revert": "npm run build && typeorm migration:revert -d dist/database/data-source.js",
-    "migration:show": "npm run build && typeorm migration:show -d dist/database/data-source.js",
-    "migration:check": "npm run build && typeorm migration:generate src/database/migrations/SchemaCheck -d dist/database/data-source.js --check"
+    "migration:generate": "pnpm build && typeorm migration:generate -d dist/database/data-source.js",
+    "migration:run": "pnpm build && typeorm migration:run -d dist/database/data-source.js",
+    "migration:revert": "pnpm build && typeorm migration:revert -d dist/database/data-source.js",
+    "migration:show": "pnpm build && typeorm migration:show -d dist/database/data-source.js",
+    "migration:check": "pnpm build && typeorm migration:generate src/database/migrations/SchemaCheck -d dist/database/data-source.js --check"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
@@ -57,5 +57,6 @@
     "prettier": "^3.4.2",
     "source-map-support": "^0.5.21",
     "typescript": "^6.0.2"
-  }
+  },
+  "packageManager": "pnpm@11.12.0"
 }
