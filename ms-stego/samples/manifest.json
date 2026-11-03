@@ -1,0 +1,479 @@
+{
+  "generator": "stego_lsb_samples_v1",
+  "node_version": "v25.6.1",
+  "detector": {
+    "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+    "LSB_CLEAR_THRESHOLD": 0.001,
+    "LSB_BALANCE_TOLERANCE": 0.02,
+    "LSB_MIN_PIXELS": 4096,
+    "LSB_MIN_EXPECTED_COUNT": 5,
+    "LSB_MIN_PAIRS": 32,
+    "LSB_MIN_COVERAGE": 0.8
+  },
+  "payload": {
+    "filename": "payload.txt",
+    "size_bytes": 99,
+    "sha256": "5d29fd1301bd9d142a4b67d2123f63bbcd4588d371b6242592a55462d99852a2",
+    "recovered_exactly": true,
+    "embedded_samples": 49152,
+    "embedding_ratio": 1,
+    "changed_rgb_samples": 24617
+  },
+  "samples": [
+    {
+      "filename": "original.png",
+      "ground_truth": "synthetic_lsb_biased_cover_without_payload",
+      "expected_http_status": 200,
+      "size_bytes": 56321,
+      "sha256": "1e0594117b76c4cdd2f3c8df51b6a14b3ff22a2ee7d1d36fa21594c254e887cf",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "sin_indicios",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "lsb-payload.png",
+      "ground_truth": "known_full_capacity_lsb_replacement_payload",
+      "expected_http_status": 200,
+      "size_bytes": 56324,
+      "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "sospechoso",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "original.bmp",
+      "ground_truth": "synthetic_lsb_biased_cover_without_payload",
+      "expected_http_status": 200,
+      "size_bytes": 49206,
+      "sha256": "588f0136dc33109f2a122f188095b1adecbab0545fc5504407a92b734c4bc1e9",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "sin_indicios",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "lsb-payload.bmp",
+      "ground_truth": "known_full_capacity_lsb_replacement_payload",
+      "expected_http_status": 200,
+      "size_bytes": 49206,
+      "sha256": "d46c25765a499742903d058bf8b3f53776a7f40981e989c1a99e63ad005ed94e",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "sospechoso",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "noise-control.png",
+      "ground_truth": "synthetic_noise_without_embedded_payload",
+      "expected_http_status": 200,
+      "size_bytes": 56318,
+      "sha256": "c24009a2bed1deb97079046483941414f4e1b75d715ca29a7516ed389e9c05eb",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "sospechoso",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 370.3497896009793,
+          "degrees_of_freedom": 384,
+          "p_value": 0.6823886449400454,
+          "anomaly_score": 0.6823886449400454,
+          "lsb_ratio": 0.5022176106770834,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 116.98785310226451,
+            "p_value": 0.7476337164270528,
+            "lsb_ratio": 0.50152587890625
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 142.9591359124243,
+            "p_value": 0.17306742521733132,
+            "lsb_ratio": 0.50665283203125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 110.40280058629047,
+            "p_value": 0.8670424145906076,
+            "lsb_ratio": 0.49847412109375
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "small.png",
+      "ground_truth": "insufficient_pixel_count",
+      "expected_http_status": 200,
+      "size_bytes": 1009,
+      "sha256": "2bdaa6abd892f0a5ce16f2e09f43142f514219a654a6f601e2863fe9325cda6d",
+      "width": 16,
+      "height": 16,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "no_concluyente",
+        "reason": "insufficient_samples",
+        "indicators": {
+          "chi_square": null,
+          "degrees_of_freedom": 0,
+          "p_value": null,
+          "anomaly_score": null,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 256,
+          "sample_count": 768,
+          "coverage": 0
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "flat-control.png",
+      "ground_truth": "insufficient_pair_diversity",
+      "expected_http_status": 200,
+      "size_bytes": 339,
+      "sha256": "9dac5a62adfe95ecbdf0ff8a5da024f5467d816d9332affaa46f660c56337e1e",
+      "width": 128,
+      "height": 128,
+      "detection": {
+        "technique": "lsb_chi_square_v1",
+        "status": "no_concluyente",
+        "reason": "insufficient_pair_coverage",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 3,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ]
+      }
+    },
+    {
+      "filename": "corrupt.png",
+      "ground_truth": "truncated_png",
+      "expected_http_status": 400,
+      "size_bytes": 56313,
+      "sha256": "894407eab71541c8c12cd8b617fd2ef2daff5b4f6eb9ca2faf27f94e0c4480c4"
+    },
+    {
+      "filename": "false-extension.png",
+      "ground_truth": "gif_renamed_as_png",
+      "expected_http_status": 415,
+      "size_bytes": 42,
+      "sha256": "ef1955ae757c8b966c83248350331bd3a30f658ced11f387f8ebf05ab3368629"
+    }
+  ]
+}

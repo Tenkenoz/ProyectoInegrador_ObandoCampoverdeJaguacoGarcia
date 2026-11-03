@@ -105,6 +105,21 @@ describe('LSB evidence and classifications', () => {
     ).toBe('sin_indicios');
   });
 
+  it('reports numerical failures without fabricating a successful classification', () => {
+    const log = vi.spyOn(Math, 'log').mockReturnValue(NaN);
+    let result;
+    try {
+      result = detectLsb(pixelsWithPairedValues(false), config);
+    } finally {
+      log.mockRestore();
+    }
+    expect(result).toMatchObject({
+      status: 'error',
+      reason: 'numerical_failure',
+      indicators: { p_value: null, pixel_count: 4096 },
+    });
+  });
+
   it('reports invalid pixel data as an error', () => {
     expect(detectLsb(new Uint8Array(3), config)).toMatchObject({
       status: 'error',

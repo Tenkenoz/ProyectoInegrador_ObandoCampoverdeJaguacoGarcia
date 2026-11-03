@@ -1,0 +1,1 @@
+Secure chat STEGO demonstration. This reproducible image contains a known LSB replacement payload.
