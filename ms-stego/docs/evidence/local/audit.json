@@ -1,0 +1,693 @@
+{
+  "evidence_kind": "local_fixture",
+  "generated_at": "2026-11-03T14:46:18.890Z",
+  "events": [
+    {
+      "created_at": "2026-11-03T14:46:18.182Z",
+      "request_id": "d507fff1-9d16-406e-9c3b-2e6c78f7711c",
+      "subject_id": null,
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 401,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.199Z",
+      "request_id": "f400b30a-4434-4aff-b34f-9d539a2b7a37",
+      "subject_id": null,
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 401,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.204Z",
+      "request_id": "0bc65a4c-8595-4095-9f88-3091fcae2c10",
+      "subject_id": null,
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 401,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.218Z",
+      "request_id": "7e2fec56-dcd3-4e81-be4b-edf838c7833a",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 403,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.275Z",
+      "request_id": "3a1bf525-cc80-49c6-92d4-ae61a1241259",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "bfee7ab6-b38b-476a-b0a9-c39392034ed4",
+      "event": "quarantine.stored",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.275Z",
+      "request_id": "3a1bf525-cc80-49c6-92d4-ae61a1241259",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "bfee7ab6-b38b-476a-b0a9-c39392034ed4",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.275Z",
+      "request_id": "3a1bf525-cc80-49c6-92d4-ae61a1241259",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "bfee7ab6-b38b-476a-b0a9-c39392034ed4",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.303Z",
+      "request_id": "3a1bf525-cc80-49c6-92d4-ae61a1241259",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.308Z",
+      "request_id": "556a5a68-0469-45e3-9800-294b85194d28",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 403,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.313Z",
+      "request_id": "1ec774e3-3a00-4a68-893a-4cdda598682a",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "failed",
+      "http_status": 503,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.363Z",
+      "request_id": "268e725a-0ecf-4ebc-aa15-1acc93cad8fa",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "sin_indicios",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.363Z",
+      "request_id": "268e725a-0ecf-4ebc-aa15-1acc93cad8fa",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "sin_indicios",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.370Z",
+      "request_id": "268e725a-0ecf-4ebc-aa15-1acc93cad8fa",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.409Z",
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.409Z",
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "quarantine.stored",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.409Z",
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.431Z",
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.466Z",
+      "request_id": "848897d0-e8b2-4686-b2ec-98d2f30aefbf",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "sin_indicios",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.466Z",
+      "request_id": "848897d0-e8b2-4686-b2ec-98d2f30aefbf",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "sin_indicios",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.479Z",
+      "request_id": "848897d0-e8b2-4686-b2ec-98d2f30aefbf",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.525Z",
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+      "event": "quarantine.stored",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.525Z",
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.525Z",
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.548Z",
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.586Z",
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.586Z",
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.586Z",
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+      "event": "quarantine.stored",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.621Z",
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.655Z",
+      "request_id": "757806e3-1fdb-4d4f-81bc-4520af904a54",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "no_concluyente",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.655Z",
+      "request_id": "757806e3-1fdb-4d4f-81bc-4520af904a54",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "no_concluyente",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.674Z",
+      "request_id": "757806e3-1fdb-4d4f-81bc-4520af904a54",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.713Z",
+      "request_id": "f17e1e23-a4d4-40c2-90ca-ed3b2ea4a07a",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "no_concluyente",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.713Z",
+      "request_id": "f17e1e23-a4d4-40c2-90ca-ed3b2ea4a07a",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "advertencia",
+        "status": "no_concluyente",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "none"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.720Z",
+      "request_id": "f17e1e23-a4d4-40c2-90ca-ed3b2ea4a07a",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.753Z",
+      "request_id": "9748698e-4a82-4612-997c-61ef58a98a92",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 400,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.756Z",
+      "request_id": "446365e4-0a76-440e-89e8-9693bfba4a40",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 415,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.769Z",
+      "request_id": "3d6aef7f-e52e-48fd-822b-23860d0939dc",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 413,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.772Z",
+      "request_id": "fd5a207f-1772-4f68-8ca6-785ebed09257",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "denied",
+      "http_status": 400,
+      "details": {
+        "method": "POST"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.781Z",
+      "request_id": "ee4001a1-51dc-482a-9941-fc29aebef555",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "analysis.read",
+      "action": "steganography.results.read",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {}
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.785Z",
+      "request_id": "ee4001a1-51dc-482a-9941-fc29aebef555",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "http.request",
+      "action": "steganography.results.read",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "GET"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.790Z",
+      "request_id": "590f15d3-268e-47a1-83ef-273935d45a0f",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "analysis.denied",
+      "action": "steganography.results.read",
+      "outcome": "denied",
+      "http_status": 403,
+      "details": {}
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.792Z",
+      "request_id": "590f15d3-268e-47a1-83ef-273935d45a0f",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "http.request",
+      "action": "steganography.results.read",
+      "outcome": "denied",
+      "http_status": 403,
+      "details": {
+        "method": "GET"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.795Z",
+      "request_id": "88c5f81d-a704-4a54-a6cb-77560fc664fd",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "analysis.read",
+      "action": "steganography.results.read",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {}
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.797Z",
+      "request_id": "88c5f81d-a704-4a54-a6cb-77560fc664fd",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "a44af2ae-1058-482a-982d-13898929e32f",
+      "event": "http.request",
+      "action": "steganography.results.read",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "GET"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.838Z",
+      "request_id": "db6087e3-7c5e-4759-915d-2f3cb12541a4",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9c022dca-f55d-4678-91c0-d0d243c1a1c5",
+      "event": "policy.applied",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.838Z",
+      "request_id": "db6087e3-7c5e-4759-915d-2f3cb12541a4",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9c022dca-f55d-4678-91c0-d0d243c1a1c5",
+      "event": "analysis.completed",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.838Z",
+      "request_id": "db6087e3-7c5e-4759-915d-2f3cb12541a4",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": "9c022dca-f55d-4678-91c0-d0d243c1a1c5",
+      "event": "quarantine.stored",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "action": "cuarentena",
+        "status": "sospechoso",
+        "policy_version": "stego_policy_v1",
+        "quarantine_state": "stored"
+      }
+    },
+    {
+      "created_at": "2026-11-03T14:46:18.878Z",
+      "request_id": "db6087e3-7c5e-4759-915d-2f3cb12541a4",
+      "subject_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+      "resource_id": null,
+      "event": "http.request",
+      "action": "steganography.analyze",
+      "outcome": "allowed",
+      "http_status": 200,
+      "details": {
+        "method": "POST"
+      }
+    }
+  ]
+}

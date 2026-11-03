@@ -1,0 +1,1925 @@
+{
+  "evidence_kind": "local_fixture",
+  "started_at": "2026-11-03T14:46:18.166Z",
+  "completed_at": "2026-11-03T14:46:18.890Z",
+  "environment": {
+    "node": "v25.6.1",
+    "database": "isolated PostgreSQL 17 Docker container",
+    "auth": "temporary HTTPS fixture with RSA JWT, JWKS and HMAC",
+    "policy": "default configuration",
+    "scheduler": "disabled for deterministic evidence; expiry covered by integration suite"
+  },
+  "limitations": [
+    "No real AUTH users or roles were created.",
+    "Role changes and ADMIN scope were simulated by the AUTH fixture.",
+    "These artifacts are not Postman captures or final team integration evidence.",
+    "Synthetic controls do not establish real-world detector accuracy; noise-control.png is a known false positive."
+  ],
+  "source": {
+    "algorithm": "sha256",
+    "digest": "f1120db008d986f55c51a04a6a0f1024c6dcb81d77b07c56fb451a487e6ef34e",
+    "files": [
+      {
+        "path": "package.json",
+        "sha256": "a4670bc7ca9916c044135c511fb997cb38a5724b067a7b01940fce3b6c36ee99"
+      },
+      {
+        "path": "pnpm-lock.yaml",
+        "sha256": "97992ffb01185339a8ff33145a81cf45c1967e8f4be0439675d9bea5082db867"
+      },
+      {
+        "path": "samples/manifest.json",
+        "sha256": "c3aa37acbbaa15eef90e40066583bd26312822309547f57c9b633228fcaab335"
+      },
+      {
+        "path": "src/app.controller.spec.ts",
+        "sha256": "bb006e8abea3884ba50fb396e437f6a2bbf33e491ef42d94287f906ee13e2301"
+      },
+      {
+        "path": "src/app.controller.ts",
+        "sha256": "14eb007556daaf8d2d8c04d248ed55bc8582b112187f49477886ae6a1d2db0fe"
+      },
+      {
+        "path": "src/app.module.ts",
+        "sha256": "0748df910866889f64880b3f3a3fe0b2988063de8db2d37307fcbc3cb09391b4"
+      },
+      {
+        "path": "src/app.service.ts",
+        "sha256": "6e5a86d96d32f075b3e6b6c7fe28ee1b9a503d628e7e3d49dc8d576d85b50b20"
+      },
+      {
+        "path": "src/audit/audit.middleware.ts",
+        "sha256": "4aeb0db436abe301156d5bd15c24923526d8de112c95a699f9696496022ecc2b"
+      },
+      {
+        "path": "src/audit/audit.module.ts",
+        "sha256": "3933629f94ce20b6e107ec09aae3de5e00b562b772cfc382669c5220b241b039"
+      },
+      {
+        "path": "src/audit/audit.service.spec.ts",
+        "sha256": "0fd8d74e7cb0668725da5c44790e0d7acf572c6de0a1878ef6e1f47a9dc53dac"
+      },
+      {
+        "path": "src/audit/audit.service.ts",
+        "sha256": "02ca7f628e629c2d8315a49ef1cf4b525ebfbc853b86a25df0b3611cb3774aef"
+      },
+      {
+        "path": "src/audit/interfaces/audit-entry.ts",
+        "sha256": "dfefd6a4bfe02ea79a5bf73f42e48ebe6266a2505fd6e8829e3180d7e1c89129"
+      },
+      {
+        "path": "src/audit/utils/sanitize-audit.spec.ts",
+        "sha256": "f190737883b174ac10783a0c7586dd173aecf8aa3ab54a90ba1800b341317d9c"
+      },
+      {
+        "path": "src/audit/utils/sanitize-audit.ts",
+        "sha256": "b30cb9ba598a30c95ef27707195e2794bfad145ec07ae2b116ae08895e5423f2"
+      },
+      {
+        "path": "src/auth/auth.module.ts",
+        "sha256": "929d99f87c4246d3c230ef001339b4886d6518e6170ae10ad388ca0b59cbec53"
+      },
+      {
+        "path": "src/auth/clients/auth-http.client.spec.ts",
+        "sha256": "1edfa8c6a7e97a618651c449c0109b42406b513af5732115a76fefde9b9640ea"
+      },
+      {
+        "path": "src/auth/clients/auth-http.client.ts",
+        "sha256": "10dc339b1ab0345e3bd3a7e902326b781f88bf7eb89fb16aeef31ae7ab6adb9d"
+      },
+      {
+        "path": "src/auth/config/auth.config.spec.ts",
+        "sha256": "45d3988a7641e1ddacb6be246aef4e91158cd40ed36fef57c1b1b3f6fcca861e"
+      },
+      {
+        "path": "src/auth/config/auth.config.ts",
+        "sha256": "3e791781c92861a52be8142a2dd28aa6ff0c3909f84ee577c5d1a53b737e1579"
+      },
+      {
+        "path": "src/auth/decorators/public.decorator.ts",
+        "sha256": "b8de5b78516933512aae14df1a41daed588090317f63f481a0190437e627e032"
+      },
+      {
+        "path": "src/auth/decorators/require-authorization.decorator.ts",
+        "sha256": "fe814e74a256ca86278d66ec1fcbdf3d29c1ec5e12a8811b2f441b20ed502ae4"
+      },
+      {
+        "path": "src/auth/errors/auth-dependency.error.ts",
+        "sha256": "60e19a553dacb6291c649803cc3f9975be043717ddfb9072ea9c5fe27c313291"
+      },
+      {
+        "path": "src/auth/errors/unknown-signing-key.error.ts",
+        "sha256": "f3e55a6fb46a903b0793ae818825070e21925599127d26ce54c15439c821992d"
+      },
+      {
+        "path": "src/auth/guards/authorization.guard.ts",
+        "sha256": "c144bd0f3ba5442c52faae0ed5ba5f81abd75a1313e54050d0fb851e2476f663"
+      },
+      {
+        "path": "src/auth/guards/jwt-authentication.guard.ts",
+        "sha256": "13615fc3303f442672f068a6ef7880b2fafbac78afaa5fc8ba89d792829d967d"
+      },
+      {
+        "path": "src/auth/interfaces/auth-http-response.ts",
+        "sha256": "bb6559f14ddd61114a45df570e713654c53c1926fb2c02392f525e9503036357"
+      },
+      {
+        "path": "src/auth/interfaces/authenticated-subject.ts",
+        "sha256": "3752908a270d9b1b6253bd09675990b8a7f93b6f4dc00877b13dd59c1a0f0fb7"
+      },
+      {
+        "path": "src/auth/interfaces/authorization.ts",
+        "sha256": "b16d4f3e907b57ad97189f460da948137139c7d318cce40487e97b63491b1ebd"
+      },
+      {
+        "path": "src/auth/interfaces/security-request.ts",
+        "sha256": "0fdfed39f6cd8af0e528a04d4cdf988992e5420ffdf6b23a957d24df363ca3ed"
+      },
+      {
+        "path": "src/auth/services/authorization.service.spec.ts",
+        "sha256": "256f3430893d86b52f984b9903fb17c54219d4110c1ab82f9ef7ad1879d1744e"
+      },
+      {
+        "path": "src/auth/services/authorization.service.ts",
+        "sha256": "2d1d7efe3136e8a5c42ad5bfd71ff3165fef8a7bf067f268ebbabad33f0876ac"
+      },
+      {
+        "path": "src/auth/services/jwks.service.spec.ts",
+        "sha256": "49ac634f04c99ded7b35483c277f7fccbfa210141d1b79e5b05e6dce82e4d642"
+      },
+      {
+        "path": "src/auth/services/jwks.service.ts",
+        "sha256": "248e6b82113415cc535031caa55fb06d5aa106fd5042510f739b657e427a15a2"
+      },
+      {
+        "path": "src/auth/services/jwt-verifier.service.spec.ts",
+        "sha256": "0d93ffc110a8cb781e7e49c4805c7e24f5960d02030dbbbb87602f393415f3cd"
+      },
+      {
+        "path": "src/auth/services/jwt-verifier.service.ts",
+        "sha256": "3c26b2ec97d7c112e56f9d40593cec0e730e9b3698d027a7b307a4913ffcbac0"
+      },
+      {
+        "path": "src/auth/utils/authorization-decision.ts",
+        "sha256": "2efd8420c87a72caa97793c5cf321dd5454214d2f99bb386bdf315fac9c178f8"
+      },
+      {
+        "path": "src/auth/utils/bearer-token.spec.ts",
+        "sha256": "cf8428bcda3a7aa0525433e9e855c841e8a8debd2bcc8ac1e689b1029e887a1d"
+      },
+      {
+        "path": "src/auth/utils/bearer-token.ts",
+        "sha256": "604f516d340dee57e03a33d5a641830a5669f2f03289045dd8d38e0f115fa56d"
+      },
+      {
+        "path": "src/auth/utils/https-json.spec.ts",
+        "sha256": "aa286a59693864bc71693ed93da8b73e4c2d71d459125f812277d50263ee6f73"
+      },
+      {
+        "path": "src/auth/utils/https-json.ts",
+        "sha256": "13d17a8ee2bb9c043f7541bf619561b83777c0fc1d54fa0c2c6b1e5aa5ee230d"
+      },
+      {
+        "path": "src/auth/utils/parse-jwks.ts",
+        "sha256": "a975b88f09b36c1534639bbc4d2e95abea39b42eb261ee05ddcf253a4bef6607"
+      },
+      {
+        "path": "src/auth/utils/resource-ownership.ts",
+        "sha256": "180b7b5c825828400026670b40e197158522b4f48bc08fbf04d4cb55866ac531"
+      },
+      {
+        "path": "src/auth/utils/service-signature.spec.ts",
+        "sha256": "5b369fe1cd7ab2869c592146369e02dd8eb88bfc4a40bbac5250d852042d9001"
+      },
+      {
+        "path": "src/auth/utils/service-signature.ts",
+        "sha256": "eef3192f9ab66b4338232a4811c40813dd68db8de8772c64d9357b5890199aac"
+      },
+      {
+        "path": "src/config/env.spec.ts",
+        "sha256": "180de4a483c646f3ea773d7b0e0c7b188e6c79dbd5013f35a6d3563278d328e4"
+      },
+      {
+        "path": "src/config/env.ts",
+        "sha256": "8bec44c3eed7c0fdc27bc53492488c12b30daac619594fc0e24c0061d5d46e19"
+      },
+      {
+        "path": "src/database/data-source.ts",
+        "sha256": "e52a6175e81d5ed34552eb0fbaac7fc57306651e11020dfeb3b86c9e1ac4765c"
+      },
+      {
+        "path": "src/database/database-options.ts",
+        "sha256": "01a8b3c43d2d272156dcf4867614057b9962f37109d80d7a0856f089826929ae"
+      },
+      {
+        "path": "src/database/entities/analysis.entity.ts",
+        "sha256": "966676f999e2ff25fe076bed6feea8194e4fbfb99707cd9a44d2f3316df8efd4"
+      },
+      {
+        "path": "src/database/entities/audit-event.entity.ts",
+        "sha256": "c7b4586dcb4932921e3365d92fa48960814c75737b064f8b56bb12b810569f5e"
+      },
+      {
+        "path": "src/database/migrations/1793664000000-InitialAnalyses.ts",
+        "sha256": "9ee0fbc6e103ca3945c976957fa37096e91b1a9487204ff36783eed75054cd88"
+      },
+      {
+        "path": "src/database/migrations/1793746800000-AnalysisRetentionAndAudit.ts",
+        "sha256": "a0285045fcf3927e5e61893eff3ab8127b963dcb141d166b12a90da14fbc0abe"
+      },
+      {
+        "path": "src/main.ts",
+        "sha256": "603106fb2aa264c894f6436dc17294e9aa477bc7d9a4bde541c448082ca8bbe3"
+      },
+      {
+        "path": "src/persistence/analysis.repository.ts",
+        "sha256": "0c1089f6d18634c8708ab8a1805e99be14ce06fe1ab858957b8c9edebbeddd63"
+      },
+      {
+        "path": "src/persistence/audit.repository.ts",
+        "sha256": "ddabf631bb028b59cc027015c2ccff7ef1a5447d5e46793788ada4783157e2fd"
+      },
+      {
+        "path": "src/persistence/persistence.module.ts",
+        "sha256": "6246f21cf432f306231fd42a1ec2df7ff76e0255c9be55656a29b49b75f08a26"
+      },
+      {
+        "path": "src/persistence/utils/advisory-lock.ts",
+        "sha256": "76b3b42096f92a2474c5650a0da2455f4833cdd66bb821b76fdc58cd1554a678"
+      },
+      {
+        "path": "src/setup-app.ts",
+        "sha256": "870ff125d63b0a63116385294ff8d839e438382590022182940304e4c7423ad8"
+      },
+      {
+        "path": "src/steganography/config/upload-config.module.ts",
+        "sha256": "bcaccd141d88b790043e4ba84f7e380fdb4085c90cff9a38295d00ab480c1cd1"
+      },
+      {
+        "path": "src/steganography/config/upload.config.spec.ts",
+        "sha256": "dd91622c454b7ecc22e05d02f97ebd820b7751d98540218f6ecdb5659866579e"
+      },
+      {
+        "path": "src/steganography/config/upload.config.ts",
+        "sha256": "114c219e5b3c3d6a5e978a3e05a38f5f2ef29a479d72b05682937fd61eaeaa6d"
+      },
+      {
+        "path": "src/steganography/dto/analysis-result.dto.ts",
+        "sha256": "7fe05e6993b6f523a464f9a25f5427428e5b96849f19cd518ad72fa5368fd818"
+      },
+      {
+        "path": "src/steganography/dto/image-metadata.dto.ts",
+        "sha256": "42219b9f1976fbc31daf298806f2a5964d285053ed484b35bc92cc71c6d53dd8"
+      },
+      {
+        "path": "src/steganography/dto/policy-result.dto.ts",
+        "sha256": "aa96d9aab67996b8d17b692fcac91ea776d1fe1590724d3385bd9c1de46fc4f4"
+      },
+      {
+        "path": "src/steganography/errors/image-validation.error.ts",
+        "sha256": "ce18ce5851a23c6817fae7ff3e65dc46f463c8f5a721447951a1ea89c32b4166"
+      },
+      {
+        "path": "src/steganography/interceptors/upload-boundary.interceptor.spec.ts",
+        "sha256": "12a0826c5ce214c359f3fe262dee8cb5e0dae7616890912553f5beb07b0c3f55"
+      },
+      {
+        "path": "src/steganography/interceptors/upload-boundary.interceptor.ts",
+        "sha256": "4c942c62450ef40a366e208020fc809bf2d997dec118d84eb383996d73e96cbf"
+      },
+      {
+        "path": "src/steganography/interfaces/analysis-metadata.ts",
+        "sha256": "6a1aa3ded9976374dd54ef760093ba341be1eb2bee6fd5392abc429929e3f8ed"
+      },
+      {
+        "path": "src/steganography/interfaces/decoder-message.ts",
+        "sha256": "841f8f0fa1e69947005ea124b6368af3f9bf5f71dd3366c964bcb0df6f2e6b54"
+      },
+      {
+        "path": "src/steganography/interfaces/image.ts",
+        "sha256": "a7c8e03f3ae2c4caac3242688e1745094085fab73deefc466f5e9ead5011c305"
+      },
+      {
+        "path": "src/steganography/interfaces/new-analysis.ts",
+        "sha256": "429f08a886e1c412371e5ea257f911da5f69b32f70e139ea3e33cf778b9e678d"
+      },
+      {
+        "path": "src/steganography/lsb/config/lsb-config.module.ts",
+        "sha256": "e08f20e4b0d00589a5e7441b6ffc8f9860762546a723bdd94d32e732018ee7a0"
+      },
+      {
+        "path": "src/steganography/lsb/config/lsb.config.spec.ts",
+        "sha256": "de410f6b5f7aabdcd0e9d0241f2de17a50f2c7b32dec7eac7f7e2da56c73fbf0"
+      },
+      {
+        "path": "src/steganography/lsb/config/lsb.config.ts",
+        "sha256": "37637af822901828c266f51ed5ca2c5fb05ef33e48724e4828680a65086ca7c2"
+      },
+      {
+        "path": "src/steganography/lsb/interfaces/lsb-result.schema.ts",
+        "sha256": "da1cc97c171f2dbd297a7292603ee3f8aea7f63dd78678faa07ee14994c5ffff"
+      },
+      {
+        "path": "src/steganography/lsb/interfaces/lsb-result.ts",
+        "sha256": "e5dea086c8f132ea29d66b88a18178402301b5eb0fe3768e3d2159992ca324dc"
+      },
+      {
+        "path": "src/steganography/lsb/interfaces/rgb-histogram.ts",
+        "sha256": "096a92b85563c614ed130c200af872df4858997049d903e336d4eb91dc20fbfb"
+      },
+      {
+        "path": "src/steganography/lsb/lsb-detector.service.spec.ts",
+        "sha256": "73e8b13e92fde06f08a15f87c8e3b1f012b74973b4347e24a6d178b64973dd80"
+      },
+      {
+        "path": "src/steganography/lsb/lsb-detector.service.ts",
+        "sha256": "f3baf36d732bd44d222cfcdc57b3fe49944724e2128ce8c4fceb9c95574a907e"
+      },
+      {
+        "path": "src/steganography/lsb/utils/chi-square.spec.ts",
+        "sha256": "62f6bafd3b56754e2e55a5ff09547e0ee06b5feeebe3fc8b2cb76bc566e843bb"
+      },
+      {
+        "path": "src/steganography/lsb/utils/chi-square.ts",
+        "sha256": "cbe057bcc417fb4403da954d909204f75c1ae770f01438eb5ed99108f2580b76"
+      },
+      {
+        "path": "src/steganography/lsb/utils/classify-lsb.ts",
+        "sha256": "1964d68bda7822e73cfd827aac6ef6d132a2cbb782aef2b045c54865072f0158"
+      },
+      {
+        "path": "src/steganography/lsb/utils/detect-lsb.spec.ts",
+        "sha256": "5daca4cf708b5bb9cccf07ef8d8a9ff3170d1f71f4a1b91c0162a31033a4f54a"
+      },
+      {
+        "path": "src/steganography/lsb/utils/detect-lsb.ts",
+        "sha256": "6dd63da4df1551deba1f84bf79d2d539b1e607f99898aa4d1965bc416d67d293"
+      },
+      {
+        "path": "src/steganography/lsb/utils/pair-statistics.spec.ts",
+        "sha256": "a61fb0c736f418ca711b7a18268559a324f2f0e9270da368edd931082b2448fe"
+      },
+      {
+        "path": "src/steganography/lsb/utils/pair-statistics.ts",
+        "sha256": "b4c5a56b3bb796e1ca73b609c8f15e9a105bcc99fbf976a4675c2c5b3e6c0888"
+      },
+      {
+        "path": "src/steganography/lsb/utils/rgb-histogram.ts",
+        "sha256": "b77d69cb0d43514c003c8a6ad29988b4aa8185c4cf43ceed455518e05b8ee29c"
+      },
+      {
+        "path": "src/steganography/policy/config/policy-config.module.ts",
+        "sha256": "e016aaf3f3f7e078341a8a5f3e940e5140921118f3ec07f6a5ed2581b59ca77e"
+      },
+      {
+        "path": "src/steganography/policy/config/policy.config.ts",
+        "sha256": "bca4fde0ca070c419e82079b54c97a9a3c376faeb23346b0e4b8b2072adc1644"
+      },
+      {
+        "path": "src/steganography/policy/interfaces/applied-policy.ts",
+        "sha256": "2192ea9371c4db98f9c576cda3954b31cce7e2eaea392cac94650842d4f24337"
+      },
+      {
+        "path": "src/steganography/policy/policy.service.ts",
+        "sha256": "5e3c31671becd0bf86e9f3badc3a0003e0e6f5c2e1545edd0518443179efd273"
+      },
+      {
+        "path": "src/steganography/policy/utils/select-policy.spec.ts",
+        "sha256": "8850dec266ed116bd1fc09225d09c0cbca09ed5ddca4fb04ec51fb5b5b45d8ee"
+      },
+      {
+        "path": "src/steganography/policy/utils/select-policy.ts",
+        "sha256": "cc7c96bbaa8b505f3f7d301da6b30b629cdb74494d3acaf4c55c84406873beb9"
+      },
+      {
+        "path": "src/steganography/services/analysis-persistence.service.ts",
+        "sha256": "c49fed692452db755d12595b5b6589fb4b6b4b4bf17d84fc7540ca848d58ce1e"
+      },
+      {
+        "path": "src/steganography/services/analysis-results.service.ts",
+        "sha256": "70a7523431394da7a81fefa62c0a1398d6e05442b64b156fab86aa01ab916479"
+      },
+      {
+        "path": "src/steganography/services/image-decoder.service.spec.ts",
+        "sha256": "2b74fdbbac7ef8bb66afd36e8ee1867700c84d73fbb818e65250322eb4c61adc"
+      },
+      {
+        "path": "src/steganography/services/image-decoder.service.ts",
+        "sha256": "55674bceb47961f861fabc75f1f6471c536197e9cea7914f18f4ea4f7be9842e"
+      },
+      {
+        "path": "src/steganography/services/image-worker.service.ts",
+        "sha256": "035d715cdb7a79263c32bdc00825840929461a50da07c887dbfa4525d9bffa33"
+      },
+      {
+        "path": "src/steganography/services/upload-capacity.service.spec.ts",
+        "sha256": "c75964c94c80d303543a28dbad4a9b055f34cc7f2a1a6e3d19fea1817045fa85"
+      },
+      {
+        "path": "src/steganography/services/upload-capacity.service.ts",
+        "sha256": "3a839abdf9928ffb8948dfcc4329da0f938b2aeb49ceaf1bf07e54b68fb54503"
+      },
+      {
+        "path": "src/steganography/steganography.controller.ts",
+        "sha256": "5b3b57b324cc032f7e06ee354cfc17d2787505c03aa07992e78d719d75bb1583"
+      },
+      {
+        "path": "src/steganography/steganography.module.ts",
+        "sha256": "5ca25b1fdcadbfc9b344a6b44231e266cabdf1faed1471f4d5955796ab9e0335"
+      },
+      {
+        "path": "src/steganography/steganography.service.spec.ts",
+        "sha256": "167870d1fa9601c62b9972a617cc12fe0486539ecb30a8a18e67e833b161b52f"
+      },
+      {
+        "path": "src/steganography/steganography.service.ts",
+        "sha256": "5b0ecff819cb7461672ccfa8b93d3dd316664f434b89a015a015dc1f6d11678a"
+      },
+      {
+        "path": "src/steganography/utils/clear-upload.ts",
+        "sha256": "67aef5a7e6a1cf59f1681dee0b00519e0a1fbbd81c9b7d6e8a4df4c26d4a7985"
+      },
+      {
+        "path": "src/steganography/utils/crc32.ts",
+        "sha256": "07b55e629405be1fe1d5d53b94539b0b735196ea1b8e289b6215ffebb9c61620"
+      },
+      {
+        "path": "src/steganography/utils/decode-bmp.ts",
+        "sha256": "51458a261f25b0e7c1aade508a6ad2a8a9e085ed186ffd551998a9ad76d4176d"
+      },
+      {
+        "path": "src/steganography/utils/decode-image.spec.ts",
+        "sha256": "46ee96f4b291fe3f95d27a4d2d29ae30e1e082383b62ea83320a87494237ae18"
+      },
+      {
+        "path": "src/steganography/utils/decode-image.ts",
+        "sha256": "2d2ddeb960c4802c1523145d5a799405285dfb208bcffcdaf0f2340f49cbbc26"
+      },
+      {
+        "path": "src/steganography/utils/decode-png.ts",
+        "sha256": "4b932427b1c4122bafa975e320efcea10dad47e383730e1d385d84c644b5d8d2"
+      },
+      {
+        "path": "src/steganography/utils/image-dimensions.ts",
+        "sha256": "719ac3205686e12caac719b5356f65d09f685a2de5d9fb74dec29ccf13bae830"
+      },
+      {
+        "path": "src/steganography/utils/image-http-error.ts",
+        "sha256": "e837c57c65546c7b8e332508279512a319a1b78d2413b2c77be131bb5ad7fc31"
+      },
+      {
+        "path": "src/steganography/utils/image-signature.ts",
+        "sha256": "acba335335cbbf7a48e1fcb7178b9150b48302953076e5754c6481ae049e50a8"
+      },
+      {
+        "path": "src/steganography/utils/map-stored-analysis.ts",
+        "sha256": "3ed121918f02693da291813e564a0795c09eca64a45627bb47c629dafe091d4a"
+      },
+      {
+        "path": "src/steganography/utils/permit-pool.ts",
+        "sha256": "9f4bed3cc0a72108dd9013930c16e144bfd67888fbed2c3632a045593b6acca8"
+      },
+      {
+        "path": "src/steganography/utils/png-structure.ts",
+        "sha256": "881c4aac761c1c3f34400cb420e21a68b6a6c609daa7f5fb8452a2f1b14ccacf"
+      },
+      {
+        "path": "src/steganography/utils/upload-metadata.ts",
+        "sha256": "5319c02f272a361f73602e40b2afee0502b66019671e25d945aaaa8e01b07553"
+      },
+      {
+        "path": "src/steganography/utils/upload-options.ts",
+        "sha256": "2ef28921beeabe5a4547d6dd37fb97f8561c1aef81c74052c6dc3a0d94dd84cb"
+      },
+      {
+        "path": "src/steganography/utils/validate-upload.spec.ts",
+        "sha256": "5526154abadf433c55532fa524447df976e19a90d0e957f6a8e2015e6faef8fa"
+      },
+      {
+        "path": "src/steganography/utils/validate-upload.ts",
+        "sha256": "06ce8ebc101ec9e768fbf9f57a2cbc8bd2c7e94caabe52cb4d14b0cfd1ba2fda"
+      },
+      {
+        "path": "src/steganography/workers/image-decoder.worker.ts",
+        "sha256": "70d5824cbcdc873cea4ab0a6131851178624b79bd339065bdf79a31846c7a5dd"
+      },
+      {
+        "path": "src/storage/config/storage-config.module.ts",
+        "sha256": "a82d725bf1122a76c50f57844e53e5d0abca96954f7ee82452e6fa349294bdd4"
+      },
+      {
+        "path": "src/storage/config/storage.config.ts",
+        "sha256": "2d823e3b16e59e37a3a80d02a464ccf72d0fd33fbcebc8412bed17b7b0216754"
+      },
+      {
+        "path": "src/storage/quarantine-maintenance.service.ts",
+        "sha256": "c286d4ce92d89bd2a9aa48afe3a4e29e6f3f63902a6bab32bb35b013bc368257"
+      },
+      {
+        "path": "src/storage/quarantine-scheduler.ts",
+        "sha256": "db6e210885bc47f219cd7b9ef34ea944fee066185b4527ab950a443fc274cf26"
+      },
+      {
+        "path": "src/storage/quarantine.service.spec.ts",
+        "sha256": "92fa14beba75ef2a7ce15cee5d592da975615014e866c605dd2b1e603d2f23cb"
+      },
+      {
+        "path": "src/storage/quarantine.service.ts",
+        "sha256": "5b47a8edac3a8a7d8a6c41bf31791906db26fa675151168d7be8fd404e56b86c"
+      },
+      {
+        "path": "src/storage/storage.module.ts",
+        "sha256": "780959b0129d40635d142a984d9ad8491ff1779ff7325c03ec5cfa4000483376"
+      },
+      {
+        "path": "src/storage/utils/async-mutex.ts",
+        "sha256": "5b14fd166c4d80263356cf2cf69bbf69413b4435e0815f7290994e4524fb9295"
+      },
+      {
+        "path": "src/storage/utils/storage-key.ts",
+        "sha256": "238b89922aa2873707992e5db143a40520a5813203b119f37cc6865fc44487c4"
+      },
+      {
+        "path": "src/tools/cleanup-quarantine.ts",
+        "sha256": "f4ca33f406f05af8968512639308d89c56a5b5a51556d524e4c476528704c251"
+      },
+      {
+        "path": "src/tools/generate-samples.ts",
+        "sha256": "9e68999f3a3f8af81689322aebd3852c366be39be03f3f38c4ee81da8f604235"
+      },
+      {
+        "path": "src/tools/samples/deterministic-bytes.ts",
+        "sha256": "98a7775ff6acc3450f707717cb29ed4abfee3182f1d8b113ae86aec31d58f2cb"
+      },
+      {
+        "path": "src/tools/samples/encode-image.ts",
+        "sha256": "19cba06d2800c6d05bec5b22f590715366acd0426b0dc84449cef5f4a27f0a59"
+      },
+      {
+        "path": "src/tools/samples/payload.ts",
+        "sha256": "a143160a2fcb36470ebd8e3456354f251f5675faebe43b22ae5f666b87898cb1"
+      },
+      {
+        "path": "src/tools/samples/sample-evidence.ts",
+        "sha256": "084c8d8081520349d058a408687f6797189b8897478b381ee71843ccc29ac223"
+      },
+      {
+        "path": "src/tools/samples/sample-suite.spec.ts",
+        "sha256": "3802d1952a6e01929284094987aac23d661d8ff202a264e6f7e4d4bcb3bc0bad"
+      },
+      {
+        "path": "src/tools/samples/sample-suite.ts",
+        "sha256": "ed5e6e9de8477e74a7dabdb042ef7c752c4b32f45f22943d1546d0fb238213bf"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "T03",
+      "scenario": "Missing access token",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "absent"
+      },
+      "expected_http_status": 401,
+      "actual_http_status": 401,
+      "request_id": "d507fff1-9d16-406e-9c3b-2e6c78f7711c",
+      "response": {
+        "message": "A valid bearer token is required",
+        "error": "Unauthorized",
+        "statusCode": 401
+      }
+    },
+    {
+      "id": "T03",
+      "scenario": "Tampered signature",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "tampered_fixture_token"
+      },
+      "expected_http_status": 401,
+      "actual_http_status": 401,
+      "request_id": "f400b30a-4434-4aff-b34f-9d539a2b7a37",
+      "response": {
+        "message": "Invalid access token",
+        "error": "Unauthorized",
+        "statusCode": 401
+      }
+    },
+    {
+      "id": "T03",
+      "scenario": "Expired access token",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "expired_fixture_token"
+      },
+      "expected_http_status": 401,
+      "actual_http_status": 401,
+      "request_id": "0bc65a4c-8595-4095-9f88-3091fcae2c10",
+      "response": {
+        "message": "Invalid access token",
+        "error": "Unauthorized",
+        "statusCode": 401
+      }
+    },
+    {
+      "id": "T04",
+      "scenario": "AUTH fixture denies analysis permission; no real USER role is created",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 403,
+      "actual_http_status": 403,
+      "request_id": "7e2fec56-dcd3-4e81-be4b-edf838c7833a",
+      "response": {
+        "message": "Insufficient permissions",
+        "error": "Forbidden",
+        "statusCode": 403
+      }
+    },
+    {
+      "id": "T07",
+      "scenario": "Permission granted before simulated role removal",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "3a1bf525-cc80-49c6-92d4-ae61a1241259",
+      "response": {
+        "analysis_id": "bfee7ab6-b38b-476a-b0a9-c39392034ed4",
+        "upload_id": "bfee7ab6-b38b-476a-b0a9-c39392034ed4",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "bfee7ab6-b38b-476a-b0a9-c39392034ed4.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.274Z",
+        "created_at": "2026-11-03T14:46:18.275Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.274Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T07",
+      "scenario": "Same access token denied after AUTH fixture decision changes",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 403,
+      "actual_http_status": 403,
+      "request_id": "556a5a68-0469-45e3-9800-294b85194d28",
+      "response": {
+        "message": "Insufficient permissions",
+        "error": "Forbidden",
+        "statusCode": 403
+      }
+    },
+    {
+      "id": "AUTH_OUTAGE",
+      "scenario": "AUTH fixture unavailable; processing fails closed",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 503,
+      "actual_http_status": 503,
+      "request_id": "1ec774e3-3a00-4a68-893a-4cdda598682a",
+      "response": {
+        "message": "Authorization service is unavailable",
+        "error": "Service Unavailable",
+        "statusCode": 503
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: original.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "original.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "268e725a-0ecf-4ebc-aa15-1acc93cad8fa",
+      "response": {
+        "analysis_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+        "upload_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "992a2390-e66e-4ab2-a353-eb420c85c529.png",
+        "original_filename": "original.png",
+        "sha256": "1e0594117b76c4cdd2f3c8df51b6a14b3ff22a2ee7d1d36fa21594c254e887cf",
+        "format": "png",
+        "size_bytes": 56321,
+        "width": 128,
+        "height": 128,
+        "status": "sin_indicios",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.363Z",
+        "created_at": "2026-11-03T14:46:18.363Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "no_indicators_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: lsb-payload.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "lsb-payload.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "response": {
+        "analysis_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "upload_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "a44af2ae-1058-482a-982d-13898929e32f.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.409Z",
+        "created_at": "2026-11-03T14:46:18.409Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.409Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: original.bmp",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "original.bmp"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "848897d0-e8b2-4686-b2ec-98d2f30aefbf",
+      "response": {
+        "analysis_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+        "upload_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9.bmp",
+        "original_filename": "original.bmp",
+        "sha256": "588f0136dc33109f2a122f188095b1adecbab0545fc5504407a92b734c4bc1e9",
+        "format": "bmp",
+        "size_bytes": 49206,
+        "width": 128,
+        "height": 128,
+        "status": "sin_indicios",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.466Z",
+        "created_at": "2026-11-03T14:46:18.466Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "no_indicators_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: lsb-payload.bmp",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "lsb-payload.bmp"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "response": {
+        "analysis_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+        "upload_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "8e6a35b0-0954-42d3-8d66-9589d98410ab.bmp",
+        "original_filename": "lsb-payload.bmp",
+        "sha256": "d46c25765a499742903d058bf8b3f53776a7f40981e989c1a99e63ad005ed94e",
+        "format": "bmp",
+        "size_bytes": 49206,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.512Z",
+        "created_at": "2026-11-03T14:46:18.525Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.512Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: noise-control.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "noise-control.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "response": {
+        "analysis_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+        "upload_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78.png",
+        "original_filename": "noise-control.png",
+        "sha256": "c24009a2bed1deb97079046483941414f4e1b75d715ca29a7516ed389e9c05eb",
+        "format": "png",
+        "size_bytes": 56318,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 370.3497896009793,
+          "degrees_of_freedom": 384,
+          "p_value": 0.6823886449400454,
+          "anomaly_score": 0.6823886449400454,
+          "lsb_ratio": 0.5022176106770834,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 116.98785310226451,
+            "p_value": 0.7476337164270528,
+            "lsb_ratio": 0.50152587890625
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 142.9591359124243,
+            "p_value": 0.17306742521733132,
+            "lsb_ratio": 0.50665283203125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 110.40280058629047,
+            "p_value": 0.8670424145906076,
+            "lsb_ratio": 0.49847412109375
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.586Z",
+        "created_at": "2026-11-03T14:46:18.586Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.586Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: small.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "small.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "757806e3-1fdb-4d4f-81bc-4520af904a54",
+      "response": {
+        "analysis_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+        "upload_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df.png",
+        "original_filename": "small.png",
+        "sha256": "2bdaa6abd892f0a5ce16f2e09f43142f514219a654a6f601e2863fe9325cda6d",
+        "format": "png",
+        "size_bytes": 1009,
+        "width": 16,
+        "height": 16,
+        "status": "no_concluyente",
+        "technique": "lsb_chi_square_v1",
+        "reason": "insufficient_samples",
+        "indicators": {
+          "chi_square": null,
+          "degrees_of_freedom": 0,
+          "p_value": null,
+          "anomaly_score": null,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 256,
+          "sample_count": 768,
+          "coverage": 0
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.655Z",
+        "created_at": "2026-11-03T14:46:18.655Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "inconclusive_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: flat-control.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "flat-control.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "f17e1e23-a4d4-40c2-90ca-ed3b2ea4a07a",
+      "response": {
+        "analysis_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+        "upload_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "9b8d48d1-992c-4fc5-901c-14b8aaf83127.png",
+        "original_filename": "flat-control.png",
+        "sha256": "9dac5a62adfe95ecbdf0ff8a5da024f5467d816d9332affaa46f660c56337e1e",
+        "format": "png",
+        "size_bytes": 339,
+        "width": 128,
+        "height": 128,
+        "status": "no_concluyente",
+        "technique": "lsb_chi_square_v1",
+        "reason": "insufficient_pair_coverage",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 3,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.713Z",
+        "created_at": "2026-11-03T14:46:18.713Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "inconclusive_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "Committed sample: corrupt.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "corrupt.png"
+      },
+      "expected_http_status": 400,
+      "actual_http_status": 400,
+      "request_id": "9748698e-4a82-4612-997c-61ef58a98a92",
+      "response": {
+        "message": "The PNG chunk is truncated",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "Committed sample: false-extension.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "false-extension.png"
+      },
+      "expected_http_status": 415,
+      "actual_http_status": 415,
+      "request_id": "446365e4-0a76-440e-89e8-9693bfba4a40",
+      "response": {
+        "message": "The file signature is not PNG or BMP",
+        "error": "Unsupported Media Type",
+        "statusCode": 415
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "File exceeds the configured byte limit",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 413,
+      "actual_http_status": 413,
+      "request_id": "3d6aef7f-e52e-48fd-822b-23860d0939dc",
+      "response": {
+        "message": "The image exceeds the file size limit",
+        "error": "Payload Too Large",
+        "statusCode": 413
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "Multipart request has no file",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 400,
+      "actual_http_status": 400,
+      "request_id": "fd5a207f-1772-4f68-8ca6-785ebed09257",
+      "response": {
+        "message": "Too many fields",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    },
+    {
+      "id": "T11",
+      "scenario": "Owner retrieves the persisted analysis",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/steganography/results/a44af2ae-1058-482a-982d-13898929e32f",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "ee4001a1-51dc-482a-9941-fc29aebef555",
+      "response": {
+        "analysis_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "upload_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "a44af2ae-1058-482a-982d-13898929e32f.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "p_value": 0.7976862484646678,
+          "coverage": 1,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "chi_square": 360.7221027066094,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "anomaly_score": 0.7976862484646678,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "degrees_of_freedom": 384
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "p_value": 0.8876666206541045,
+            "coverage": 1,
+            "lsb_ratio": 0.50506591796875,
+            "chi_square": 108.9353778510575,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          },
+          {
+            "channel": "green",
+            "p_value": 0.5042825463152215,
+            "coverage": 1,
+            "lsb_ratio": 0.497314453125,
+            "chi_square": 127.16279390771724,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          },
+          {
+            "channel": "blue",
+            "p_value": 0.5679329777450197,
+            "coverage": 1,
+            "lsb_ratio": 0.5001220703125,
+            "chi_square": 124.62393094783467,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.409Z",
+        "created_at": "2026-11-03T14:46:18.409Z",
+        "detector_parameters": {
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_COVERAGE": 0.8,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05
+        },
+        "action": "cuarentena",
+        "policy": {
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "version": "stego_policy_v1",
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          },
+          "retention_seconds": 86400
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.409Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T11",
+      "scenario": "Own scope cannot read another subject analysis",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/steganography/results/a44af2ae-1058-482a-982d-13898929e32f",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 403,
+      "actual_http_status": 403,
+      "request_id": "590f15d3-268e-47a1-83ef-273935d45a0f",
+      "response": {
+        "message": "Access to this analysis is forbidden",
+        "error": "Forbidden",
+        "statusCode": 403
+      }
+    },
+    {
+      "id": "T11",
+      "scenario": "AUTH fixture grants ADMIN-style any scope",
+      "request": {
+        "method": "GET",
+        "path": "/api/v1/steganography/results/a44af2ae-1058-482a-982d-13898929e32f",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "88c5f81d-a704-4a54-a6cb-77560fc664fd",
+      "response": {
+        "analysis_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "upload_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "user_id": "b63524f9-8079-46d6-9ee1-276ed1796051",
+        "filename": "a44af2ae-1058-482a-982d-13898929e32f.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "p_value": 0.7976862484646678,
+          "coverage": 1,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "chi_square": 360.7221027066094,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "anomaly_score": 0.7976862484646678,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "degrees_of_freedom": 384
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "p_value": 0.8876666206541045,
+            "coverage": 1,
+            "lsb_ratio": 0.50506591796875,
+            "chi_square": 108.9353778510575,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          },
+          {
+            "channel": "green",
+            "p_value": 0.5042825463152215,
+            "coverage": 1,
+            "lsb_ratio": 0.497314453125,
+            "chi_square": 127.16279390771724,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          },
+          {
+            "channel": "blue",
+            "p_value": 0.5679329777450197,
+            "coverage": 1,
+            "lsb_ratio": 0.5001220703125,
+            "chi_square": 124.62393094783467,
+            "sample_count": 16384,
+            "eligible_pairs": 128
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.409Z",
+        "created_at": "2026-11-03T14:46:18.409Z",
+        "detector_parameters": {
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_COVERAGE": 0.8,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05
+        },
+        "action": "cuarentena",
+        "policy": {
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "version": "stego_policy_v1",
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          },
+          "retention_seconds": 86400
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.409Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T12",
+      "scenario": "Audit excludes token, headers, query strings and original filename",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "db6087e3-7c5e-4759-915d-2f3cb12541a4",
+      "response": {
+        "analysis_id": "9c022dca-f55d-4678-91c0-d0d243c1a1c5",
+        "upload_id": "9c022dca-f55d-4678-91c0-d0d243c1a1c5",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "9c022dca-f55d-4678-91c0-d0d243c1a1c5.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.836Z",
+        "created_at": "2026-11-03T14:46:18.838Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.836Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    }
+  ],
+  "assertions": {
+    "cases_passed": 22,
+    "audit_events": 48,
+    "correlated_http_events": 22,
+    "original_bytes_verified": 5,
+    "secrets_absent_from_audit": true
+  }
+}
