@@ -1,0 +1,10 @@
+packages:
+  - ms-stego
+  - ms-users-nestjs
+
+allowBuilds:
+  "@nestjs/core": false
+  "@scarf/scarf": false
+  argon2: true
+  esbuild: true
+  nx: true

@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "!{projectRoot}/dist/**/*",
+      "!{projectRoot}/coverage/**/*",
+      "!{projectRoot}/node_modules/**/*",
+      "!{projectRoot}/**/*.tsbuildinfo",
+      "!{projectRoot}/storage/**/*",
+      "!{projectRoot}/certs/**/*",
+      "!{projectRoot}/postman/files/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/pnpm-lock.yaml",
+      "{workspaceRoot}/pnpm-workspace.yaml",
+      "{workspaceRoot}/package.json",
+      {
+        "runtime": "node --version"
+      }
+    ]
+  },
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "{projectRoot}/dist",
+        "{projectRoot}/tsconfig.build.tsbuildinfo"
+      ]
+    },
+    "lint": {
+      "cache": true
+    },
+    "start:dev": {
+      "continuous": true
+    },
+    "start:debug": {
+      "continuous": true
+    },
+    "test:watch": {
+      "continuous": true
+    }
+  }
+}

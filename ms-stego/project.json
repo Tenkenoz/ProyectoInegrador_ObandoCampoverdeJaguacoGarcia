@@ -1,0 +1,8 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "name": "ms-stego",
+  "projectType": "application",
+  "tags": [
+    "type:service"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "proyecto-integrador",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@11.12.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "nx run-many -t build",
+    "lint": "nx run-many -t lint",
+    "test": "nx run-many -t test",
+    "dev": "nx run-many -t start:dev --parallel=2",
+    "graph": "nx graph",
+    "affected": "nx affected -t build lint test"
+  },
+  "devDependencies": {
+    "nx": "24.0.3"
+  }
+}
