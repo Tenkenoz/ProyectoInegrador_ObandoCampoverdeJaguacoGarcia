@@ -90,22 +90,22 @@ nest g interface auth/interfaces/authenticated-user
 ### Instalar dependencias
 __Ejecuta:__
 ```
-npm install @nestjs/passport passport
+pnpm add @nestjs/passport passport
 ```
 
 __JWT:__
 ```
-npm install @nestjs/jwt passport-jwt
+pnpm add @nestjs/jwt passport-jwt
 ```
 
 __Tipos:__
 ```
-npm install --save-dev @types/passport-jwt
+pnpm add -D @types/passport-jwt
 ```
 
 __Argon2:__
 ```
-npm install argon2
+pnpm add argon2
 ```
 
 Nest documenta oficialmente `@nestjs/jwt`, `passport-jwt` y `@nestjs/passport` para la autenticación bearer JWT.

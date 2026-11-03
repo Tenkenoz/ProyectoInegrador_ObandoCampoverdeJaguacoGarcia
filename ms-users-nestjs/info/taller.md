@@ -2239,11 +2239,11 @@ healthy
 ## Generar migración inicial
 Primero compilamos:
 ```
-npm run build
+pnpm build
 ```
 Luego:
 ```
-npx typeorm \
+pnpm exec typeorm \
 -d dist/database/data-source.js \
 migration:generate \
 src/database/migrations/InitialSchema
@@ -2251,18 +2251,18 @@ src/database/migrations/InitialSchema
 
 Volvemos a compilar:
 ```
-npm run build
+pnpm build
 ```
 Ejecutamos:
 ```
-npx typeorm \
+pnpm exec typeorm \
 -d dist/database/data-source.js \
 migration:run
 ```
 
 # Ejecutar User Service
 ```
-npm run start:dev
+pnpm start:dev
 ```
 
 Deberíamos obtener:

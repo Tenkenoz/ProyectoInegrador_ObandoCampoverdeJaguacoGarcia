@@ -3,6 +3,7 @@
 ## Requisitos
 
 - Node.js 22 o superior
+- pnpm 11.12.0
 - Docker y Docker Compose
 - Una copia de `.env` basada en `example.env.dist`
 
@@ -15,14 +16,14 @@ Ajuste `DB_PASSWORD` y `JWT_SECRET` en `.env` antes de continuar.
 ## Instalación
 
 ```bash
-npm install
+pnpm install --frozen-lockfile
 ```
 
 ## Base de datos
 
 ```bash
 docker compose up -d --wait
-npm run migration:run
+pnpm migration:run
 ```
 
 `migration:run` crea las tablas `users`, `roles` y `user_roles`. No hay seeder:
@@ -31,14 +32,14 @@ los datos se ingresan después mediante la API o directamente en PostgreSQL.
 ## Ejecutar la aplicación
 
 ```bash
-npm run start:dev
+pnpm start:dev
 ```
 
 Para producción:
 
 ```bash
-npm run build
-npm run start:prod
+pnpm build
+pnpm start:prod
 ```
 
 ## Acceso

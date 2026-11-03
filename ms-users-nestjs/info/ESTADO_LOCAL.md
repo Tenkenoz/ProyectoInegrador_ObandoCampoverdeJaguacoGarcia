@@ -13,15 +13,15 @@
 
 ## Arranque
 
-Desde la raíz del repositorio:
+Desde `ms-users-nestjs/`:
 
 ```bash
 docker compose up -d --wait
-npm run migration:run
-npm run start:dev
+pnpm migration:run
+pnpm start:dev
 ```
 
-Si se instala desde cero, primero ejecutar `npm ci`, crear `.env` desde
+Si se instala desde cero, primero ejecutar `ppnpm add --frozen-lockfile`, crear `.env` desde
 `example.env.dist` y establecer secretos propios.
 
 La API escucha únicamente en localhost. `Ctrl+C` detiene una ejecución en primer
@@ -30,11 +30,11 @@ plano; `docker compose stop` detiene esta base sin borrar su volumen.
 ## Comandos útiles
 
 ```bash
-npm run build
-npm run lint
-npm run migration:show
-npm run migration:check
-npm run start:dev
+pnpm build
+pnpm lint
+pnpm migration:show
+pnpm migration:check
+pnpm start:dev
 ```
 
 ## Migraciones
