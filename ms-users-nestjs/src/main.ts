@@ -27,7 +27,7 @@ import {
 
 import {
   AllExceptionsFilter,
-} from './common/filters/all-exceptions.filter.js';
+} from './common/filters/all-exceptions/all-exceptions.filter.js';
 
 import {
   AppModule,
