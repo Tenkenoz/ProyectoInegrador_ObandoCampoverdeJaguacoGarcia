@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import type { AuditEventInput } from './audit.types.js';
+import { ListAuditEventsQueryDto } from './dto/list-audit-events-query.dto.js';
 import { AuditEvent } from './entities/audit-event.entity.js';
 
 @Injectable()
@@ -37,5 +38,56 @@ export class AuditService {
         requestId: input.requestId ?? null,
       });
     }
+  }
+
+  async findAll(query: ListAuditEventsQueryDto) {
+    const { page, limit, eventType, actorId, subjectId, requestId, decision } =
+      query;
+
+    const where: FindOptionsWhere<AuditEvent> = {};
+
+    if (eventType) {
+      where.eventType = eventType;
+    }
+
+    if (actorId) {
+      where.actorId = actorId;
+    }
+
+    if (subjectId) {
+      where.subjectId = subjectId;
+    }
+
+    if (requestId) {
+      where.requestId = requestId;
+    }
+
+    if (decision) {
+      where.decision = decision;
+    }
+
+    const [data, total] = await this.auditRepository.findAndCount({
+      where,
+
+      skip: (page - 1) * limit,
+
+      take: limit,
+
+      order: {
+        occurredAt: 'DESC',
+      },
+    });
+
+    return {
+      data,
+
+      meta: {
+        page,
+        limit,
+        total,
+
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 }

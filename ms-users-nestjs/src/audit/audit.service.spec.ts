@@ -1,5 +1,6 @@
 import type { Repository } from 'typeorm';
 import { AuditService } from './audit.service.js';
+import type { ListAuditEventsQueryDto } from './dto/list-audit-events-query.dto.js';
 import { AuditEvent } from './entities/audit-event.entity.js';
 
 describe('AuditService', () => {
@@ -59,5 +60,44 @@ describe('AuditService', () => {
         decision: 'succeeded',
       }),
     ).resolves.toBeUndefined();
+  });
+
+  it('returns paginated audit events', async () => {
+    const event = {
+      eventType: 'auth.login.succeeded',
+      action: 'auth.login',
+    };
+    const findAndCount = vi.fn().mockResolvedValue([[event], 1]);
+    const repository = {
+      findAndCount,
+    } as unknown as Repository<AuditEvent>;
+    const service = new AuditService(repository);
+
+    await expect(
+      service.findAll({
+        page: 2,
+        limit: 10,
+        eventType: 'auth.login.succeeded',
+      } as ListAuditEventsQueryDto),
+    ).resolves.toEqual({
+      data: [event],
+      meta: {
+        page: 2,
+        limit: 10,
+        total: 1,
+        totalPages: 1,
+      },
+    });
+
+    expect(findAndCount).toHaveBeenCalledWith({
+      where: {
+        eventType: 'auth.login.succeeded',
+      },
+      skip: 10,
+      take: 10,
+      order: {
+        occurredAt: 'DESC',
+      },
+    });
   });
 });

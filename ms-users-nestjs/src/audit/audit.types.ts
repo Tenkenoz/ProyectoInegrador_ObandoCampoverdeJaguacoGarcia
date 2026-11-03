@@ -1,4 +1,11 @@
-export type AuditDecision = 'allowed' | 'denied' | 'succeeded' | 'failed';
+export const AUDIT_DECISIONS = [
+  'allowed',
+  'denied',
+  'succeeded',
+  'failed',
+] as const;
+
+export type AuditDecision = (typeof AUDIT_DECISIONS)[number];
 
 export interface AuditEventInput {
   eventType: string;
