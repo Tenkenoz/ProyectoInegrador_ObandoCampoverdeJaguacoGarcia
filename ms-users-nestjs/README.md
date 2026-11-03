@@ -158,6 +158,13 @@ ni secretos HMAC. Los eventos incluyen:
 
 Consulta de evidencia para T12:
 
+```http
+GET /api/v1/audit-events?page=1&limit=50
+Authorization: Bearer <JWT_ADMIN>
+```
+
+También se puede consultar directamente:
+
 ```sql
 SELECT
   occurred_at,
@@ -193,6 +200,7 @@ pnpm build
 pnpm lint
 pnpm test
 pnpm test:e2e
+pnpm openapi:check
 ```
 
 Las pruebas unitarias usan Vitest. Las pruebas e2e usan Vitest y Supertest.
