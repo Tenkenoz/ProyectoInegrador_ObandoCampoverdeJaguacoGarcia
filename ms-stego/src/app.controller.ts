@@ -4,8 +4,10 @@ import {
   ApiServiceUnavailableResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from './auth/decorators/public.decorator.js';
 import { AppService } from './app.service.js';
 
+@Public()
 @ApiTags('Health')
 @Controller('health')
 export class AppController {

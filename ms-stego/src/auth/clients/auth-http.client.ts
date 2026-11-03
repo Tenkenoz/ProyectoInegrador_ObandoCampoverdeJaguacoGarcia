@@ -1,4 +1,5 @@
 import { Inject, Injectable, type OnModuleDestroy } from '@nestjs/common';
+import { X509Certificate } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { Agent } from 'node:https';
 import { createSecureContext } from 'node:tls';
@@ -17,6 +18,7 @@ export class AuthHttpClient implements OnModuleDestroy {
     let ca: Buffer;
     try {
       ca = readFileSync(config.AUTH_CA_CERT_PATH);
+      new X509Certificate(ca);
       createSecureContext({ ca });
     } catch {
       throw new Error('Unable to load the AUTH CA certificate');
