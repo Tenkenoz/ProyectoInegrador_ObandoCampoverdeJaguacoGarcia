@@ -1,22 +1,30 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller.js';
+import { ServiceUnavailableException } from '@nestjs/common';
 import { AppService } from './app.service.js';
+import { DataSource } from 'typeorm';
 
-describe('AppController', () => {
-  let appController: AppController;
-
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
-
-    appController = app.get<AppController>(AppController);
+describe('Health', () => {
+  it('reports an available database', async () => {
+    const query = vi.fn().mockResolvedValue([{ '?column?': 1 }]);
+    const service = new AppService({ query } as unknown as DataSource);
+    await expect(service.health()).resolves.toEqual({
+      status: 'ok',
+      service: 'stego',
+      database: 'up',
+    });
+    expect(query).toHaveBeenCalledWith('SELECT 1');
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it('returns 503 without exposing database errors or credentials', async () => {
+    const query = vi.fn().mockRejectedValue(new Error('password=secret'));
+    const service = new AppService({ query } as unknown as DataSource);
+    try {
+      await service.health();
+      throw new Error('Expected health check to fail');
+    } catch (error) {
+      expect(error).toBeInstanceOf(ServiceUnavailableException);
+      const response = error as ServiceUnavailableException;
+      expect(response.getStatus()).toBe(503);
+      expect(JSON.stringify(response.getResponse())).not.toContain('secret');
+    }
   });
 });
