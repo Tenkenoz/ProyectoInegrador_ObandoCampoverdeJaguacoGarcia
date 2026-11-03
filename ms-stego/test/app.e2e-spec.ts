@@ -6,7 +6,7 @@ import { AppController } from '../src/app.controller.js';
 import { AppService } from '../src/app.service.js';
 import { setupApp } from '../src/setup-app.js';
 
-describe('Health (HTTP)', () => {
+describe('Health and OpenAPI (HTTP)', () => {
   let app: INestApplication;
   const query = vi.fn();
 
@@ -43,4 +43,12 @@ describe('Health (HTTP)', () => {
       .expect({ status: 'error', service: 'stego', database: 'down' });
   });
 
+  it('serves Swagger and the OpenAPI document', async () => {
+    await request(app.getHttpServer()).get('/docs').expect(200);
+    const result = await request(app.getHttpServer())
+      .get('/docs-json')
+      .expect(200);
+    expect(result.body.paths['/api/v1/health']).toBeDefined();
+    expect(result.body.info.title).toBe('STEGO API');
+  });
 });
