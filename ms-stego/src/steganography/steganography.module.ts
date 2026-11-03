@@ -7,6 +7,7 @@ import {
   type UploadConfiguration,
 } from './config/upload.config.js';
 import { UploadBoundaryInterceptor } from './interceptors/upload-boundary.interceptor.js';
+import { ImageWorkerService } from './services/image-worker.service.js';
 import { ImageDecoderService } from './services/image-decoder.service.js';
 import { UploadCapacityService } from './services/upload-capacity.service.js';
 import { SteganographyController } from './steganography.controller.js';
@@ -29,6 +30,7 @@ import { createUploadOptions } from './utils/upload-options.js';
       useValue: new URL('./workers/image-decoder.worker.js', import.meta.url),
     },
     ImageDecoderService,
+    ImageWorkerService,
     UploadCapacityService,
     UploadBoundaryInterceptor,
     SteganographyService,
