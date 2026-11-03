@@ -1,0 +1,778 @@
+{
+  "tipo": "evidencia_local_con_auth_de_pruebas",
+  "generado_en": "2026-11-03T14:46:18.890Z",
+  "huella_del_codigo": "f1120db008d986f55c51a04a6a0f1024c6dcb81d77b07c56fb451a487e6ef34e",
+  "casos": [
+    {
+      "id": "T09",
+      "scenario": "Committed sample: original.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "original.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "268e725a-0ecf-4ebc-aa15-1acc93cad8fa",
+      "response": {
+        "analysis_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+        "upload_id": "992a2390-e66e-4ab2-a353-eb420c85c529",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "992a2390-e66e-4ab2-a353-eb420c85c529.png",
+        "original_filename": "original.png",
+        "sha256": "1e0594117b76c4cdd2f3c8df51b6a14b3ff22a2ee7d1d36fa21594c254e887cf",
+        "format": "png",
+        "size_bytes": 56321,
+        "width": 128,
+        "height": 128,
+        "status": "sin_indicios",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.363Z",
+        "created_at": "2026-11-03T14:46:18.363Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "no_indicators_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: lsb-payload.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "lsb-payload.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "f1ddb012-388d-4654-950e-6deb0e516469",
+      "response": {
+        "analysis_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "upload_id": "a44af2ae-1058-482a-982d-13898929e32f",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "a44af2ae-1058-482a-982d-13898929e32f.png",
+        "original_filename": "lsb-payload.png",
+        "sha256": "8e0f1ce6db9a9ab5b28c7c435e24af6a4fa9b6a156747a369743baf075c69117",
+        "format": "png",
+        "size_bytes": 56324,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.409Z",
+        "created_at": "2026-11-03T14:46:18.409Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.409Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: original.bmp",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "original.bmp"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "848897d0-e8b2-4686-b2ec-98d2f30aefbf",
+      "response": {
+        "analysis_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+        "upload_id": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "9c35a7ba-28f1-476f-96aa-2e97c51f6df9.bmp",
+        "original_filename": "original.bmp",
+        "sha256": "588f0136dc33109f2a122f188095b1adecbab0545fc5504407a92b734c4bc1e9",
+        "format": "bmp",
+        "size_bytes": 49206,
+        "width": 128,
+        "height": 128,
+        "status": "sin_indicios",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_rejected",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 384,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.466Z",
+        "created_at": "2026-11-03T14:46:18.466Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "no_indicators_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: lsb-payload.bmp",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "lsb-payload.bmp"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "e8b2bcca-7b2a-41bf-b920-032cec250b7e",
+      "response": {
+        "analysis_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+        "upload_id": "8e6a35b0-0954-42d3-8d66-9589d98410ab",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "8e6a35b0-0954-42d3-8d66-9589d98410ab.bmp",
+        "original_filename": "lsb-payload.bmp",
+        "sha256": "d46c25765a499742903d058bf8b3f53776a7f40981e989c1a99e63ad005ed94e",
+        "format": "bmp",
+        "size_bytes": 49206,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 360.7221027066094,
+          "degrees_of_freedom": 384,
+          "p_value": 0.7976862484646678,
+          "anomaly_score": 0.7976862484646678,
+          "lsb_ratio": 0.5008341471354166,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 108.9353778510575,
+            "p_value": 0.8876666206541045,
+            "lsb_ratio": 0.50506591796875
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 127.16279390771724,
+            "p_value": 0.5042825463152215,
+            "lsb_ratio": 0.497314453125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 124.62393094783467,
+            "p_value": 0.5679329777450197,
+            "lsb_ratio": 0.5001220703125
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.512Z",
+        "created_at": "2026-11-03T14:46:18.525Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.512Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: noise-control.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "noise-control.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "c3972761-47e1-46cd-a6de-a49c18ddfe3b",
+      "response": {
+        "analysis_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+        "upload_id": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "96a9733d-ee4e-4028-bb06-c1a95e6a3d78.png",
+        "original_filename": "noise-control.png",
+        "sha256": "c24009a2bed1deb97079046483941414f4e1b75d715ca29a7516ed389e9c05eb",
+        "format": "png",
+        "size_bytes": 56318,
+        "width": 128,
+        "height": 128,
+        "status": "sospechoso",
+        "technique": "lsb_chi_square_v1",
+        "reason": "pair_balance_compatible",
+        "indicators": {
+          "chi_square": 370.3497896009793,
+          "degrees_of_freedom": 384,
+          "p_value": 0.6823886449400454,
+          "anomaly_score": 0.6823886449400454,
+          "lsb_ratio": 0.5022176106770834,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 116.98785310226451,
+            "p_value": 0.7476337164270528,
+            "lsb_ratio": 0.50152587890625
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 142.9591359124243,
+            "p_value": 0.17306742521733132,
+            "lsb_ratio": 0.50665283203125
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 128,
+            "coverage": 1,
+            "chi_square": 110.40280058629047,
+            "p_value": 0.8670424145906076,
+            "lsb_ratio": 0.49847412109375
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.586Z",
+        "created_at": "2026-11-03T14:46:18.586Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "cuarentena",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "cuarentena",
+          "reason": "suspicious_quarantine",
+          "retention_seconds": 86400,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "stored",
+          "expires_at": "2026-11-04T14:46:18.586Z",
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: small.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "small.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "757806e3-1fdb-4d4f-81bc-4520af904a54",
+      "response": {
+        "analysis_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+        "upload_id": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "d7f39a1d-989f-4d5a-9b41-e81c71aa36df.png",
+        "original_filename": "small.png",
+        "sha256": "2bdaa6abd892f0a5ce16f2e09f43142f514219a654a6f601e2863fe9325cda6d",
+        "format": "png",
+        "size_bytes": 1009,
+        "width": 16,
+        "height": 16,
+        "status": "no_concluyente",
+        "technique": "lsb_chi_square_v1",
+        "reason": "insufficient_samples",
+        "indicators": {
+          "chi_square": null,
+          "degrees_of_freedom": 0,
+          "p_value": null,
+          "anomaly_score": null,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 256,
+          "sample_count": 768,
+          "coverage": 0
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 256,
+            "eligible_pairs": 0,
+            "coverage": 0,
+            "chi_square": 0,
+            "p_value": null,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.655Z",
+        "created_at": "2026-11-03T14:46:18.655Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "inconclusive_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T09",
+      "scenario": "Committed sample: flat-control.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "flat-control.png"
+      },
+      "expected_http_status": 200,
+      "actual_http_status": 200,
+      "request_id": "f17e1e23-a4d4-40c2-90ca-ed3b2ea4a07a",
+      "response": {
+        "analysis_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+        "upload_id": "9b8d48d1-992c-4fc5-901c-14b8aaf83127",
+        "user_id": "3f8a5b9a-5d7d-47a1-bcd8-cd0f5e90ec78",
+        "filename": "9b8d48d1-992c-4fc5-901c-14b8aaf83127.png",
+        "original_filename": "flat-control.png",
+        "sha256": "9dac5a62adfe95ecbdf0ff8a5da024f5467d816d9332affaa46f660c56337e1e",
+        "format": "png",
+        "size_bytes": 339,
+        "width": 128,
+        "height": 128,
+        "status": "no_concluyente",
+        "technique": "lsb_chi_square_v1",
+        "reason": "insufficient_pair_coverage",
+        "indicators": {
+          "chi_square": 49152,
+          "degrees_of_freedom": 3,
+          "p_value": 0,
+          "anomaly_score": 0,
+          "lsb_ratio": 0,
+          "threshold": 0.05,
+          "clear_threshold": 0.001,
+          "balance_tolerance": 0.02,
+          "pixel_count": 16384,
+          "sample_count": 49152,
+          "coverage": 1
+        },
+        "channels": [
+          {
+            "channel": "red",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "green",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          },
+          {
+            "channel": "blue",
+            "sample_count": 16384,
+            "eligible_pairs": 1,
+            "coverage": 1,
+            "chi_square": 16384,
+            "p_value": 0,
+            "lsb_ratio": 0
+          }
+        ],
+        "limitations": [
+          "Statistical compatibility is an indication, not proof of hidden data.",
+          "Natural noise and image processing can produce false positives.",
+          "Partial, localized, single-channel, nonrandom or LSB-matching payloads may evade this test.",
+          "Pixel dependencies make chi-square probabilities approximate.",
+          "A sin_indicios result does not establish that an image is safe."
+        ],
+        "analyzed_at": "2026-11-03T14:46:18.713Z",
+        "created_at": "2026-11-03T14:46:18.713Z",
+        "detector_parameters": {
+          "LSB_SUSPICIOUS_THRESHOLD": 0.05,
+          "LSB_CLEAR_THRESHOLD": 0.001,
+          "LSB_BALANCE_TOLERANCE": 0.02,
+          "LSB_MIN_PIXELS": 4096,
+          "LSB_MIN_EXPECTED_COUNT": 5,
+          "LSB_MIN_PAIRS": 32,
+          "LSB_MIN_COVERAGE": 0.8
+        },
+        "action": "advertencia",
+        "policy": {
+          "version": "stego_policy_v1",
+          "action": "advertencia",
+          "reason": "inconclusive_warning",
+          "retention_seconds": null,
+          "settings": {
+            "suspicious_action": "cuarentena",
+            "inconclusive_action": "advertencia"
+          }
+        },
+        "quarantine": {
+          "state": "none",
+          "expires_at": null,
+          "deleted_at": null
+        },
+        "legacy": false
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "Committed sample: corrupt.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "corrupt.png"
+      },
+      "expected_http_status": 400,
+      "actual_http_status": 400,
+      "request_id": "9748698e-4a82-4612-997c-61ef58a98a92",
+      "response": {
+        "message": "The PNG chunk is truncated",
+        "error": "Bad Request",
+        "statusCode": 400
+      }
+    },
+    {
+      "id": "T10",
+      "scenario": "Committed sample: false-extension.png",
+      "request": {
+        "method": "POST",
+        "path": "/api/v1/steganography/analyze",
+        "credentials": "valid_fixture_token",
+        "sample": "false-extension.png"
+      },
+      "expected_http_status": 415,
+      "actual_http_status": 415,
+      "request_id": "446365e4-0a76-440e-89e8-9693bfba4a40",
+      "response": {
+        "message": "The file signature is not PNG or BMP",
+        "error": "Unsupported Media Type",
+        "statusCode": 415
+      }
+    }
+  ]
+}
