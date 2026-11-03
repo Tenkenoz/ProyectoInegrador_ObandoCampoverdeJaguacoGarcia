@@ -21,7 +21,7 @@ describe('Persistent analysis and audit transactions', () => {
     await fixture.database.query('TRUNCATE analyses, audit_events');
   });
   afterAll(async () => {
-    await fixture.dispose();
+    await fixture?.dispose();
   });
 
   const draft = (): AnalysisDraft => ({

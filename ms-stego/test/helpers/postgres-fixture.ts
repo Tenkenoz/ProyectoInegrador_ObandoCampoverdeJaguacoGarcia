@@ -47,7 +47,17 @@ export async function createPostgresFixture() {
       try {
         execFileSync(
           'docker',
-          ['exec', name, 'pg_isready', '-U', 'stego', '-d', 'stego'],
+          [
+            'exec',
+            name,
+            'pg_isready',
+            '-h',
+            '127.0.0.1',
+            '-U',
+            'stego',
+            '-d',
+            'stego',
+          ],
           { stdio: 'pipe' },
         );
         break;
@@ -65,18 +75,30 @@ export async function createPostgresFixture() {
     const port = Number(
       inspection[0]!.NetworkSettings.Ports['5432/tcp']![0]!.HostPort,
     );
-    database = new DataSource(
-      databaseOptions({
-        NODE_ENV: 'test',
-        PORT: 3002,
-        DB_HOST: '127.0.0.1',
-        DB_PORT: port,
-        DB_USERNAME: 'stego',
-        DB_PASSWORD: password,
-        DB_DATABASE: 'stego',
-      }),
-    );
-    await database.initialize();
+    for (let attempt = 0; attempt < 30; attempt++) {
+      database = new DataSource(
+        databaseOptions({
+          NODE_ENV: 'test',
+          PORT: 3002,
+          DB_HOST: '127.0.0.1',
+          DB_PORT: port,
+          DB_USERNAME: 'stego',
+          DB_PASSWORD: password,
+          DB_DATABASE: 'stego',
+        }),
+      );
+      try {
+        await database.initialize();
+        await database.query('SELECT 1');
+        break;
+      } catch (error) {
+        if (database.isInitialized) await database.destroy();
+        if (attempt === 29) throw error;
+        await setTimeout(200);
+      }
+    }
+    if (!database?.isInitialized)
+      throw new Error('The isolated database connection is unavailable');
     await database.runMigrations();
     const connected = database;
     return {
