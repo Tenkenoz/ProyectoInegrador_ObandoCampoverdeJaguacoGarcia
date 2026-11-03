@@ -25,7 +25,8 @@
     "migration:revert": "pnpm build && typeorm migration:revert -d dist/database/data-source.js",
     "migration:generate": "pnpm build && typeorm migration:generate -d dist/database/data-source.js",
     "samples:generate": "pnpm build && node dist/tools/generate-samples.js",
-    "test:integration": "pnpm build && vitest run --config ./vitest.config.integration.ts"
+    "test:integration": "pnpm build && vitest run --config ./vitest.config.integration.ts",
+    "quarantine:cleanup": "pnpm build && node dist/tools/cleanup-quarantine.js"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
