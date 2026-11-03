@@ -178,5 +178,5 @@ multipart processing.
 
 These tests do not prove integration with Jonathan's running AUTH implementation.
 Joint verification is pending until AUTH exposes the agreed HTTPS, JWKS, HMAC and
-authorization interfaces. The upload endpoint validates images, while LSB detection and persistent result
-endpoints remain pending.
+authorization interfaces. The upload endpoint now validates images and runs LSB analysis after authorization.
+Persistent result endpoints remain pending. See [LSB technique](TECNICA_LSB.md).

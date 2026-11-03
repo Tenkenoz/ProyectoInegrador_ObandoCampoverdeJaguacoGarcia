@@ -5,10 +5,10 @@
 `steganography.analyze` are required. Authentication and authorization complete
 before upload interceptors run.
 
-This stage validates the upload and returns `200` with `status: "validated"`.
-It does not run an LSB detector, classify the image, create an analysis record,
-store a file or put anything in quarantine. Those operations belong to the
-subsequent detection and persistence tasks.
+The endpoint now runs statistical LSB detection after validation and returns `200`
+with `sin_indicios`, `sospechoso`, `no_concluyente` or `error`. The complete method,
+metrics and limitations are documented in [LSB technique](TECNICA_LSB.md).
+Persistence, resource retrieval, quarantine and applied file policies remain pending.
 
 ## Request
 
@@ -92,11 +92,12 @@ A capacity limit applies before multipart reception. A separate limit bounds
 active decoder workers, including workers still finishing after cancellation.
 Capacity exhaustion returns `503`; no unbounded queue is maintained.
 
-Decoding runs in a worker thread with a deadline and JavaScript heap limits
+Decoding and LSB analysis run in a worker thread with a deadline and JavaScript
+heap limits
 (128 MiB old generation, 16 MiB young generation, 4 MiB stack). Input bytes and
 pixel dimensions bound buffer allocations independently of those heap settings.
 The worker is terminated and its permit released on success or failure.
-The configured decoding deadline covers worker startup and processing; exceeding
+The configured deadline covers worker startup, decoding and detection; exceeding
 it returns `413`.
 
 Deployment ingress should additionally enforce upload connection/request timeouts,
@@ -110,31 +111,21 @@ retained only as validated display metadata. The response includes an opaque
 UUID-based filename; it is not an existing file path or download URL.
 
 The upload interceptor clears the buffered original file and removes its request
-reference when processing succeeds or fails. Decoded pixels are cleared after
-validation metadata is produced. Multipart parsing errors also release upload
-capacity. Buffers that were never exposed by an aborted parser are left to its
+reference when processing succeeds or fails. Analysis requests clear decoded pixels
+in the worker after computing evidence. Multipart parsing errors also release
+upload capacity. Buffers that were never exposed by an aborted parser are left to its
 normal memory cleanup; this does not provide a forensic guarantee of memory erasure.
 
 ## Response
 
-```json
-{
-  "status": "validated",
-  "upload_id": "<UUID_UPLOAD>",
-  "user_id": "<UUID_USER>",
-  "filename": "<UUID_UPLOAD>.png",
-  "original_filename": "sample.png",
-  "sha256": "<SHA256_OF_ORIGINAL_BYTES>",
-  "format": "png",
-  "size_bytes": 1234,
-  "width": 640,
-  "height": 480
-}
-```
+Responses include `upload_id`, `user_id`, generated and original filenames,
+original-file SHA-256, format, size, dimensions, `analyzed_at`, technique,
+classification, indicators, channel evidence, reason and limitations. See
+[LSB technique](TECNICA_LSB.md) and Swagger for the complete response schema.
 
-The example values are illustrative. `upload_id` is transient and does not identify
-a persisted analysis or a resource that can be retrieved later. No detection
-metrics or `analysis_id` are returned at this stage.
+The former `status: "validated"` response has been replaced by actual analysis
+classifications. `upload_id` remains transient: no `analysis_id` or persisted
+resource is created in this stage.
 
 ## Error statuses
 
@@ -154,8 +145,8 @@ file contents or service secrets.
 
 The `steganography` module separates configuration, DTOs, controller, orchestration
 service, upload interceptor, capacity management, decoder provider, worker and pure
-validation/decoding utilities. No detection or persistence logic is implemented in
-the controller.
+validation/decoding utilities. Detection runs in separate LSB utilities and worker
+services. No detection calculations or persistence logic are implemented in the controller.
 
 ```bash
 pnpm lint
