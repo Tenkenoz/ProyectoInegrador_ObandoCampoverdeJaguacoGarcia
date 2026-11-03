@@ -26,7 +26,7 @@ export class Role {
     type: 'varchar',
     length: 50,
   })
-  rol!: string; //ADMIN - admin - Admin
+  rol!: string;
 
   @Column({
     type: 'boolean',

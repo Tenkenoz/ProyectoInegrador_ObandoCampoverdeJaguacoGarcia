@@ -15,8 +15,8 @@ export class RolesGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     /*
-     * Roles requeridos por
-     * Controller/endpoint.
+     * Roles required by the
+     * controller or endpoint.
      */
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,
@@ -24,9 +24,9 @@ export class RolesGuard implements CanActivate {
     );
 
     /*
-     * Si el endpoint no exige
-     * ningún rol específico,
-     * basta estar autenticado.
+     * If the endpoint does not require
+     * a specific role, authentication
+     * is enough.
      */
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
@@ -37,14 +37,14 @@ export class RolesGuard implements CanActivate {
     }>();
 
     /*
-     * request.user fue creado
-     * por JwtStrategy usando
-     * roles provenientes de BD.
+     * request.user is created by
+     * JwtStrategy using roles loaded
+     * from the database.
      */
     const user = request.user;
 
     if (!user) {
-      throw new ForbiddenException('Acceso no autorizado');
+      throw new ForbiddenException('Access denied');
     }
 
     const currentRoles = new Set(user.roles.map((role) => role.toUpperCase()));
@@ -54,7 +54,7 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!authorized) {
-      throw new ForbiddenException('No posee los roles requeridos');
+      throw new ForbiddenException('Missing required roles');
     }
 
     return true;

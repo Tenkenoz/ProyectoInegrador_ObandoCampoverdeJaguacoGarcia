@@ -35,11 +35,11 @@ export class UserRolesService {
     ]);
 
     if (!userExists) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     if (!roleExists) {
-      throw new NotFoundException('Rol no encontrado');
+      throw new NotFoundException('Role not found');
     }
 
     const relation = this.userRolesRepository.create(dto);
@@ -55,7 +55,7 @@ export class UserRolesService {
           }
         )?.code === '23505'
       ) {
-        throw new ConflictException('El usuario ya posee este rol');
+        throw new ConflictException('User already has this role');
       }
 
       throw error;
@@ -66,7 +66,7 @@ export class UserRolesService {
     const exists = await this.usersService.exists(userId);
 
     if (!exists) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     return this.userRolesRepository.find({
@@ -91,7 +91,7 @@ export class UserRolesService {
     });
 
     if (!result.affected) {
-      throw new NotFoundException('La asignación usuario-rol no existe');
+      throw new NotFoundException('User-role assignment does not exist');
     }
   }
 }

@@ -35,7 +35,7 @@ export const envSchema = z.object({
 
   JWT_SECRET: z
     .string()
-    .min(32, 'JWT_SECRET debe tener al menos 32 caracteres'),
+    .min(32, 'JWT_SECRET must have at least 32 characters'),
 
   JWT_EXPIRES_IN_SECONDS: z.coerce
     .number()

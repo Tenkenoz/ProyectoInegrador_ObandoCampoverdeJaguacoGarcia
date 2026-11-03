@@ -11,7 +11,7 @@ import {
 
 export class CreateRoleDto {
   @Transform(({ value }) =>
-    typeof value === 'string' ? value.trim().toUpperCase() : value, //Admin - ADMIN - admin
+    typeof value === 'string' ? value.trim().toUpperCase() : value,
   )
   @IsString()
   @MinLength(2)

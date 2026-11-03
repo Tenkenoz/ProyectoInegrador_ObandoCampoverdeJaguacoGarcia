@@ -9,14 +9,14 @@ import { User } from '../users/entities/user.entity.js';
 function required(key: string): string {
   const value = process.env[key];
   if (!value) {
-    throw new Error(`Variable requerida no definida: ${key}`);
+    throw new Error(`Required environment variable is not defined: ${key}`);
   }
   return value;
 }
 
 const port = Number(required('DB_PORT'));
 if (!Number.isInteger(port) || port < 1 || port > 65535) {
-  throw new Error('DB_PORT debe ser un puerto válido');
+  throw new Error('DB_PORT must be a valid port');
 }
 
 export default new DataSource({

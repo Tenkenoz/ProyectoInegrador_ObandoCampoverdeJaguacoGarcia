@@ -37,17 +37,17 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
     /*
-     * Solamente aceptamos
-     * access tokens.
+     * Only access tokens are
+     * accepted.
      */
     if (payload.typ !== 'access') {
-      throw new UnauthorizedException('Token inválido');
+      throw new UnauthorizedException('Invalid token');
     }
 
     /*
-     * Consultamos PostgreSQL.
+     * Query PostgreSQL.
      *
-     * Aquí obtenemos:
+     * The following relation is loaded:
      *
      * users
      *   ↓
@@ -58,26 +58,26 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const user = await this.usersService.findActiveWithRoles(payload.sub);
 
     if (!user) {
-      throw new UnauthorizedException('Usuario no autorizado');
+      throw new UnauthorizedException('User is not authorized');
     }
 
     /*
-     * Verificación de cierre de sesión.
+     * Session revocation check.
      *
-     * JWT viejo:
+     * Previous JWT:
      * tokenVersion = 0
      *
-     * PostgreSQL después del logout:
+     * PostgreSQL after logout:
      * tokenVersion = 1
      */
     if (payload.tokenVersion !== user.tokenVersion) {
-      throw new UnauthorizedException('La sesión ha expirado');
+      throw new UnauthorizedException('Session has expired');
     }
 
     /*
-     * Los roles NO salen del JWT.
+     * Roles are NOT read from the JWT.
      *
-     * Salen de:
+     * They are read from:
      *
      * user_roles
      *     ↓

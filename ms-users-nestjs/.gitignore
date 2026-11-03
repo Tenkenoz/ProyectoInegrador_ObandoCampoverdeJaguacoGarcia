@@ -45,6 +45,14 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
+# JWT and service secrets
+keys/
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+
 # temp directory
 .temp
 .tmp

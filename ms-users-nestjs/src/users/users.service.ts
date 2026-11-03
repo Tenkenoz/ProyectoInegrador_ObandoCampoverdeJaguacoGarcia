@@ -32,7 +32,6 @@ export class UsersService {
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
-    //0603977224
     const { password, ...data } = dto;
 
     const passwordHash = await argon2.hash(password, {
@@ -50,7 +49,7 @@ export class UsersService {
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw new ConflictException(
-          'Los datos del usuario entran en conflicto con un registro existente',
+          'User data conflicts with an existing record',
         );
       }
       throw error;
@@ -103,7 +102,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
@@ -122,7 +121,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -142,7 +141,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     const { password, ...data } = dto;
@@ -161,7 +160,7 @@ export class UsersService {
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw new ConflictException(
-          'Los datos del usuario entran en conflicto con un registro existente',
+          'User data conflicts with an existing record',
         );
       }
       throw error;
@@ -171,7 +170,7 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     const result = await this.usersRepository.softDelete(id);
     if (!result.affected) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
   }
 
@@ -183,11 +182,11 @@ export class UsersService {
         .createQueryBuilder('user')
 
         /*
-         * passwordHash tiene:
+         * passwordHash is configured with:
          *
          * select: false
          *
-         * por eso se solicita explícitamente.
+         * so it must be requested explicitly.
          */
         .addSelect('user.passwordHash')
 
@@ -268,7 +267,7 @@ export class UsersService {
     );
 
     if (!result.affected) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
   }
 }

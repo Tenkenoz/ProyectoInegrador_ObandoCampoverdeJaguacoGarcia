@@ -19,7 +19,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /*
-   * Ruta pública.
+   * Public route.
    */
   @Public()
   @Post('login')
@@ -38,9 +38,9 @@ export class AuthController {
   }
 
   /*
-   * Requiere JWT.
+   * Requires a valid JWT.
    *
-   * No requiere rol particular.
+   * No specific role is required.
    */
   @Get('me')
   me(

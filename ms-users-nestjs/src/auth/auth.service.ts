@@ -26,11 +26,11 @@ export class AuthService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     /*
-     * Hash ficticio para reducir
-     * diferencias temporales entre:
+     * Dummy hash used to reduce
+     * timing differences between:
      *
-     * usuario inexistente
-     * contraseña incorrecta.
+     * a missing user
+     * and an invalid password.
      */
     this.dummyHash = await argon2.hash(randomBytes(32).toString('hex'), {
       type: argon2.argon2id,
@@ -41,25 +41,25 @@ export class AuthService implements OnModuleInit {
     const user = await this.usersService.findForAuthentication(dto.identifier);
 
     /*
-     * Aunque no exista el usuario,
-     * ejecutamos argon2.verify()
-     * contra un hash ficticio.
+     * Even when the user does not exist,
+     * argon2.verify() is executed against
+     * a dummy hash.
      */
     const hash = user?.passwordHash ?? this.dummyHash;
 
     const validPassword = await argon2.verify(hash, dto.password);
 
     if (!user || !validPassword) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     /*
-     * IMPORTANTE:
+     * IMPORTANT:
      *
-     * El JWT solamente identifica
-     * al usuario.
+     * The JWT only identifies
+     * the user.
      *
-     * NO almacena roles.
+     * It does NOT store roles.
      */
     const payload: JwtPayload = {
       sub: user.id,
@@ -71,8 +71,8 @@ export class AuthService implements OnModuleInit {
     const accessToken = await this.jwtService.signAsync(payload);
 
     /*
-     * Los roles que retornamos al cliente
-     * también salen de PostgreSQL.
+     * The roles returned to the client
+     * also come from PostgreSQL.
      */
     const currentUser = await this.usersService.findActiveWithRoles(user.id);
 
