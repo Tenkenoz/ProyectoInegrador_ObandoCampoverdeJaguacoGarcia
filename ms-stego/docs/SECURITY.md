@@ -136,8 +136,8 @@ and denied decisions require `scope: null`. Decisions are never cached.
 For result operations, the handler must load the resource and call
 `assertResourceOwnership(request.authorizationGrant, result.userId)` before
 returning its contents. The guard validates the requested resource identifier;
-it cannot determine ownership without the persisted result. Production upload
-and result endpoints will be introduced in later tasks.
+it cannot determine ownership without the persisted result. The production upload endpoint now uses these guards before multipart parsing;
+see [Image uploads](UPLOADS.md). The result endpoint is pending.
 
 ## Failure behavior
 
@@ -178,4 +178,5 @@ multipart processing.
 
 These tests do not prove integration with Jonathan's running AUTH implementation.
 Joint verification is pending until AUTH exposes the agreed HTTPS, JWKS, HMAC and
-authorization interfaces. Real analysis and result endpoints are also pending.
+authorization interfaces. The upload endpoint validates images, while LSB detection and persistent result
+endpoints remain pending.

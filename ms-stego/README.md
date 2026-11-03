@@ -3,7 +3,8 @@
 Microservicio NestJS independiente, administrado con pnpm, con PostgreSQL propio.
 Esta etapa implementa configuración validada, conexión, migraciones, salud y Swagger.
 Authentication and authorization are implemented; see [Security](docs/SECURITY.md).
-Image uploads and LSB detection are pending.
+Authorized image upload validation is implemented; see [Image uploads](docs/UPLOADS.md).
+LSB detection and persistent analysis results are pending.
 
 ## Requisitos
 
@@ -102,6 +103,7 @@ ejecutan por separado antes de habilitar las operaciones de análisis.
 | Ruta | Uso |
 | --- | --- |
 | `GET /api/v1/health` | `200` si PostgreSQL responde; `503` si falla la consulta. |
+| `POST /api/v1/steganography/analyze` | Authorized multipart image validation; see [Image uploads](docs/UPLOADS.md). |
 | `/docs` | Interfaz Swagger. |
 | `/docs-json` | Documento OpenAPI JSON de las rutas implementadas. |
 
@@ -160,3 +162,6 @@ must be checked separately using an independent PostgreSQL instance.
 Security tests require OpenSSL and include an HTTPS AUTH fixture. See
 [Security verification](docs/SECURITY.md#verification-and-integration-limits) for
 the current coverage and pending joint integration.
+
+Upload limits, supported PNG/BMP encodings, worker behavior and the temporary
+`validated` response are described in [Image uploads](docs/UPLOADS.md).
