@@ -1,0 +1,29 @@
+{
+  "tipo": "verificacion_local_con_newman",
+  "sha256_coleccion": "6c72e7401c7a602408d879e9bf6db6a6628780fdf6f66de9cca80f566375bbb0",
+  "generado_en": "2026-11-03T23:47:22.812Z",
+  "alcance": "Colección exportada ejecutada contra STEGO real con PostgreSQL aislado y AUTH HTTPS de pruebas. No acredita roles reales ni capturas finales de Postman.",
+  "grupos": [
+    {
+      "group": "Casos automáticos; condiciones manuales omitidas",
+      "requests": 30,
+      "assertions": 129,
+      "failed": 0
+    },
+    {
+      "group": "Roles, propiedad y revocación simulados",
+      "requests": 6,
+      "assertions": 23,
+      "failed": 0
+    },
+    {
+      "group": "Indisponibilidad simulada y limpieza real",
+      "requests": 2,
+      "assertions": 6,
+      "failed": 0
+    }
+  ],
+  "solicitudes_verificadas": 38,
+  "aserciones_aprobadas": 158,
+  "fallos": 0
+}

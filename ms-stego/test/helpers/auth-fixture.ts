@@ -19,6 +19,7 @@ export async function createAuthFixture() {
       | 'mismatch'
       | 'timeout',
     scope: 'own' as 'own' | 'any',
+    subjectId: null as string | null,
     jwksUnavailable: false,
     jwksRequests: 0,
     authorizationRequests: 0,
@@ -104,7 +105,7 @@ export async function createAuthFixture() {
       const allowed = state.mode !== 'deny';
       res.end(
         JSON.stringify({
-          subject_id: signing.userId,
+          subject_id: state.subjectId ?? signing.userId,
           action: state.mode === 'mismatch' ? 'unknown.action' : input.action,
           resource_id: input.resource_id,
           allowed,
