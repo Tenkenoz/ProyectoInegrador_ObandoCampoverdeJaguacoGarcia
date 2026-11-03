@@ -137,7 +137,7 @@ For result operations, the handler must load the resource and call
 `assertResourceOwnership(request.authorizationGrant, result.userId)` before
 returning its contents. The guard validates the requested resource identifier;
 it cannot determine ownership without the persisted result. The production upload endpoint now uses these guards before multipart parsing;
-see [Image uploads](UPLOADS.md). The result endpoint is pending.
+see [Image uploads](UPLOADS.md). The protected result endpoint is implemented; see [Results and storage](RESULTS_STORAGE.md).
 
 ## Failure behavior
 
@@ -179,4 +179,5 @@ multipart processing.
 These tests do not prove integration with Jonathan's running AUTH implementation.
 Joint verification is pending until AUTH exposes the agreed HTTPS, JWKS, HMAC and
 authorization interfaces. The upload endpoint now validates images and runs LSB analysis after authorization.
-Persistent result endpoints remain pending. See [LSB technique](TECNICA_LSB.md).
+Persistent results now enforce current authorization and ownership with durable
+read auditing. See [Results and storage](RESULTS_STORAGE.md).

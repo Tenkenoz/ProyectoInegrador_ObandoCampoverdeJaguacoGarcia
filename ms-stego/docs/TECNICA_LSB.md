@@ -159,9 +159,10 @@ along with original-file SHA-256 and validated image metadata. Swagger documents
 the complete response.
 
 The earlier `status: "validated"` response has been replaced by the four analysis
-statuses. `upload_id` is still transient. Persistence, `analysis_id`, retrieval,
-quarantine and applied file policies belong to the next task and are not claimed
-by this implementation.
+statuses. Results now persist with `analysis_id`; `upload_id` is retained as an alias.
+Policy snapshots, protected retrieval, private quarantine and expiry are documented
+in [Results and storage](RESULTS_STORAGE.md). The detector and its limitations are
+independent of the configured content policy.
 
 ## Reproducible sample construction
 

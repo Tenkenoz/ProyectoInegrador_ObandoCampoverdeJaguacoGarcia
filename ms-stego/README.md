@@ -5,7 +5,8 @@ Esta etapa implementa configuración validada, conexión, migraciones, salud y S
 Authentication and authorization are implemented; see [Security](docs/SECURITY.md).
 Authorized image upload validation is implemented; see [Image uploads](docs/UPLOADS.md).
 Statistical LSB detection is implemented; see [LSB technique](docs/TECNICA_LSB.md).
-Persistence, retrieval and quarantine remain pending.
+Persistent results, applied policies, private quarantine and audit are implemented;
+see [Results and storage](docs/RESULTS_STORAGE.md).
 
 ## Requisitos
 
@@ -105,6 +106,7 @@ ejecutan por separado antes de habilitar las operaciones de análisis.
 | --- | --- |
 | `GET /api/v1/health` | `200` si PostgreSQL responde; `503` si falla la consulta. |
 | `POST /api/v1/steganography/analyze` | Authorized PNG/BMP validation and statistical LSB analysis; see [LSB technique](docs/TECNICA_LSB.md). |
+| `GET /api/v1/steganography/results/:id` | Persisted result with current authorization and ownership checks. |
 | `/docs` | Interfaz Swagger. |
 | `/docs-json` | Documento OpenAPI JSON de las rutas implementadas. |
 
@@ -131,11 +133,16 @@ docker run --rm --network stego-local --env-file .env \
   node node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js
 ```
 
-Luego inicie STEGO:
+Create the persistent quarantine volume and start STEGO:
+
+```bash
+docker volume create stego-quarantine
+```
 
 ```bash
 docker run -d --name stego --network stego-local --env-file .env \
   -e DB_HOST=stego-db -e DB_PORT=5432 \
+  --mount type=volume,src=stego-quarantine,dst=/app/storage/quarantine \
   --mount type=bind,src="$(pwd)/certs/auth-ca.pem",dst=/run/certs/auth-ca.pem,readonly \
   -p 127.0.0.1:3002:3002 ms-stego:local
 ```
@@ -167,3 +174,8 @@ the current coverage and pending joint integration.
 Upload limits and supported PNG/BMP encodings are described in [Image uploads](docs/UPLOADS.md).
 Detection, classifications and limitations are described in [LSB technique](docs/TECNICA_LSB.md).
 Run `pnpm samples:generate` to reproduce the committed [samples](samples/README.md).
+
+The retention migration also creates `audit_events` and preserves legacy rows.
+Run `pnpm test:integration` for isolated Docker/PostgreSQL tests and
+`pnpm quarantine:cleanup` for manual retention maintenance. Configuration, failure
+behavior and volume setup are documented in [Results and storage](docs/RESULTS_STORAGE.md).

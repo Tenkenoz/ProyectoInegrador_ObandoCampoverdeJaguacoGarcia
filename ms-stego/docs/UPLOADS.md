@@ -8,7 +8,8 @@ before upload interceptors run.
 The endpoint now runs statistical LSB detection after validation and returns `200`
 with `sin_indicios`, `sospechoso`, `no_concluyente` or `error`. The complete method,
 metrics and limitations are documented in [LSB technique](TECNICA_LSB.md).
-Persistence, resource retrieval, quarantine and applied file policies remain pending.
+Persistence, protected retrieval and private file policies are implemented; see
+[Results and storage](RESULTS_STORAGE.md).
 
 ## Request
 
@@ -106,7 +107,8 @@ not a client's network transmission time.
 
 ## Memory and names
 
-No temporary files or public directories are created. The client filename is
+Multipart reception creates no temporary files or public directories. The completed
+analysis may retain the original in private quarantine when selected by policy. The client filename is
 retained only as validated display metadata. The response includes an opaque
 UUID-based filename; it is not an existing file path or download URL.
 
@@ -124,8 +126,9 @@ classification, indicators, channel evidence, reason and limitations. See
 [LSB technique](TECNICA_LSB.md) and Swagger for the complete response schema.
 
 The former `status: "validated"` response has been replaced by actual analysis
-classifications. `upload_id` remains transient: no `analysis_id` or persisted
-resource is created in this stage.
+classifications. Results now have a persisted `analysis_id`, with `upload_id`
+retained as an alias. The response includes applied policy and quarantine lifecycle
+metadata; see [Results and storage](RESULTS_STORAGE.md).
 
 ## Error statuses
 
