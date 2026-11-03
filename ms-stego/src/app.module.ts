@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SteganographyModule } from './steganography/steganography.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
@@ -11,6 +12,7 @@ import { databaseOptions } from './database/database-options.js';
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate: validateEnvironment }),
     AuthModule,
+    SteganographyModule,
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService<Environment, true>) => ({
