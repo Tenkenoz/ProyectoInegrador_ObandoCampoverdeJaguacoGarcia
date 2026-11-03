@@ -17,6 +17,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import request from 'supertest';
+import { AuditService } from '../src/audit/audit.service.js';
 import { AuthorizationPolicyService } from '../src/authorization/authorization-policy.service.js';
 import { INTERNAL_AUTHORIZATION_PATH } from '../src/authorization/authorization.types.js';
 import { JwtKeyService } from '../src/auth/jwt-keys/jwt-key.service.js';
@@ -95,6 +96,7 @@ describe('Internal authorization endpoint', () => {
   let directory: string;
   let jwtService: JwtService;
   let findActiveWithRoles: ReturnType<typeof vi.fn>;
+  let recordAudit: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
     directory = mkdtempSync(join(tmpdir(), 'auth-internal-e2e-'));
@@ -164,6 +166,8 @@ describe('Internal authorization endpoint', () => {
       findActiveWithRoles,
     } as unknown as UsersService;
 
+    recordAudit = vi.fn().mockResolvedValue(undefined);
+
     const moduleReference = await Test.createTestingModule({
       controllers: [InternalAuthorizationController],
       providers: [
@@ -179,6 +183,12 @@ describe('Internal authorization endpoint', () => {
         {
           provide: UsersService,
           useValue: usersService,
+        },
+        {
+          provide: AuditService,
+          useValue: {
+            record: recordAudit,
+          },
         },
       ],
     })
@@ -212,6 +222,10 @@ describe('Internal authorization endpoint', () => {
     );
 
     await app.init();
+  });
+
+  beforeEach(() => {
+    recordAudit.mockClear();
   });
 
   afterAll(async () => {
@@ -267,6 +281,14 @@ describe('Internal authorization endpoint', () => {
     });
     expect(invalid.status).toBe(401);
     expect(tampered.status).toBe(401);
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'service_auth.failed',
+        action: 'service_authorization',
+        decision: 'failed',
+        reason: 'invalid_service_credentials',
+      }),
+    );
   });
 
   it('rejects expired timestamps and replayed nonces', async () => {
@@ -308,6 +330,15 @@ describe('Internal authorization endpoint', () => {
       scope: 'any',
       reason: 'active_role_grants_permission',
     });
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.allowed',
+        actorId: adminId,
+        subjectId: adminId,
+        action: 'steganography.analyze',
+        decision: 'allowed',
+      }),
+    );
   });
 
   it('returns an own-scope decision for ANALYST results', async () => {
@@ -348,6 +379,14 @@ describe('Internal authorization endpoint', () => {
       scope: null,
       reason: 'insufficient_permissions',
     });
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.denied',
+        actorId: userId,
+        subjectId: userId,
+        decision: 'denied',
+      }),
+    );
   });
 
   it('returns stable codes for inactive users and revoked sessions', async () => {
@@ -375,6 +414,18 @@ describe('Internal authorization endpoint', () => {
       code: 'session_revoked',
       message: 'Subject session is no longer valid',
     });
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.failed',
+        reason: 'subject_inactive',
+      }),
+    );
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.failed',
+        reason: 'session_revoked',
+      }),
+    );
   });
 
   it('rejects invalid subject tokens and invalid resource combinations', async () => {
@@ -413,5 +464,6 @@ describe('Internal authorization endpoint', () => {
     expect(invalidResource.body.code).toBe('invalid_authorization_request');
     expect(invalidAction.status).toBe(400);
     expect(invalidAction.body.code).toBe('invalid_authorization_request');
+    expect(JSON.stringify(recordAudit.mock.calls)).not.toContain('not-a-token');
   });
 });

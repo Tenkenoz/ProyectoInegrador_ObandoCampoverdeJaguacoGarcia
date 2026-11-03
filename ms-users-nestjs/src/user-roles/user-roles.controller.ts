@@ -10,10 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 
 import { Throttle } from '@nestjs/throttler';
+import { CurrentUser } from '../auth/decorators/current-user/current-user.decorator.js';
 import { Roles } from '../auth/decorators/roles/roles.decorator.js';
+import type { AuthenticatedUser } from '../auth/interfaces/authenticated-user/authenticated-user.interface.js';
+import type { RequestWithId } from '../common/interfaces/request-with-id.js';
 import { ROLE_ADMIN } from '../roles/role.constants.js';
 import { CreateUserRoleDto } from './dto/create-user-role.dto.js';
 import { ListUserRolesQueryDto } from './dto/list-user-roles-query.dto.js';
@@ -35,8 +39,17 @@ export class UserRolesController {
   create(
     @Body()
     dto: CreateUserRoleDto,
+
+    @CurrentUser()
+    actor: AuthenticatedUser,
+
+    @Req()
+    request: RequestWithId,
   ) {
-    return this.userRolesService.create(dto);
+    return this.userRolesService.create(dto, {
+      actorId: actor.userId,
+      requestId: request.requestId,
+    });
   }
 
   @Get()
@@ -75,8 +88,17 @@ export class UserRolesController {
 
     @Body()
     dto: UpdateUserRoleDto,
+
+    @CurrentUser()
+    actor: AuthenticatedUser,
+
+    @Req()
+    request: RequestWithId,
   ) {
-    return this.userRolesService.update(id, dto);
+    return this.userRolesService.update(id, dto, {
+      actorId: actor.userId,
+      requestId: request.requestId,
+    });
   }
 
   @Delete(':id')
@@ -90,8 +112,17 @@ export class UserRolesController {
       }),
     )
     id: string,
+
+    @CurrentUser()
+    actor: AuthenticatedUser,
+
+    @Req()
+    request: RequestWithId,
   ): Promise<void> {
-    await this.userRolesService.remove(id);
+    await this.userRolesService.remove(id, {
+      actorId: actor.userId,
+      requestId: request.requestId,
+    });
   }
 
   @Delete(':userId/:roleId')
@@ -113,7 +144,16 @@ export class UserRolesController {
       }),
     )
     roleId: string,
+
+    @CurrentUser()
+    actor: AuthenticatedUser,
+
+    @Req()
+    request: RequestWithId,
   ): Promise<void> {
-    await this.userRolesService.removeByUserAndRole(userId, roleId);
+    await this.userRolesService.removeByUserAndRole(userId, roleId, {
+      actorId: actor.userId,
+      requestId: request.requestId,
+    });
   }
 }

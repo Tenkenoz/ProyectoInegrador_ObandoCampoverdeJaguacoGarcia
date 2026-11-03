@@ -1,8 +1,11 @@
 import { ConflictException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { AuditService } from '../src/audit/audit.service.js';
+import { AuditEvent } from '../src/audit/entities/audit-event.entity.js';
 import { PasswordHasher } from '../src/common/security/password-hasher.service.js';
 import { InitialSchema1793275030653 } from '../src/database/migrations/1793275030653-InitialSchema.js';
 import { Phase2IdentityModel1793836800000 } from '../src/database/migrations/1793836800000-Phase2IdentityModel.js';
+import { Phase5Audit1793923200000 } from '../src/database/migrations/1793923200000-Phase5Audit.js';
 import { Role } from '../src/roles/entities/role.entity.js';
 import { RolesService } from '../src/roles/roles.service.js';
 import type { ListUserRolesQueryDto } from '../src/user-roles/dto/list-user-roles-query.dto.js';
@@ -32,10 +35,11 @@ describeDatabase('User roles persistence', () => {
       username: process.env.DB_USERNAME ?? 'user_app',
       password: process.env.DB_PASSWORD ?? '',
       database: process.env.DB_DATABASE ?? 'auth_test',
-      entities: [User, Role, UserRole],
+      entities: [User, Role, UserRole, AuditEvent],
       migrations: [
         InitialSchema1793275030653,
         Phase2IdentityModel1793836800000,
+        Phase5Audit1793923200000,
       ],
       synchronize: false,
       logging: false,
@@ -56,11 +60,14 @@ describeDatabase('User roles persistence', () => {
       userRoleRepository,
       usersService,
       rolesService,
+      new AuditService(dataSource.getRepository(AuditEvent)),
     );
   });
 
   beforeEach(async () => {
-    await dataSource.query('TRUNCATE TABLE "user_roles", "users" CASCADE');
+    await dataSource.query(
+      'TRUNCATE TABLE "user_roles", "users", "audit_events" CASCADE',
+    );
 
     const roleRepository = dataSource.getRepository(Role);
     adminRole = await roleRepository.findOneByOrFail({ rol: 'ADMIN' });
@@ -117,6 +124,12 @@ describeDatabase('User roles persistence', () => {
       'ANALYST',
     ]);
     expect(adminAssignments).toHaveLength(2);
+
+    const auditEvents = await dataSource.getRepository(AuditEvent).find();
+    expect(
+      auditEvents.filter((event) => event.eventType === 'user_role.assigned'),
+    ).toHaveLength(3);
+    expect(JSON.stringify(auditEvents)).not.toContain('ValidPassword123!');
   });
 
   it('rejects a duplicate active assignment without creating a second row', async () => {
@@ -140,6 +153,18 @@ describeDatabase('User roles persistence', () => {
         },
       }),
     ).resolves.toBe(1);
+
+    const deniedEvents = await dataSource.getRepository(AuditEvent).find({
+      where: {
+        eventType: 'user_role.assignment_denied',
+      },
+    });
+    expect(deniedEvents).toHaveLength(1);
+    expect(deniedEvents[0]).toMatchObject({
+      subjectId: userA.id,
+      decision: 'denied',
+      reason: 'already_active',
+    });
   });
 
   it('revokes and reactivates an assignment without creating a duplicate', async () => {
@@ -174,6 +199,58 @@ describeDatabase('User roles persistence', () => {
         },
       }),
     ).resolves.toBe(1);
+
+    const auditEvents = await dataSource.getRepository(AuditEvent).find();
+    expect(auditEvents.map((event) => event.eventType)).toEqual(
+      expect.arrayContaining(['user_role.revoked', 'user_role.reactivated']),
+    );
+  });
+
+  it('stores redacted audit records without credentials', async () => {
+    const assignment = await userRolesService.create(
+      {
+        userId: userA.id,
+        roleId: adminRole.id,
+      },
+      {
+        actorId: userA.id,
+        requestId: 'request-assign',
+      },
+    );
+
+    await userRolesService.remove(assignment.id, {
+      actorId: userB.id,
+      requestId: 'request-revoke',
+    });
+
+    const events = await dataSource.getRepository(AuditEvent).find({
+      order: {
+        occurredAt: 'ASC',
+      },
+    });
+
+    expect(events[0]).toMatchObject({
+      eventType: 'user_role.assigned',
+      actorId: userA.id,
+      subjectId: userA.id,
+      action: 'user_role.assign',
+      resourceId: assignment.id,
+      decision: 'succeeded',
+      requestId: 'request-assign',
+    });
+    expect(events[1]).toMatchObject({
+      eventType: 'user_role.revoked',
+      actorId: userB.id,
+      subjectId: userA.id,
+      action: 'user_role.revoke',
+      resourceId: assignment.id,
+      decision: 'succeeded',
+      requestId: 'request-revoke',
+    });
+
+    const serializedEvents = JSON.stringify(events);
+    expect(serializedEvents).not.toContain('ValidPassword123!');
+    expect(serializedEvents).not.toContain('eyJ');
   });
 
   it('filters and paginates assignments', async () => {

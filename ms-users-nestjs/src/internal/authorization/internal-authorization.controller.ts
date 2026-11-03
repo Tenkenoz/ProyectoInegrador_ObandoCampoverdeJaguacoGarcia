@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   UseFilters,
   UseGuards,
   VERSION_NEUTRAL,
@@ -11,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Public } from '../../auth/decorators/public/public.decorator.js';
+import type { RequestWithId } from '../../common/interfaces/request-with-id.js';
 import { ServiceHmacGuard } from '../service-auth/service-hmac.guard.js';
 import { AuthorizationCheckDto } from './dto/authorization-check.dto.js';
 import { InternalAuthorizationExceptionFilter } from './internal-authorization-exception.filter.js';
@@ -32,7 +34,10 @@ export class InternalAuthorizationController {
   check(
     @Body()
     dto: AuthorizationCheckDto,
+
+    @Req()
+    request: RequestWithId,
   ) {
-    return this.internalAuthorizationService.check(dto);
+    return this.internalAuthorizationService.check(dto, request.requestId);
   }
 }

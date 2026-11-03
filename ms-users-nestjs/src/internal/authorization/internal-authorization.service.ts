@@ -5,8 +5,10 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AuditService } from '../../audit/audit.service.js';
 import { AuthorizationPolicyService } from '../../authorization/authorization-policy.service.js';
 import type { AuthorizationCheckResponse } from '../../authorization/authorization.types.js';
+import { getExceptionCode } from '../../common/http/exception-code.js';
 import { UsersService } from '../../users/users.service.js';
 import { AccessTokenVerifierService } from './access-token-verifier.service.js';
 import { AuthorizationCheckDto } from './dto/authorization-check.dto.js';
@@ -19,12 +21,20 @@ export class InternalAuthorizationService {
     private readonly authorizationPolicy: AuthorizationPolicyService,
 
     private readonly accessTokenVerifier: AccessTokenVerifierService,
+
+    private readonly auditService: AuditService,
   ) {}
 
-  async check(dto: AuthorizationCheckDto): Promise<AuthorizationCheckResponse> {
+  async check(
+    dto: AuthorizationCheckDto,
+    requestId?: string,
+  ): Promise<AuthorizationCheckResponse> {
+    let subjectId: string | null = null;
+
     try {
       const resourceId = this.validateResource(dto);
       const payload = await this.accessTokenVerifier.verify(dto.subject_token);
+      subjectId = payload.sub;
       const user = await this.usersService.findActiveWithRoles(payload.sub);
 
       if (!user) {
@@ -54,6 +64,19 @@ export class InternalAuthorizationService {
 
       const decision = this.authorizationPolicy.evaluate(roles, dto.action);
 
+      await this.auditService.record({
+        eventType: decision.allowed
+          ? 'authorization.allowed'
+          : 'authorization.denied',
+        actorId: user.id,
+        subjectId: user.id,
+        action: dto.action,
+        resourceId,
+        decision: decision.allowed ? 'allowed' : 'denied',
+        reason: decision.reason,
+        requestId: requestId ?? null,
+      });
+
       return {
         subject_id: user.id,
         action: dto.action,
@@ -63,6 +86,17 @@ export class InternalAuthorizationService {
         reason: decision.reason,
       };
     } catch (error) {
+      await this.auditService.record({
+        eventType: 'authorization.failed',
+        actorId: subjectId,
+        subjectId,
+        action: dto.action,
+        resourceId: dto.resource_id ?? null,
+        decision: 'failed',
+        reason: getExceptionCode(error, 'authorization_unavailable'),
+        requestId: requestId ?? null,
+      });
+
       if (error instanceof HttpException) {
         throw error;
       }

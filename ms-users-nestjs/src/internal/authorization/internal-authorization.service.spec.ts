@@ -3,6 +3,7 @@ import {
   ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AuditService } from '../../audit/audit.service.js';
 import { AuthorizationPolicyService } from '../../authorization/authorization-policy.service.js';
 import type { JwtPayload } from '../../auth/interfaces/jwt-payload/jwt-payload.interface.js';
 import { UsersService } from '../../users/users.service.js';
@@ -52,12 +53,14 @@ describe('InternalAuthorizationService', () => {
   let service: InternalAuthorizationService;
   let verifyToken: ReturnType<typeof vi.fn>;
   let findActiveWithRoles: ReturnType<typeof vi.fn>;
+  let recordAudit: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     const authorizationPolicy = new AuthorizationPolicyService();
 
     verifyToken = vi.fn().mockResolvedValue(payload());
     findActiveWithRoles = vi.fn().mockResolvedValue(activeUser(['ADMIN']));
+    recordAudit = vi.fn().mockResolvedValue(undefined);
 
     const verifier = {
       verify: verifyToken,
@@ -67,10 +70,15 @@ describe('InternalAuthorizationService', () => {
       findActiveWithRoles,
     } as unknown as UsersService;
 
+    const auditService = {
+      record: recordAudit,
+    } as unknown as AuditService;
+
     service = new InternalAuthorizationService(
       usersService,
       authorizationPolicy,
       verifier,
+      auditService,
     );
   });
 
@@ -89,6 +97,16 @@ describe('InternalAuthorizationService', () => {
       scope: 'any',
       reason: 'active_role_grants_permission',
     });
+
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.allowed',
+        actorId: userId,
+        subjectId: userId,
+        action: 'steganography.analyze',
+        decision: 'allowed',
+      }),
+    );
   });
 
   it('allows ANALYST to read their own results', async () => {
@@ -124,6 +142,15 @@ describe('InternalAuthorizationService', () => {
       scope: null,
       reason: 'insufficient_permissions',
     });
+
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.denied',
+        actorId: userId,
+        subjectId: userId,
+        decision: 'denied',
+      }),
+    );
   });
 
   it('rejects inactive users, revoked sessions and invalid tokens', async () => {
@@ -136,6 +163,13 @@ describe('InternalAuthorizationService', () => {
         resource_id: null,
       }),
       'subject_inactive',
+    );
+
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'authorization.failed',
+        reason: 'subject_inactive',
+      }),
     );
 
     findActiveWithRoles.mockResolvedValueOnce(

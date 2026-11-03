@@ -9,6 +9,7 @@ import {
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { AuditService } from '../audit/audit.service.js';
 import { PasswordHasher } from '../common/security/password-hasher.service.js';
 import type { UsersService } from '../users/users.service.js';
 import { AuthService } from './auth.service.js';
@@ -24,6 +25,7 @@ describe('AuthService', () => {
   let authService: AuthService;
   let usersService: UsersService;
   let incrementTokenVersion: ReturnType<typeof vi.fn>;
+  let recordAudit: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
     directory = mkdtempSync(join(tmpdir(), 'auth-service-jwt-'));
@@ -91,6 +93,11 @@ describe('AuthService', () => {
     };
 
     incrementTokenVersion = vi.fn();
+    recordAudit = vi.fn().mockResolvedValue(undefined);
+
+    const auditService = {
+      record: recordAudit,
+    } as unknown as AuditService;
 
     usersService = {
       findForAuthentication: vi.fn().mockResolvedValue(user),
@@ -114,8 +121,13 @@ describe('AuthService', () => {
       jwtService,
       configService,
       passwordHasher,
+      auditService,
     );
     await authService.onModuleInit();
+  });
+
+  beforeEach(() => {
+    recordAudit.mockClear();
   });
 
   afterAll(() => {
@@ -175,6 +187,15 @@ describe('AuthService', () => {
         roles: ['ADMIN'],
       },
     });
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'auth.login.succeeded',
+        actorId: userId,
+        subjectId: userId,
+        action: 'auth.login',
+        decision: 'succeeded',
+      }),
+    );
   });
 
   it('returns the authenticated profile with current roles', async () => {
@@ -192,18 +213,41 @@ describe('AuthService', () => {
     });
   });
 
-  it('rejects an invalid password', async () => {
+  it('rejects an invalid password and audits the failure', async () => {
     await expect(
       authService.login({
         identifier: 'admin',
         password: 'WrongPassword123!',
       }),
     ).rejects.toBeInstanceOf(UnauthorizedException);
+
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'auth.login.failed',
+        subjectId: userId,
+        action: 'auth.login',
+        decision: 'failed',
+        reason: 'invalid_credentials',
+      }),
+    );
+    expect(JSON.stringify(recordAudit.mock.calls)).not.toContain(
+      'WrongPassword123!',
+    );
   });
 
-  it('increments tokenVersion on logout', async () => {
-    await authService.logout(userId);
+  it('increments tokenVersion and audits logout', async () => {
+    await authService.logout(userId, 'request-1');
 
     expect(incrementTokenVersion).toHaveBeenCalledWith(userId);
+    expect(recordAudit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: 'auth.logout',
+        actorId: userId,
+        subjectId: userId,
+        action: 'auth.logout',
+        decision: 'succeeded',
+        requestId: 'request-1',
+      }),
+    );
   });
 });

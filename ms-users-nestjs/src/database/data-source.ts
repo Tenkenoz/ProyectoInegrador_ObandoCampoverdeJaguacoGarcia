@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import 'dotenv/config';
 import { fileURLToPath } from 'node:url';
 import { DataSource } from 'typeorm';
+import { AuditEvent } from '../audit/entities/audit-event.entity.js';
 import { Role } from '../roles/entities/role.entity.js';
 import { UserRole } from '../user-roles/entities/user-role.entity.js';
 import { User } from '../users/entities/user.entity.js';
@@ -26,7 +27,7 @@ export default new DataSource({
   username: required('DB_USERNAME'),
   password: required('DB_PASSWORD'),
   database: required('DB_DATABASE'),
-  entities: [User, Role, UserRole],
+  entities: [User, Role, UserRole, AuditEvent],
   migrations: [fileURLToPath(new URL('./migrations/*.js', import.meta.url))],
   synchronize: false,
   migrationsRun: false,

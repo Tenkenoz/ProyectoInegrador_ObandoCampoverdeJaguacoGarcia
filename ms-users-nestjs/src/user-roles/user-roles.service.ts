@@ -3,21 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { FindOptionsWhere, QueryFailedError, Repository } from 'typeorm';
-
+import { AuditService } from '../audit/audit.service.js';
+import type { AuditContext } from '../audit/audit.types.js';
 import { RolesService } from '../roles/roles.service.js';
-
 import { UsersService } from '../users/users.service.js';
-
 import { CreateUserRoleDto } from './dto/create-user-role.dto.js';
-
 import { ListUserRolesQueryDto } from './dto/list-user-roles-query.dto.js';
-
 import { UpdateUserRoleDto } from './dto/update-user-role.dto.js';
-
 import { UserRole } from './entities/user-role.entity.js';
 
 function isUniqueViolation(error: unknown): boolean {
@@ -40,12 +34,13 @@ export class UserRolesService {
     private readonly usersService: UsersService,
 
     private readonly rolesService: RolesService,
+
+    private readonly auditService: AuditService,
   ) {}
 
-  async create(dto: CreateUserRoleDto) {
+  async create(dto: CreateUserRoleDto, context: AuditContext = {}) {
     const [userExists, roleExists] = await Promise.all([
       this.usersService.exists(dto.userId),
-
       this.rolesService.exists(dto.roleId),
     ]);
 
@@ -70,12 +65,36 @@ export class UserRolesService {
 
     if (existing) {
       if (existing.estado) {
+        await this.auditService.record({
+          eventType: 'user_role.assignment_denied',
+          actorId: context.actorId ?? null,
+          subjectId: dto.userId,
+          action: 'user_role.assign',
+          resourceId: null,
+          decision: 'denied',
+          reason: 'already_active',
+          requestId: context.requestId ?? null,
+        });
+
         throw new ConflictException('User already has this role');
       }
 
       existing.estado = true;
 
-      return this.userRolesRepository.save(existing);
+      const reactivated = await this.userRolesRepository.save(existing);
+
+      await this.auditService.record({
+        eventType: 'user_role.reactivated',
+        actorId: context.actorId ?? null,
+        subjectId: reactivated.userId,
+        action: 'user_role.assign',
+        resourceId: reactivated.id,
+        decision: 'succeeded',
+        reason: 'reactivated',
+        requestId: context.requestId ?? null,
+      });
+
+      return reactivated;
     }
 
     const relation = this.userRolesRepository.create({
@@ -85,9 +104,33 @@ export class UserRolesService {
     });
 
     try {
-      return await this.userRolesRepository.save(relation);
+      const saved = await this.userRolesRepository.save(relation);
+
+      await this.auditService.record({
+        eventType: 'user_role.assigned',
+        actorId: context.actorId ?? null,
+        subjectId: saved.userId,
+        action: 'user_role.assign',
+        resourceId: saved.id,
+        decision: 'succeeded',
+        reason: 'active',
+        requestId: context.requestId ?? null,
+      });
+
+      return saved;
     } catch (error) {
       if (isUniqueViolation(error)) {
+        await this.auditService.record({
+          eventType: 'user_role.assignment_denied',
+          actorId: context.actorId ?? null,
+          subjectId: dto.userId,
+          action: 'user_role.assign',
+          resourceId: null,
+          decision: 'denied',
+          reason: 'already_active',
+          requestId: context.requestId ?? null,
+        });
+
         throw new ConflictException('User already has this role');
       }
 
@@ -183,17 +226,34 @@ export class UserRolesService {
     return relation;
   }
 
-  async update(id: string, dto: UpdateUserRoleDto): Promise<UserRole> {
+  async update(
+    id: string,
+    dto: UpdateUserRoleDto,
+    context: AuditContext = {},
+  ): Promise<UserRole> {
     const relation = await this.findOne(id);
 
     if (dto.estado !== undefined) {
       relation.estado = dto.estado;
     }
 
-    return this.userRolesRepository.save(relation);
+    const saved = await this.userRolesRepository.save(relation);
+
+    await this.auditService.record({
+      eventType: 'user_role.updated',
+      actorId: context.actorId ?? null,
+      subjectId: saved.userId,
+      action: 'user_role.update',
+      resourceId: saved.id,
+      decision: 'succeeded',
+      reason: saved.estado ? 'active' : 'inactive',
+      requestId: context.requestId ?? null,
+    });
+
+    return saved;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: string, context: AuditContext = {}): Promise<void> {
     const relation = await this.findOne(id);
 
     if (!relation.estado) {
@@ -202,10 +262,25 @@ export class UserRolesService {
 
     relation.estado = false;
 
-    await this.userRolesRepository.save(relation);
+    const saved = await this.userRolesRepository.save(relation);
+
+    await this.auditService.record({
+      eventType: 'user_role.revoked',
+      actorId: context.actorId ?? null,
+      subjectId: saved.userId,
+      action: 'user_role.revoke',
+      resourceId: saved.id,
+      decision: 'succeeded',
+      reason: 'inactive',
+      requestId: context.requestId ?? null,
+    });
   }
 
-  async removeByUserAndRole(userId: string, roleId: string): Promise<void> {
+  async removeByUserAndRole(
+    userId: string,
+    roleId: string,
+    context: AuditContext = {},
+  ): Promise<void> {
     const relation = await this.userRolesRepository.findOne({
       where: {
         userId,
@@ -223,6 +298,17 @@ export class UserRolesService {
 
     relation.estado = false;
 
-    await this.userRolesRepository.save(relation);
+    const saved = await this.userRolesRepository.save(relation);
+
+    await this.auditService.record({
+      eventType: 'user_role.revoked',
+      actorId: context.actorId ?? null,
+      subjectId: saved.userId,
+      action: 'user_role.revoke',
+      resourceId: saved.id,
+      decision: 'succeeded',
+      reason: 'inactive',
+      requestId: context.requestId ?? null,
+    });
   }
 }

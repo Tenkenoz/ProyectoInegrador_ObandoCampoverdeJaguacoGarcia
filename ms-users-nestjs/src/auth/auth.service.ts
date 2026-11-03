@@ -6,6 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { randomBytes } from 'node:crypto';
+import { AuditService } from '../audit/audit.service.js';
 import { PasswordHasher } from '../common/security/password-hasher.service.js';
 import { User } from '../users/entities/user.entity.js';
 import { UsersService } from '../users/users.service.js';
@@ -24,6 +25,8 @@ export class AuthService implements OnModuleInit {
     private readonly configService: ConfigService,
 
     private readonly passwordHasher: PasswordHasher,
+
+    private readonly auditService: AuditService,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -36,7 +39,7 @@ export class AuthService implements OnModuleInit {
     );
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto, requestId?: string) {
     const user = await this.usersService.findForAuthentication(dto.identifier);
 
     /*
@@ -47,6 +50,16 @@ export class AuthService implements OnModuleInit {
     const validPassword = await this.passwordHasher.verify(hash, dto.password);
 
     if (!user || !validPassword) {
+      await this.auditService.record({
+        eventType: 'auth.login.failed',
+        actorId: null,
+        subjectId: user?.id ?? null,
+        action: 'auth.login',
+        decision: 'failed',
+        reason: 'invalid_credentials',
+        requestId: requestId ?? null,
+      });
+
       throw new UnauthorizedException('Invalid credentials');
     }
 
@@ -62,6 +75,16 @@ export class AuthService implements OnModuleInit {
 
     const accessToken = await this.jwtService.signAsync(payload);
     const currentUser = await this.usersService.findActiveWithRoles(user.id);
+
+    await this.auditService.record({
+      eventType: 'auth.login.succeeded',
+      actorId: user.id,
+      subjectId: user.id,
+      action: 'auth.login',
+      decision: 'succeeded',
+      reason: 'authenticated',
+      requestId: requestId ?? null,
+    });
 
     return {
       accessToken,
@@ -104,8 +127,18 @@ export class AuthService implements OnModuleInit {
     };
   }
 
-  async logout(userId: string): Promise<void> {
+  async logout(userId: string, requestId?: string): Promise<void> {
     await this.usersService.incrementTokenVersion(userId);
+
+    await this.auditService.record({
+      eventType: 'auth.logout',
+      actorId: userId,
+      subjectId: userId,
+      action: 'auth.logout',
+      decision: 'succeeded',
+      reason: 'token_version_incremented',
+      requestId: requestId ?? null,
+    });
   }
 
   private getActiveRoles(user: User): string[] {

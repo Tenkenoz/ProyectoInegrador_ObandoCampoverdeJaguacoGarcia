@@ -138,6 +138,41 @@ La respuesta es `200` tanto para permitir como para denegar por permisos:
 La caché de nonces es en memoria y está pensada para una sola instancia de AUTH.
 Con varias réplicas se requiere almacenamiento compartido.
 
+## Auditoría
+
+AUTH registra eventos en `audit_events` sin almacenar contraseñas, JWT completos
+ni secretos HMAC. Los eventos incluyen:
+
+- `auth.login.succeeded`
+- `auth.login.failed`
+- `auth.logout`
+- `user_role.assigned`
+- `user_role.reactivated`
+- `user_role.assignment_denied`
+- `user_role.updated`
+- `user_role.revoked`
+- `authorization.allowed`
+- `authorization.denied`
+- `authorization.failed`
+- `service_auth.failed`
+
+Consulta de evidencia para T12:
+
+```sql
+SELECT
+  occurred_at,
+  event_type,
+  actor_id,
+  subject_id,
+  action,
+  resource_id,
+  decision,
+  reason,
+  request_id
+FROM audit_events
+ORDER BY occurred_at DESC;
+```
+
 ## Ejecutar la aplicación
 
 ```bash

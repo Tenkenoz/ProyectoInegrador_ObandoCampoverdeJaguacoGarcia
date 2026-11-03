@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuditModule } from '../../audit/audit.module.js';
 import { AuthModule } from '../../auth/auth.module.js';
 import { JwtKeysModule } from '../../auth/jwt-keys/jwt-keys.module.js';
 import { AuthorizationModule } from '../../authorization/authorization.module.js';
@@ -14,6 +15,7 @@ import { InternalAuthorizationService } from './internal-authorization.service.j
     JwtKeysModule,
     UsersModule,
     AuthorizationModule,
+    AuditModule,
     ServiceAuthModule,
   ],
   controllers: [InternalAuthorizationController],
