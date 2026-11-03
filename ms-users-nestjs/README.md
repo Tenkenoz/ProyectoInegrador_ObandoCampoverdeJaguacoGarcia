@@ -67,6 +67,18 @@ DELETE /api/v1/user-roles/:id
 `DELETE` revoca la asignación (`estado = false`); repetir `POST /user-roles`
 reactiva la misma fila sin crear un duplicado.
 
+Matriz de permisos:
+
+| Rol | Administrar usuarios/roles | Ver su perfil | Analizar en STEGO | Ver resultados STEGO |
+| --- | --- | --- | --- | --- |
+| `ADMIN` | Sí | Sí | Sí, alcance `any` | Todos, alcance `any` |
+| `ANALYST` | No | Sí | Sí, alcance `own` | Propios, alcance `own` |
+| `USER` | No | Solo el propio | No | No |
+
+Los endpoints de administración de AUTH exigen `ADMIN`. Cualquier usuario
+autenticado puede consultar únicamente su propio perfil. La autorización
+`own`/`any` de STEGO se resolverá en el endpoint interno de la Fase 4.
+
 ## Ejecutar la aplicación
 
 ```bash

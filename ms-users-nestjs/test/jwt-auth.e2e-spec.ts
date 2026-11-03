@@ -14,14 +14,33 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import request from 'supertest';
+import { Roles } from '../src/auth/decorators/roles/roles.decorator.js';
 import { JwtAuthGuard } from '../src/auth/guards/jwt-auth/jwt-auth.guard.js';
+import { RolesGuard } from '../src/auth/guards/roles/roles.guard.js';
 import { JwtKeyService } from '../src/auth/jwt-keys/jwt-key.service.js';
 import { JwtStrategy } from '../src/auth/strategies/jwt.strategy/jwt.strategy.js';
+import { ROLE_ADMIN } from '../src/roles/role.constants.js';
 import { UsersService } from '../src/users/users.service.js';
 
 const userId = '3f2504e0-4f89-41d3-9a0c-0305e82c3301';
 const issuer = 'secure-chat-auth';
 const audience = 'secure-chat-api';
+
+function activeUser(roles: string[]) {
+  return {
+    id: userId,
+    username: 'admin',
+    email: 'admin@example.com',
+    tokenVersion: 0,
+    userRoles: roles.map((rol) => ({
+      estado: true,
+      role: {
+        rol,
+        estado: true,
+      },
+    })),
+  };
+}
 
 @Controller('protected')
 class ProtectedController {
@@ -37,11 +56,22 @@ class ProtectedController {
   }
 }
 
+@Controller('admin')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(ROLE_ADMIN)
+class AdminController {
+  @Get()
+  getAdminData() {
+    return { ok: true };
+  }
+}
+
 describe('JWT authentication', () => {
   let app: INestApplication;
   let directory: string;
   let jwtKeys: JwtKeyService;
   let jwtService: JwtService;
+  let findActiveWithRoles: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
     directory = mkdtempSync(join(tmpdir(), 'auth-jwt-e2e-'));
@@ -91,22 +121,10 @@ describe('JWT authentication', () => {
       },
     });
 
+    findActiveWithRoles = vi.fn().mockResolvedValue(activeUser(['ADMIN']));
+
     const usersService = {
-      findActiveWithRoles: vi.fn().mockResolvedValue({
-        id: userId,
-        username: 'admin',
-        email: 'admin@example.com',
-        tokenVersion: 0,
-        userRoles: [
-          {
-            estado: true,
-            role: {
-              rol: 'ADMIN',
-              estado: true,
-            },
-          },
-        ],
-      }),
+      findActiveWithRoles,
     } as unknown as UsersService;
 
     const moduleReference = await Test.createTestingModule({
@@ -116,10 +134,11 @@ describe('JWT authentication', () => {
           session: false,
         }),
       ],
-      controllers: [ProtectedController],
+      controllers: [ProtectedController, AdminController],
       providers: [
         JwtStrategy,
         JwtAuthGuard,
+        RolesGuard,
         {
           provide: JwtKeyService,
           useValue: jwtKeys,
@@ -246,6 +265,38 @@ describe('JWT authentication', () => {
       },
     });
     const token = await otherJwtService.signAsync(accessPayload());
+
+    await request(app.getHttpServer())
+      .get('/protected')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(401);
+  });
+
+  it('denies the next request after a role is revoked', async () => {
+    const token = await jwtService.signAsync(accessPayload());
+
+    findActiveWithRoles.mockResolvedValueOnce(activeUser(['ADMIN']));
+
+    await request(app.getHttpServer())
+      .get('/admin')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(200);
+
+    findActiveWithRoles.mockResolvedValueOnce(activeUser(['USER']));
+
+    await request(app.getHttpServer())
+      .get('/admin')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(403);
+  });
+
+  it('rejects a token after tokenVersion changes', async () => {
+    const token = await jwtService.signAsync(accessPayload());
+
+    findActiveWithRoles.mockResolvedValueOnce({
+      ...activeUser(['ADMIN']),
+      tokenVersion: 1,
+    });
 
     await request(app.getHttpServer())
       .get('/protected')

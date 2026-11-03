@@ -23,6 +23,7 @@ describe('AuthService', () => {
   let jwtService: JwtService;
   let authService: AuthService;
   let usersService: UsersService;
+  let incrementTokenVersion: ReturnType<typeof vi.fn>;
 
   beforeAll(async () => {
     directory = mkdtempSync(join(tmpdir(), 'auth-service-jwt-'));
@@ -89,6 +90,8 @@ describe('AuthService', () => {
       passwordHash,
     };
 
+    incrementTokenVersion = vi.fn();
+
     usersService = {
       findForAuthentication: vi.fn().mockResolvedValue(user),
       findActiveWithRoles: vi.fn().mockResolvedValue({
@@ -103,6 +106,7 @@ describe('AuthService', () => {
           },
         ],
       }),
+      incrementTokenVersion,
     } as unknown as UsersService;
 
     authService = new AuthService(
@@ -195,5 +199,11 @@ describe('AuthService', () => {
         password: 'WrongPassword123!',
       }),
     ).rejects.toBeInstanceOf(UnauthorizedException);
+  });
+
+  it('increments tokenVersion on logout', async () => {
+    await authService.logout(userId);
+
+    expect(incrementTokenVersion).toHaveBeenCalledWith(userId);
   });
 });

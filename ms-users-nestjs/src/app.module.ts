@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { JwtAuthGuard } from './auth/guards/jwt-auth/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles/roles.guard.js';
 import { AppController } from './app.controller.js';
+import { AuthorizationModule } from './authorization/authorization.module.js';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { AppController } from './app.controller.js';
     RolesModule,
     UserRolesModule,
     AuthModule,
+    AuthorizationModule,
   ],
   controllers: [AppController],
   providers: [
