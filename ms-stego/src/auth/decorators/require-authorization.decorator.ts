@@ -31,7 +31,8 @@ export function RequireAuthorization(
       description: 'The requested operation is forbidden.',
     }),
     ApiServiceUnavailableResponse({
-      description: 'Current authorization could not be verified.',
+      description:
+        'Authorization or required processing, storage or audit dependencies are unavailable.',
     }),
   );
 }

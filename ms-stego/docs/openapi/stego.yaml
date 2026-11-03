@@ -1,0 +1,392 @@
+openapi: 3.0.0
+paths:
+  /api/v1/health:
+    get:
+      operationId: AppController_health
+      parameters: []
+      responses:
+        '200':
+          description: STEGO and its database are available.
+        '503':
+          description: Database is unavailable.
+      tags:
+        - Health
+  /api/v1/steganography/analyze:
+    post:
+      description: >-
+        Validates the image and runs statistical LSB analysis. Results are
+        indicative, not proof of hidden data. Results and applied policies are
+        persisted. Original files are retained only when the applied policy
+        selects quarantine.
+      operationId: SteganographyController_analyze
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              additionalProperties: false
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResultDto'
+        '400':
+          description: Missing, corrupt, inconsistent or malformed image upload.
+        '401':
+          description: A valid access session is required.
+        '403':
+          description: The requested operation is forbidden.
+        '413':
+          description: File size, image dimensions or processing limits exceeded.
+        '415':
+          description: Unsupported request type, image format or encoding.
+        '503':
+          description: >-
+            Authorization or required processing, storage or audit dependencies
+            are unavailable.
+      security:
+        - bearer: []
+      summary: Analyze a supported image for statistical LSB indicators
+      tags:
+        - Steganography
+  /api/v1/steganography/results/{id}:
+    get:
+      operationId: SteganographyController_result
+      parameters:
+        - name: id
+          required: true
+          in: path
+          description: Persisted analysis identifier.
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalysisResultDto'
+        '400':
+          description: A valid analysis UUID is required.
+        '401':
+          description: A valid access session is required.
+        '403':
+          description: The requested operation is forbidden.
+        '404':
+          description: The authorized analysis does not exist.
+        '503':
+          description: >-
+            Authorization or required processing, storage or audit dependencies
+            are unavailable.
+      security:
+        - bearer: []
+      summary: >-
+        Read a persisted analysis under current authorization and ownership
+        rules
+      tags:
+        - Steganography
+info:
+  title: STEGO API
+  description: >-
+    Independent steganography service with authorized PNG/BMP analysis,
+    persistent results, content policies and private quarantine.
+  version: 0.1.0
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    LsbIndicatorsDto:
+      type: object
+      properties:
+        chi_square:
+          type: number
+          nullable: true
+          minimum: 0
+        degrees_of_freedom:
+          type: number
+          minimum: 0
+          maximum: 384
+        p_value:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+        anomaly_score:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+          description: >-
+            The upper-tail p-value used as a compatibility score, not a
+            probability of hidden data.
+        lsb_ratio:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+        threshold:
+          type: number
+        clear_threshold:
+          type: number
+        balance_tolerance:
+          type: number
+        pixel_count:
+          type: number
+        sample_count:
+          type: number
+        coverage:
+          type: number
+      required:
+        - chi_square
+        - degrees_of_freedom
+        - p_value
+        - anomaly_score
+        - lsb_ratio
+        - threshold
+        - clear_threshold
+        - balance_tolerance
+        - pixel_count
+        - sample_count
+        - coverage
+    ChannelEvidenceDto:
+      type: object
+      properties:
+        channel:
+          type: string
+          enum:
+            - red
+            - green
+            - blue
+        sample_count:
+          type: number
+        eligible_pairs:
+          type: number
+        coverage:
+          type: number
+        chi_square:
+          type: number
+        p_value:
+          type: number
+          nullable: true
+          minimum: 0
+          maximum: 1
+        lsb_ratio:
+          type: number
+      required:
+        - channel
+        - sample_count
+        - eligible_pairs
+        - coverage
+        - chi_square
+        - p_value
+        - lsb_ratio
+    PolicySettingsDto:
+      type: object
+      properties:
+        suspicious_action:
+          type: string
+          enum:
+            - advertencia
+            - cuarentena
+            - rechazo
+        inconclusive_action:
+          type: string
+          enum:
+            - advertencia
+            - cuarentena
+            - rechazo
+      required:
+        - suspicious_action
+        - inconclusive_action
+    PolicyResultDto:
+      type: object
+      properties:
+        version:
+          type: string
+          enum:
+            - stego_policy_v1
+        action:
+          type: string
+          enum:
+            - advertencia
+            - cuarentena
+            - rechazo
+        reason:
+          type: string
+        retention_seconds:
+          type: number
+          nullable: true
+        settings:
+          $ref: '#/components/schemas/PolicySettingsDto'
+      required:
+        - version
+        - action
+        - reason
+        - retention_seconds
+        - settings
+    QuarantineResultDto:
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+            - none
+            - stored
+            - deleted
+            - missing
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        deleted_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - state
+        - expires_at
+        - deleted_at
+    AnalysisResultDto:
+      type: object
+      properties:
+        upload_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        filename:
+          type: string
+        original_filename:
+          type: string
+          nullable: true
+        sha256:
+          type: string
+          minLength: 64
+          maxLength: 64
+        format:
+          type: string
+          enum:
+            - png
+            - bmp
+          nullable: true
+        size_bytes:
+          type: number
+          minimum: 1
+          nullable: true
+        width:
+          type: number
+          minimum: 1
+          nullable: true
+        height:
+          type: number
+          minimum: 1
+          nullable: true
+        analysis_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - sin_indicios
+            - sospechoso
+            - no_concluyente
+            - error
+        technique:
+          type: string
+        reason:
+          type: string
+          enum:
+            - pair_balance_compatible
+            - pair_balance_rejected
+            - insufficient_samples
+            - insufficient_pair_coverage
+            - ambiguous_evidence
+            - invalid_pixel_data
+            - numerical_failure
+          nullable: true
+        indicators:
+          oneOf:
+            - $ref: '#/components/schemas/LsbIndicatorsDto'
+            - type: object
+              additionalProperties:
+                type: number
+                nullable: true
+        channels:
+          nullable: true
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelEvidenceDto'
+        limitations:
+          nullable: true
+          type: array
+          items:
+            type: string
+        analyzed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        detector_parameters:
+          type: object
+          additionalProperties:
+            type: number
+          nullable: true
+        action:
+          type: string
+          enum:
+            - advertencia
+            - cuarentena
+            - rechazo
+        policy:
+          nullable: true
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/PolicyResultDto'
+        quarantine:
+          $ref: '#/components/schemas/QuarantineResultDto'
+        legacy:
+          type: boolean
+      required:
+        - upload_id
+        - user_id
+        - filename
+        - original_filename
+        - sha256
+        - format
+        - size_bytes
+        - width
+        - height
+        - analysis_id
+        - status
+        - technique
+        - reason
+        - indicators
+        - channels
+        - limitations
+        - analyzed_at
+        - created_at
+        - detector_parameters
+        - action
+        - policy
+        - quarantine
+        - legacy

@@ -6,7 +6,7 @@ export function setupApp(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle('STEGO API')
     .setDescription(
-      'Independent steganography service with authorized PNG/BMP validation and statistical LSB analysis.',
+      'Independent steganography service with authorized PNG/BMP analysis, persistent results, content policies and private quarantine.',
     )
     .setVersion('0.1.0')
     .addBearerAuth()
