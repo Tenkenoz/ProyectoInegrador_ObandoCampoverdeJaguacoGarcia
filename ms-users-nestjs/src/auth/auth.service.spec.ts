@@ -1,7 +1,6 @@
 import { UnauthorizedException } from '@nestjs/common';
 import type { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
 import {
   createPublicKey,
   generateKeyPairSync,
@@ -10,6 +9,7 @@ import {
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { PasswordHasher } from '../common/security/password-hasher.service.js';
 import type { UsersService } from '../users/users.service.js';
 import { AuthService } from './auth.service.js';
 import { JwtKeyService } from './jwt-keys/jwt-key.service.js';
@@ -72,14 +72,19 @@ describe('AuthService', () => {
       },
     });
 
-    const passwordHash = await argon2.hash(password, {
-      type: argon2.argon2id,
-    });
+    const passwordHasher = new PasswordHasher();
+    const passwordHash = await passwordHasher.hash(password);
 
     const user = {
       id: userId,
+      cedula: '1712345678',
+      nombres: 'Admin',
+      apellidos: 'User',
+      fechaNacimiento: '1990-01-01',
       username: 'admin',
       email: 'admin@example.com',
+      telefono: '0999999999',
+      estado: true,
       tokenVersion: 0,
       passwordHash,
     };
@@ -100,7 +105,12 @@ describe('AuthService', () => {
       }),
     } as unknown as UsersService;
 
-    authService = new AuthService(usersService, jwtService, configService);
+    authService = new AuthService(
+      usersService,
+      jwtService,
+      configService,
+      passwordHasher,
+    );
     await authService.onModuleInit();
   });
 
@@ -160,6 +170,21 @@ describe('AuthService', () => {
         username: 'admin',
         roles: ['ADMIN'],
       },
+    });
+  });
+
+  it('returns the authenticated profile with current roles', async () => {
+    await expect(authService.getProfile(userId)).resolves.toEqual({
+      id: userId,
+      cedula: '1712345678',
+      nombres: 'Admin',
+      apellidos: 'User',
+      fechaNacimiento: '1990-01-01',
+      username: 'admin',
+      email: 'admin@example.com',
+      telefono: '0999999999',
+      estado: true,
+      roles: ['ADMIN'],
     });
   });
 

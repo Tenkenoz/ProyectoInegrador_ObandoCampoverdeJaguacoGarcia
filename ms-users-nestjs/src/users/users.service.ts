@@ -6,7 +6,7 @@ import {
 
 import { IsNull, QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as argon2 from 'argon2';
+import { PasswordHasher } from '../common/security/password-hasher.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { User } from './entities/user.entity.js';
@@ -29,14 +29,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+
+    private readonly passwordHasher: PasswordHasher,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
     const { password, ...data } = dto;
 
-    const passwordHash = await argon2.hash(password, {
-      type: argon2.argon2id,
-    });
+    const passwordHash = await this.passwordHasher.hash(password);
 
     const user = this.usersRepository.create({
       ...data,
@@ -149,9 +149,7 @@ export class UsersService {
     Object.assign(user, data);
 
     if (password) {
-      user.passwordHash = await argon2.hash(password, {
-        type: argon2.argon2id,
-      });
+      user.passwordHash = await this.passwordHasher.hash(password);
     }
 
     try {

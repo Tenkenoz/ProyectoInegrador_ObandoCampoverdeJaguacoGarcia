@@ -18,13 +18,14 @@ import { UpdateRoleDto } from './dto/update-role.dto.js';
 import { RolesService } from './roles.service.js';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto/pagination-query.dto.js';
 import { Roles } from '../auth/decorators/roles/roles.decorator.js';
+import { ROLE_ADMIN } from './role.constants.js';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
-  @Roles('ADMIN')
+  @Roles(ROLE_ADMIN)
   @Throttle({
     default: {
       limit: 20,
@@ -39,7 +40,7 @@ export class RolesController {
   }
 
   @Get()
-  @Roles('ADMIN', 'OPERADOR')
+  @Roles(ROLE_ADMIN)
   findAll(
     @Query()
     pagination: PaginationQueryDto,
@@ -48,7 +49,7 @@ export class RolesController {
   }
 
   @Get(':id')
-  @Roles('ADMIN', 'OPERADOR')
+  @Roles(ROLE_ADMIN)
   findOne(
     @Param(
       'id',
@@ -62,7 +63,7 @@ export class RolesController {
   }
 
   @Patch(':id')
-  @Roles('ADMIN')
+  @Roles(ROLE_ADMIN)
   update(
     @Param(
       'id',
@@ -79,7 +80,7 @@ export class RolesController {
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
+  @Roles(ROLE_ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(
     @Param(

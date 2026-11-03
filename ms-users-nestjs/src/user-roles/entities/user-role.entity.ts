@@ -5,7 +5,7 @@ import {
   Index,
   JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
   VersionColumn,
 } from 'typeorm';
@@ -20,14 +20,20 @@ import { Role } from '../../roles/entities/role.entity.js';
 })
 @Index('IDX_user_roles_user', ['userId'])
 @Index('IDX_user_roles_role', ['roleId'])
+@Index('UQ_user_roles_user_role', ['userId', 'roleId'], {
+  unique: true,
+})
 export class UserRole {
-  @PrimaryColumn({
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
+
+  @Column({
     name: 'user_id',
     type: 'uuid',
   })
   userId!: string;
 
-  @PrimaryColumn({
+  @Column({
     name: 'role_id',
     type: 'uuid',
   })

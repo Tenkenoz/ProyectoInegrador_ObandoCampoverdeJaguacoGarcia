@@ -38,16 +38,22 @@ export class AuthController {
   }
 
   /*
-   * Requires a valid JWT.
-   *
-   * No specific role is required.
+   * Requires a valid JWT. No specific role is required.
    */
+  @Get('profile')
+  profile(
+    @CurrentUser()
+    user: AuthenticatedUser,
+  ) {
+    return this.authService.getProfile(user.userId);
+  }
+
   @Get('me')
   me(
     @CurrentUser()
     user: AuthenticatedUser,
   ) {
-    return user;
+    return this.authService.getProfile(user.userId);
   }
 
   @Post('logout')

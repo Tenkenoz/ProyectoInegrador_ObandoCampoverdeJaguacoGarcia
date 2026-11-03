@@ -20,6 +20,7 @@
     "test:watch": "vitest",
     "test:cov": "pnpm build && vitest run --coverage",
     "test:e2e": "pnpm build && vitest run --config ./vitest.config.e2e.ts",
+    "test:integration": "pnpm build && vitest run --config ./vitest.config.integration.ts",
     "migration:generate": "pnpm build && typeorm migration:generate -d dist/database/data-source.js",
     "migration:run": "pnpm build && typeorm migration:run -d dist/database/data-source.js",
     "migration:revert": "pnpm build && typeorm migration:revert -d dist/database/data-source.js",

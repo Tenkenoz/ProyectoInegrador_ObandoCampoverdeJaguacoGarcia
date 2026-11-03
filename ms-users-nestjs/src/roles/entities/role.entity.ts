@@ -1,4 +1,5 @@
 import {
+  Check,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -11,10 +12,12 @@ import {
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { UserRole } from '../../user-roles/entities/user-role.entity.js';
+import type { RoleName } from '../role.constants.js';
 
 @Entity({
   name: 'roles',
 })
+@Check('CHK_roles_rol', `"rol" IN ('ADMIN', 'ANALYST', 'USER')`)
 @Index('UQ_roles_rol', ['rol'], {
   unique: true,
 })
@@ -26,7 +29,7 @@ export class Role {
     type: 'varchar',
     length: 50,
   })
-  rol!: string;
+  rol!: RoleName;
 
   @Column({
     type: 'boolean',

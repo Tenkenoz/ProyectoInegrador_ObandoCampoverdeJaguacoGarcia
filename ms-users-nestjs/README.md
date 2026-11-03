@@ -26,8 +26,10 @@ docker compose up -d --wait
 pnpm migration:run
 ```
 
-`migration:run` crea las tablas `users`, `roles` y `user_roles`. No hay seeder:
-los datos se ingresan después mediante la API o directamente en PostgreSQL.
+`migration:run` crea las tablas `users`, `roles` y `user_roles`. La migración
+también inserta los roles `ADMIN`, `ANALYST` y `USER` y agrega el `id` propio de
+cada asignación usuario-rol. Los usuarios se crean después mediante la API o
+directamente en PostgreSQL.
 
 ## Claves JWT (RS256)
 
@@ -48,6 +50,22 @@ JWT_KEY_ID=<kid-generado>
 
 La clave privada nunca se versiona y no se comparte con STEGO. STEGO solo consume
 la clave pública publicada en `GET /.well-known/jwks.json`.
+
+## Roles y perfil
+
+La base de datos solo admite los roles `ADMIN`, `ANALYST` y `USER`. Los
+endpoints principales de identidad son:
+
+```text
+GET    /api/v1/auth/profile
+GET    /api/v1/user-roles?page=1&limit=20&userId=&roleId=&estado=
+PATCH  /api/v1/user-roles/:id
+DELETE /api/v1/user-roles/:id
+```
+
+`PATCH` y `DELETE` operan sobre el `id` propio de la asignación usuario-rol.
+`DELETE` revoca la asignación (`estado = false`); repetir `POST /user-roles`
+reactiva la misma fila sin crear un duplicado.
 
 ## Ejecutar la aplicación
 
@@ -72,6 +90,18 @@ pnpm test:e2e
 ```
 
 Las pruebas unitarias usan Vitest. Las pruebas e2e usan Vitest y Supertest.
+Las pruebas de integración requieren PostgreSQL y se ejecutan con:
+
+```bash
+RUN_DB_TESTS=true \
+DB_HOST=127.0.0.1 \
+DB_PORT=55432 \
+DB_USERNAME=user_app \
+DB_PASSWORD='<password>' \
+DB_DATABASE=auth_test \
+pnpm test:integration
+```
+
 Las convenciones de código, commits, casing y manejo de secretos están en
 [`docs/CONVENTIONS.md`](docs/CONVENTIONS.md).
 
@@ -84,20 +114,17 @@ Las convenciones de código, commits, casing y manejo de secretos están en
 
 ## Insertar el primer administrador
 
-El primer usuario con rol `ADMIN` debe insertarse manualmente. Genere el hash de
+Los roles `ADMIN`, `ANALYST` y `USER` ya existen después de `migration:run`.
+El primer usuario administrador debe insertarse manualmente. Genere el hash de
 la contraseña con Argon2:
 
 ```bash
 node -e "const a=require('argon2'); a.hash('TuClaveSegura2026!', {type:a.argon2id}).then(console.log)"
 ```
 
-Luego inserte el rol, el usuario y la asignación (reemplace los UUID y el hash):
+Luego inserte el usuario y asigne el rol `ADMIN` por nombre:
 
 ```sql
-INSERT INTO roles (rol, estado, version)
-VALUES ('ADMIN', true, 1)
-RETURNING id;
-
 INSERT INTO users (
   cedula, nombres, apellidos, fecha_nacimiento, username, email, telefono,
   password, estado, token_version, version
@@ -109,7 +136,9 @@ INSERT INTO users (
 RETURNING id;
 
 INSERT INTO user_roles (user_id, role_id, estado, version)
-VALUES ('<USER_ID>', '<ROLE_ID>', true, 1);
+SELECT '<USER_ID>', id, true, 1
+FROM roles
+WHERE rol = 'ADMIN';
 ```
 
 Después de eso puede iniciar sesión en `POST /api/v1/auth/login` y usar los

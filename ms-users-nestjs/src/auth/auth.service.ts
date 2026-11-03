@@ -3,11 +3,11 @@ import {
   OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
-
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
 import { randomBytes } from 'node:crypto';
+import { PasswordHasher } from '../common/security/password-hasher.service.js';
+import { User } from '../users/entities/user.entity.js';
 import { UsersService } from '../users/users.service.js';
 import { LoginDto } from './dto/login.dto/login.dto.js';
 import { JwtPayload } from './interfaces/jwt-payload/jwt-payload.interface.js';
@@ -22,44 +22,36 @@ export class AuthService implements OnModuleInit {
     private readonly jwtService: JwtService,
 
     private readonly configService: ConfigService,
+
+    private readonly passwordHasher: PasswordHasher,
   ) {}
 
   async onModuleInit(): Promise<void> {
     /*
-     * Dummy hash used to reduce
-     * timing differences between:
-     *
-     * a missing user
-     * and an invalid password.
+     * Dummy hash used to reduce timing differences between a missing user and
+     * an invalid password.
      */
-    this.dummyHash = await argon2.hash(randomBytes(32).toString('hex'), {
-      type: argon2.argon2id,
-    });
+    this.dummyHash = await this.passwordHasher.hash(
+      randomBytes(32).toString('hex'),
+    );
   }
 
   async login(dto: LoginDto) {
     const user = await this.usersService.findForAuthentication(dto.identifier);
 
     /*
-     * Even when the user does not exist,
-     * argon2.verify() is executed against
-     * a dummy hash.
+     * Even when the user does not exist, verification is executed against a
+     * dummy hash.
      */
     const hash = user?.passwordHash ?? this.dummyHash;
-
-    const validPassword = await argon2.verify(hash, dto.password);
+    const validPassword = await this.passwordHasher.verify(hash, dto.password);
 
     if (!user || !validPassword) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
     /*
-     * IMPORTANT:
-     *
-     * The JWT only identifies
-     * the user.
-     *
-     * It does NOT store roles.
+     * The JWT only identifies the user. It does NOT store roles.
      */
     const payload: JwtPayload = {
       sub: user.id,
@@ -69,19 +61,7 @@ export class AuthService implements OnModuleInit {
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
-
-    /*
-     * The roles returned to the client
-     * also come from PostgreSQL.
-     */
     const currentUser = await this.usersService.findActiveWithRoles(user.id);
-
-    const roles =
-      currentUser?.userRoles
-
-        ?.filter((userRole) => userRole.estado && userRole.role?.estado)
-
-        .map((userRole) => userRole.role.rol) ?? [];
 
     return {
       accessToken,
@@ -98,12 +78,42 @@ export class AuthService implements OnModuleInit {
 
         email: user.email,
 
-        roles: [...new Set(roles)],
+        roles: currentUser ? this.getActiveRoles(currentUser) : [],
       },
+    };
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.usersService.findActiveWithRoles(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('User is not authorized');
+    }
+
+    return {
+      id: user.id,
+      cedula: user.cedula,
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      fechaNacimiento: user.fechaNacimiento,
+      username: user.username,
+      email: user.email,
+      telefono: user.telefono,
+      estado: user.estado,
+      roles: this.getActiveRoles(user),
     };
   }
 
   async logout(userId: string): Promise<void> {
     await this.usersService.incrementTokenVersion(userId);
+  }
+
+  private getActiveRoles(user: User): string[] {
+    const roles =
+      user.userRoles
+        ?.filter((userRole) => userRole.estado && userRole.role?.estado)
+        .map((userRole) => userRole.role.rol) ?? [];
+
+    return [...new Set(roles)].sort();
   }
 }
