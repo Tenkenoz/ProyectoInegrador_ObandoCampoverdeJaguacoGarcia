@@ -3,7 +3,7 @@
 ## Requisitos
 
 - Node.js 22 o superior
-- pnpm 11.12.0
+- pnpm 11.26.0 o superior
 - Docker y Docker Compose
 - Una copia de `.env` basada en `example.env.dist`
 
@@ -41,6 +41,19 @@ Para producción:
 pnpm build
 pnpm start:prod
 ```
+
+## Pruebas y calidad
+
+```bash
+pnpm build
+pnpm lint
+pnpm test
+pnpm test:e2e
+```
+
+Las pruebas unitarias usan Vitest. Las pruebas e2e usan Vitest y Supertest.
+Las convenciones de código, commits, casing y manejo de secretos están en
+[`docs/CONVENTIONS.md`](docs/CONVENTIONS.md).
 
 ## Acceso
 
