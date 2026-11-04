@@ -12,6 +12,8 @@ import { AuthModule } from './auth/auth.module.js';
 import { JwtAuthGuard } from './auth/guards/jwt-auth/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles/roles.guard.js';
 import { AppController } from './app.controller.js';
+import { AuthorizationModule } from './authorization/authorization.module.js';
+import { InternalAuthorizationModule } from './internal/authorization/internal-authorization.module.js';
 
 @Module({
   imports: [
@@ -35,8 +37,8 @@ import { AppController } from './app.controller.js';
 
         /*
          * Secure by Design:
-         * nunca modificar automáticamente
-         * el esquema.
+         * never modify the schema
+         * automatically.
          */
         synchronize: false,
         retryAttempts: 5,
@@ -70,11 +72,13 @@ import { AppController } from './app.controller.js';
     RolesModule,
     UserRolesModule,
     AuthModule,
+    AuthorizationModule,
+    InternalAuthorizationModule,
   ],
   controllers: [AppController],
   providers: [
     /*
-     * 1. Rate Limiting
+     * 1. Rate limiting
      */
     {
       provide: APP_GUARD,
@@ -83,7 +87,7 @@ import { AppController } from './app.controller.js';
     },
 
     /*
-     * 2. Autenticación JWT
+     * 2. JWT authentication
      */
     {
       provide: APP_GUARD,
@@ -92,7 +96,7 @@ import { AppController } from './app.controller.js';
     },
 
     /*
-     * 3. Autorización por roles
+     * 3. Role-based authorization
      */
     {
       provide: APP_GUARD,

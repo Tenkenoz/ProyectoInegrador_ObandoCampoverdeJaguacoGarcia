@@ -1,5 +1,6 @@
 import {
   ClassSerializerInterceptor,
+  RequestMethod,
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
@@ -39,6 +40,9 @@ async function bootstrap() {
     await NestFactory
       .create<NestExpressApplication>(
         AppModule,
+        {
+          rawBody: true,
+        },
       );
 
   const config =
@@ -52,13 +56,13 @@ async function bootstrap() {
     );
 
   /*
-   * Encabezados HTTP de seguridad.
+   * HTTP security headers.
    */
   app.useSecurityHeaders();
 
   /*
-   * Solamente confiar en un proxy
-   * expresamente configurado.
+   * Only trust a proxy that has been
+   * explicitly configured.
    */
   const trustProxy =
     config.get<string>(
@@ -73,7 +77,7 @@ async function bootstrap() {
   }
 
   /*
-   * CORS restrictivo.
+   * Restrictive CORS configuration.
    */
   const origins =
     config
@@ -117,7 +121,7 @@ async function bootstrap() {
   });
 
   /*
-   * Rechazar propiedades no declaradas.
+   * Reject undeclared properties.
    */
   app.useGlobalPipes(
 
@@ -149,8 +153,8 @@ async function bootstrap() {
   );
 
   /*
-   * Defensa adicional para campos
-   * @Exclude().
+   * Additional protection for fields
+   * marked with @Exclude().
    */
   app.useGlobalInterceptors(
 
@@ -167,9 +171,24 @@ async function bootstrap() {
 
   /*
    * /api/v1/...
+   *
+   * JWKS is published at the root because STEGO
+   * consumes it as /.well-known/jwks.json.
    */
   app.setGlobalPrefix(
     'api',
+    {
+      exclude: [
+        {
+          path: '.well-known/jwks.json',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'internal/authorization/check',
+          method: RequestMethod.POST,
+        },
+      ],
+    },
   );
 
   app.enableVersioning({
@@ -182,7 +201,7 @@ async function bootstrap() {
   });
 
   /*
-   * Swagger solo en desarrollo.
+   * Swagger is only exposed in development.
    */
   if (
     nodeEnv !==
@@ -195,7 +214,7 @@ async function bootstrap() {
           'User Service',
         )
         .setDescription(
-          'Microservicio de usuarios y roles',
+          'User and role management microservice',
         )
         .setVersion(
           '1.0',

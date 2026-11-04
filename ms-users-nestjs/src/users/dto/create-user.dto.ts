@@ -14,7 +14,7 @@ import {
 export class CreateUserDto {
   @IsString()
   @Matches(/^[0-9]{10}$/, {
-    message: 'La cédula debe contener exactamente 10 dígitos',
+    message: 'The national identification number must contain exactly 10 digits',
   })
   cedula: string;
 
@@ -51,7 +51,7 @@ export class CreateUserDto {
 
   @IsString()
   @Matches(/^[0-9]{10}$/, {
-    message: 'El teléfono debe contener exactamente 10 dígitos',
+    message: 'The phone number must contain exactly 10 digits',
   })
   telefono: string;
 

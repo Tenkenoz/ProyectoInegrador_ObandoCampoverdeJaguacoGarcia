@@ -1,0 +1,1317 @@
+openapi: 3.0.3
+info:
+  title: AUTH API
+  version: 1.0.0
+  license:
+    name: Academic project
+  description: >
+    Identity, authentication, authorization and audit contract for the
+    integration project. Protected endpoints use RS256 bearer tokens. The
+    internal authorization endpoint is consumed by STEGO using HMAC-SHA256
+    service credentials.
+servers:
+  - url: http://localhost:3001
+tags:
+  - name: Health
+    description: Availability checks.
+  - name: Authentication
+    description: Login, profile, logout and JWKS.
+  - name: Users
+    description: Administrative user management.
+  - name: Roles
+    description: Administrative role catalog.
+  - name: User roles
+    description: User-role assignment and revocation.
+  - name: Audit
+    description: Redacted security audit query.
+  - name: Internal authorization
+    description: HMAC-authenticated AUTH-STEGO decision endpoint.
+paths:
+  /api/v1/health:
+    get:
+      tags:
+        - Health
+      operationId: health
+      summary: Service health
+      security: []
+      responses:
+        '200':
+          description: AUTH is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /.well-known/jwks.json:
+    get:
+      tags:
+        - Authentication
+      operationId: jwks
+      summary: Publish RSA public keys
+      description: Public JWKS endpoint. It never contains private key material.
+      security: []
+      responses:
+        '200':
+          description: Public signing keys.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Jwks'
+  /api/v1/auth/login:
+    post:
+      tags:
+        - Authentication
+      operationId: login
+      summary: Authenticate with username or email and password
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Access token and current user summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Invalid credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/auth/profile:
+    get:
+      tags:
+        - Authentication
+      operationId: getProfile
+      summary: Get the authenticated user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Authenticated profile with current roles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/me:
+    get:
+      tags:
+        - Authentication
+      operationId: getMe
+      summary: Get the authenticated profile
+      description: Alias retained for compatibility with the previous route.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Authenticated profile with current roles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/logout:
+    post:
+      tags:
+        - Authentication
+      operationId: logout
+      summary: Revoke the current session
+      description: Increments tokenVersion, invalidating all previously issued tokens.
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Session revoked.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/users:
+    get:
+      tags:
+        - Users
+      operationId: listUsers
+      summary: List users
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsers'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - Users
+      operationId: createUser
+      summary: Create a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: User created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - Users
+      operationId: getUser
+      summary: Get a user by UUID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: User found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Users
+      operationId: updateUser
+      summary: Update a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: User updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Users
+      operationId: deleteUser
+      summary: Soft delete a user
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: User soft deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/users/cedula/{cedula}:
+    get:
+      tags:
+        - Users
+      operationId: getUserByCedula
+      summary: Get a user by national identification number
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: cedula
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^[0-9]{10}$'
+      responses:
+        '200':
+          description: User found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/roles:
+    get:
+      tags:
+        - Roles
+      operationId: listRoles
+      summary: List the role catalog
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated roles.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRoles'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - Roles
+      operationId: createRole
+      summary: Create a role from the fixed catalog
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        '201':
+          description: Role created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/roles/{id}:
+    get:
+      tags:
+        - Roles
+      operationId: getRole
+      summary: Get a role by UUID
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Role found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags:
+        - Roles
+      operationId: updateRole
+      summary: Update a role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        '200':
+          description: Role updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags:
+        - Roles
+      operationId: deleteRole
+      summary: Soft delete a role
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Role soft deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/user-roles:
+    get:
+      tags:
+        - User roles
+      operationId: listUserRoles
+      summary: List user-role assignments
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: roleId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: estado
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Paginated assignments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserRoles'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - User roles
+      operationId: createUserRole
+      summary: Assign a role to a user
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRoleRequest'
+      responses:
+        '201':
+          description: Assignment created or reactivated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/user-roles/{id}:
+    patch:
+      tags:
+        - User roles
+      operationId: updateUserRole
+      summary: Update the state of a user-role assignment
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRoleRequest'
+      responses:
+        '200':
+          description: Assignment updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRole'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - User roles
+      operationId: revokeUserRole
+      summary: Revoke a user-role assignment
+      description: Sets estado to false. Repeating POST /user-roles reactivates the same row.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Assignment revoked.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/user-roles/user/{userId}:
+    get:
+      tags:
+        - User roles
+      operationId: listUserRolesByUser
+      summary: List assignments for one user
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Assignments for the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserRole'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/user-roles/{userId}/{roleId}:
+    delete:
+      tags:
+        - User roles
+      operationId: revokeUserRoleLegacy
+      summary: Revoke an assignment by user and role
+      deprecated: true
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/RoleId'
+      responses:
+        '204':
+          description: Assignment revoked.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/audit-events:
+    get:
+      tags:
+        - Audit
+      operationId: listAuditEvents
+      summary: List redacted security audit events
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: eventType
+          in: query
+          schema:
+            type: string
+            maxLength: 64
+        - name: actorId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: subjectId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: requestId
+          in: query
+          schema:
+            type: string
+            maxLength: 64
+        - name: decision
+          in: query
+          schema:
+            $ref: '#/components/schemas/AuditDecision'
+      responses:
+        '200':
+          description: Paginated audit events without tokens or passwords.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuditEvents'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /internal/authorization/check:
+    post:
+      tags:
+        - Internal authorization
+      operationId: checkInternalAuthorization
+      summary: Decide a STEGO action using current roles
+      description: >
+        Internal service endpoint. It is authenticated with HMAC-SHA256 headers,
+        not with a bearer token. A permission denial is HTTP 200 with
+        allowed=false.
+      security:
+        - serviceId: []
+          serviceTimestamp: []
+          serviceNonce: []
+          serviceSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternalAuthorizationRequest'
+      responses:
+        '200':
+          description: Valid allow or deny decision.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalAuthorizationResponse'
+        '400':
+          description: Invalid authorization request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+        '401':
+          description: Invalid service credentials or invalid subject session.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+        '503':
+          description: Authorization dependency unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    serviceId:
+      type: apiKey
+      in: header
+      name: X-Service-Id
+    serviceTimestamp:
+      type: apiKey
+      in: header
+      name: X-Service-Timestamp
+    serviceNonce:
+      type: apiKey
+      in: header
+      name: X-Service-Nonce
+    serviceSignature:
+      type: apiKey
+      in: header
+      name: X-Service-Signature
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    UserId:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RoleId:
+      name: roleId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+    Unauthorized:
+      description: Missing, invalid or revoked access token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+    Forbidden:
+      description: Authenticated user lacks the required role.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+    Conflict:
+      description: Unique constraint or duplicate assignment.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+    TooManyRequests:
+      description: Rate limit exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PublicError'
+  schemas:
+    Health:
+      type: object
+      required:
+        - status
+        - service
+        - timestamp
+      properties:
+        status:
+          type: string
+          example: ok
+        service:
+          type: string
+          example: user-service
+        timestamp:
+          type: string
+          format: date-time
+    Jwks:
+      type: object
+      required:
+        - keys
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/Jwk'
+    Jwk:
+      type: object
+      required:
+        - kty
+        - use
+        - alg
+        - kid
+        - n
+        - e
+      properties:
+        kty:
+          type: string
+          enum:
+            - RSA
+        use:
+          type: string
+          enum:
+            - sig
+        alg:
+          type: string
+          enum:
+            - RS256
+        kid:
+          type: string
+        n:
+          type: string
+        e:
+          type: string
+    RoleName:
+      type: string
+      enum:
+        - ADMIN
+        - ANALYST
+        - USER
+    LoginRequest:
+      type: object
+      required:
+        - identifier
+        - password
+      properties:
+        identifier:
+          type: string
+          minLength: 4
+          maxLength: 150
+          example: admin
+        password:
+          type: string
+          minLength: 1
+          maxLength: 128
+          format: password
+    AuthUserSummary:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - roles
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleName'
+    LoginResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          enum:
+            - Bearer
+        expiresIn:
+          type: integer
+          example: 900
+        user:
+          $ref: '#/components/schemas/AuthUserSummary'
+    Profile:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - roles
+      properties:
+        id:
+          type: string
+          format: uuid
+        cedula:
+          type: string
+          pattern: '^[0-9]{10}$'
+        nombres:
+          type: string
+        apellidos:
+          type: string
+        fechaNacimiento:
+          type: string
+          format: date
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+          pattern: '^[0-9]{10}$'
+        estado:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleName'
+    CreateUserRequest:
+      type: object
+      required:
+        - cedula
+        - nombres
+        - apellidos
+        - fechaNacimiento
+        - username
+        - email
+        - telefono
+        - password
+      properties:
+        cedula:
+          type: string
+          pattern: '^[0-9]{10}$'
+        nombres:
+          type: string
+          minLength: 2
+          maxLength: 100
+        apellidos:
+          type: string
+          minLength: 2
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          format: date
+        username:
+          type: string
+          minLength: 4
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        telefono:
+          type: string
+          pattern: '^[0-9]{10}$'
+        password:
+          type: string
+          minLength: 12
+          maxLength: 128
+          format: password
+        estado:
+          type: boolean
+    UpdateUserRequest:
+      type: object
+      properties:
+        nombres:
+          type: string
+          minLength: 2
+          maxLength: 100
+        apellidos:
+          type: string
+          minLength: 2
+          maxLength: 100
+        fechaNacimiento:
+          type: string
+          format: date
+        username:
+          type: string
+          minLength: 4
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 150
+        telefono:
+          type: string
+          pattern: '^[0-9]{10}$'
+        password:
+          type: string
+          minLength: 12
+          maxLength: 128
+          format: password
+        estado:
+          type: boolean
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cedula:
+          type: string
+        nombres:
+          type: string
+        apellidos:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+        estado:
+          type: boolean
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        cedula:
+          type: string
+        nombres:
+          type: string
+        apellidos:
+          type: string
+        fechaNacimiento:
+          type: string
+          format: date
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        telefono:
+          type: string
+        estado:
+          type: boolean
+        tokenVersion:
+          type: integer
+        version:
+          type: integer
+        fechaCreacion:
+          type: string
+          format: date-time
+        fechaActualizacion:
+          type: string
+          format: date-time
+        fechaEliminacion:
+          type: string
+          format: date-time
+          nullable: true
+        userRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+    Role:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        rol:
+          $ref: '#/components/schemas/RoleName'
+        estado:
+          type: boolean
+        version:
+          type: integer
+        fechaCreacion:
+          type: string
+          format: date-time
+        fechaActualizacion:
+          type: string
+          format: date-time
+        fechaEliminacion:
+          type: string
+          format: date-time
+          nullable: true
+    CreateRoleRequest:
+      type: object
+      required:
+        - rol
+      properties:
+        rol:
+          $ref: '#/components/schemas/RoleName'
+        estado:
+          type: boolean
+    UpdateRoleRequest:
+      type: object
+      properties:
+        rol:
+          $ref: '#/components/schemas/RoleName'
+        estado:
+          type: boolean
+    CreateUserRoleRequest:
+      type: object
+      required:
+        - userId
+        - roleId
+      properties:
+        userId:
+          type: string
+          format: uuid
+        roleId:
+          type: string
+          format: uuid
+    UpdateUserRoleRequest:
+      type: object
+      properties:
+        estado:
+          type: boolean
+    UserRole:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        roleId:
+          type: string
+          format: uuid
+        user:
+          $ref: '#/components/schemas/UserSummary'
+        role:
+          $ref: '#/components/schemas/Role'
+        fechaAsignacion:
+          type: string
+          format: date-time
+        estado:
+          type: boolean
+        version:
+          type: integer
+        fechaActualizacion:
+          type: string
+          format: date-time
+    PaginationMeta:
+      type: object
+      required:
+        - page
+        - limit
+        - total
+        - totalPages
+      properties:
+        page:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    PaginatedUsers:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedRoles:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedUserRoles:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    AuditDecision:
+      type: string
+      enum:
+        - allowed
+        - denied
+        - succeeded
+        - failed
+    AuditEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        occurredAt:
+          type: string
+          format: date-time
+        eventType:
+          type: string
+        actorId:
+          type: string
+          format: uuid
+          nullable: true
+        subjectId:
+          type: string
+          format: uuid
+          nullable: true
+        action:
+          type: string
+        resourceId:
+          type: string
+          nullable: true
+        decision:
+          $ref: '#/components/schemas/AuditDecision'
+        reason:
+          type: string
+          nullable: true
+        requestId:
+          type: string
+          nullable: true
+    PaginatedAuditEvents:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditEvent'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PublicError:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        code:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        path:
+          type: string
+        requestId:
+          type: string
+    InternalAuthorizationRequest:
+      type: object
+      required:
+        - subject_token
+        - action
+      properties:
+        subject_token:
+          type: string
+          maxLength: 8192
+        action:
+          type: string
+          enum:
+            - steganography.analyze
+            - steganography.results.read
+        resource_id:
+          type: string
+          format: uuid
+          nullable: true
+    InternalAuthorizationResponse:
+      type: object
+      required:
+        - subject_id
+        - action
+        - resource_id
+        - allowed
+        - scope
+        - reason
+      properties:
+        subject_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum:
+            - steganography.analyze
+            - steganography.results.read
+        resource_id:
+          type: string
+          format: uuid
+          nullable: true
+        allowed:
+          type: boolean
+        scope:
+          type: string
+          enum:
+            - own
+            - any
+          nullable: true
+        reason:
+          type: string
+          enum:
+            - active_role_grants_permission
+            - insufficient_permissions
+    InternalError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string

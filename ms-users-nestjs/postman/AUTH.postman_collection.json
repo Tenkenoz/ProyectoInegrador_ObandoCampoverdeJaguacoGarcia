@@ -1,0 +1,1732 @@
+{
+  "info": {
+    "_postman_id": "19046c66-d096-4c93-9c87-aeb81c0289c2",
+    "name": "AUTH - Proyecto Integrador",
+    "description": "AUTH acceptance flow for T02, T05, T06, T07 and T12. Run the folders in order with the local environment selected. The environment contains placeholders for credentials and the HMAC secret.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "adminUserId",
+      "value": ""
+    },
+    {
+      "key": "userBToken",
+      "value": ""
+    },
+    {
+      "key": "userAId",
+      "value": ""
+    },
+    {
+      "key": "userBId",
+      "value": ""
+    },
+    {
+      "key": "userAUsername",
+      "value": ""
+    },
+    {
+      "key": "userBUsername",
+      "value": ""
+    },
+    {
+      "key": "roleAdminId",
+      "value": ""
+    },
+    {
+      "key": "roleAnalystId",
+      "value": ""
+    },
+    {
+      "key": "roleUserId",
+      "value": ""
+    },
+    {
+      "key": "assignmentAAdminId",
+      "value": ""
+    },
+    {
+      "key": "assignmentAAnalystId",
+      "value": ""
+    },
+    {
+      "key": "assignmentBAdminId",
+      "value": ""
+    },
+    {
+      "key": "suffix",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Health and JWKS",
+      "description": "Public endpoints used by STEGO and operational checks.",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('health is available', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().status).to.eql('ok');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "JWKS public keys",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/.well-known/jwks.json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                ".well-known",
+                "jwks.json"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('JWKS is public', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const keys = pm.response.json().keys;",
+                  "  pm.expect(keys).to.be.an('array').that.is.not.empty;",
+                  "  pm.expect(keys[0].alg).to.eql('RS256');",
+                  "  pm.expect(keys[0]).to.not.have.property('d');",
+                  "  pm.expect(pm.response.text()).to.not.include('PRIVATE KEY');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - T02 Authentication",
+      "description": "Valid and invalid login, profile and JWT validation.",
+      "item": [
+        {
+          "name": "T02 - Login with valid password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{adminIdentifier}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('suffix', Math.floor(100000 + Math.random() * 900000).toString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('login succeeds', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.accessToken).to.be.a('string');",
+                  "  pm.expect(body.tokenType).to.eql('Bearer');",
+                  "  pm.expect(body.expiresIn).to.eql(900);",
+                  "  pm.expect(body.user.roles).to.include('ADMIN');",
+                  "  pm.collectionVariables.set('adminToken', body.accessToken);",
+                  "  pm.collectionVariables.set('adminUserId', body.user.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T02 - Login with invalid password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{adminIdentifier}}\",\n  \"password\": \"WrongPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('invalid password is rejected', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "  pm.expect(pm.response.json().message).to.eql('Invalid credentials');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T02 - Login with unknown user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"unknown-user\",\n  \"password\": \"WrongPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('unknown user is rejected', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T02 - Authenticated profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('profile uses the current roles', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.id).to.eql(pm.collectionVariables.get('adminUserId'));",
+                  "  pm.expect(body.roles).to.include('ADMIN');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Setup users and roles",
+      "description": "Creates two disposable users and resolves the seeded role identifiers.",
+      "item": [
+        {
+          "name": "Create user A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cedula\": \"17{{suffix}}00\",\n  \"nombres\": \"Alice\",\n  \"apellidos\": \"Admin\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"username\": \"alice{{suffix}}\",\n  \"email\": \"alice{{suffix}}@example.com\",\n  \"telefono\": \"09{{suffix}}00\",\n  \"password\": \"{{userPassword}}\",\n  \"estado\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('user A is created', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('userAId', body.id);",
+                  "  pm.collectionVariables.set('userAUsername', body.username);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create user B",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cedula\": \"17{{suffix}}01\",\n  \"nombres\": \"Bob\",\n  \"apellidos\": \"User\",\n  \"fechaNacimiento\": \"1991-02-02\",\n  \"username\": \"bob{{suffix}}\",\n  \"email\": \"bob{{suffix}}@example.com\",\n  \"telefono\": \"09{{suffix}}01\",\n  \"password\": \"{{userPassword}}\",\n  \"estado\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('user B is created', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  const body = pm.response.json();",
+                  "  pm.collectionVariables.set('userBId', body.id);",
+                  "  pm.collectionVariables.set('userBUsername', body.username);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Resolve role identifiers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('role catalog contains exactly the expected roles', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const roles = pm.response.json().data;",
+                  "  const byName = Object.fromEntries(roles.map((role) => [role.rol, role.id]));",
+                  "  pm.expect(byName.ADMIN).to.be.a('string');",
+                  "  pm.expect(byName.ANALYST).to.be.a('string');",
+                  "  pm.expect(byName.USER).to.be.a('string');",
+                  "  pm.collectionVariables.set('roleAdminId', byName.ADMIN);",
+                  "  pm.collectionVariables.set('roleAnalystId', byName.ANALYST);",
+                  "  pm.collectionVariables.set('roleUserId', byName.USER);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - T05 N:M assignments",
+      "description": "Two roles for one user and the ADMIN role for two users.",
+      "item": [
+        {
+          "name": "T05 - Assign ADMIN to user A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userAId}}\",\n  \"roleId\": \"{{roleAdminId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN is assigned to user A', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('assignmentAAdminId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T05 - Assign ANALYST to user A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userAId}}\",\n  \"roleId\": \"{{roleAnalystId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ANALYST is assigned to user A', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('assignmentAAnalystId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T05 - Assign ADMIN to user B",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userBId}}\",\n  \"roleId\": \"{{roleAdminId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN is assigned to user B', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('assignmentBAdminId', pm.response.json().id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T05 - Assign USER to user B",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userBId}}\",\n  \"roleId\": \"{{roleUserId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('USER is assigned to user B', function () {",
+                  "  pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T05 - Verify user A has two roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles/user/{{userAId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles",
+                "user",
+                "{{userAId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('user A persists two roles', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const roles = pm.response.json().map((assignment) => assignment.role.rol).sort();",
+                  "  pm.expect(roles).to.eql(['ADMIN', 'ANALYST']);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T05 - Verify one role is shared by two users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles?page=1&limit=20&roleId={{roleAdminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "roleId",
+                  "value": "{{roleAdminId}}"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN is assigned to two users', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const users = new Set(pm.response.json().data.map((assignment) => assignment.userId));",
+                  "  pm.expect(users.size).to.be.at.least(2);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - T06 Duplicate assignment",
+      "description": "Repeating an active user-role assignment must return 409 and keep one row.",
+      "item": [
+        {
+          "name": "T06 - Repeat active assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userAId}}\",\n  \"roleId\": \"{{roleAnalystId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('duplicate assignment is rejected', function () {",
+                  "  pm.response.to.have.status(409);",
+                  "  pm.expect(pm.response.json().message).to.eql('User already has this role');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - T07 Revocation",
+      "description": "Removes ADMIN from user B and reuses the same JWT; logout is verified in folder 08.",
+      "item": [
+        {
+          "name": "T07 - Login user B before revocation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{userBUsername}}\",\n  \"password\": \"{{userPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('user B logs in with ADMIN', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.user.roles).to.include('ADMIN');",
+                  "  pm.collectionVariables.set('userBToken', body.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T07 - User B can list users before revocation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userBToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN endpoint is allowed before revocation', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T07 - Revoke ADMIN from user B",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user-roles/{{assignmentBAdminId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user-roles",
+                "{{assignmentBAdminId}}"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('role assignment is revoked', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T07 - Reuse the same JWT after revocation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userBToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('the next operation is denied with 403', function () {",
+                  "  pm.response.to.have.status(403);",
+                  "  pm.expect(pm.response.json().message).to.eql('Missing required roles');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Internal authorization (HMAC)",
+      "description": "Extra AUTH-STEGO checks. The pre-request script signs the exact JSON body.",
+      "item": [
+        {
+          "name": "Internal ADMIN analyze",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/internal/authorization/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "internal",
+                "authorization",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const cryptoJs = require('crypto-js');",
+                  "const token = pm.collectionVariables.get('adminToken');",
+                  "const action = 'steganography.analyze';",
+                  "const resourceId = null;",
+                  "const body = JSON.stringify({ subject_token: token, action: action, resource_id: resourceId });",
+                  "pm.request.body.raw = body;",
+                  "pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
+                  "",
+                  "const secret = pm.environment.get('authServiceSecret');",
+                  "const timestamp = Math.floor(Date.now() / 1000).toString();",
+                  "const nonce = cryptoJs.lib.WordArray.random(32).toString(cryptoJs.enc.Hex);",
+                  "const digest = cryptoJs.SHA256(body).toString(cryptoJs.enc.Hex);",
+                  "const message = [",
+                  "  'stego',",
+                  "  'POST',",
+                  "  '/internal/authorization/check',",
+                  "  timestamp,",
+                  "  nonce,",
+                  "  digest",
+                  "].join('\\n');",
+                  "",
+                  "let signature = cryptoJs.HmacSHA256(message, cryptoJs.enc.Hex.parse(secret)).toString(cryptoJs.enc.Hex);",
+                  "",
+                  "",
+                  "",
+                  "pm.request.headers.upsert({ key: 'X-Service-Id', value: 'stego' });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Timestamp', value: timestamp });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Nonce', value: nonce });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Signature', value: signature });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN receives any scope', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.allowed).to.eql(true);",
+                  "  pm.expect(body.scope).to.eql('any');",
+                  "  pm.expect(body.reason).to.eql('active_role_grants_permission');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Internal ADMIN results read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/internal/authorization/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "internal",
+                "authorization",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const cryptoJs = require('crypto-js');",
+                  "const token = pm.collectionVariables.get('adminToken');",
+                  "const action = 'steganography.results.read';",
+                  "const resourceId = \"7d444840-9dc0-41d1-b245-5ffdce74fad2\";",
+                  "const body = JSON.stringify({ subject_token: token, action: action, resource_id: resourceId });",
+                  "pm.request.body.raw = body;",
+                  "pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
+                  "",
+                  "const secret = pm.environment.get('authServiceSecret');",
+                  "const timestamp = Math.floor(Date.now() / 1000).toString();",
+                  "const nonce = cryptoJs.lib.WordArray.random(32).toString(cryptoJs.enc.Hex);",
+                  "const digest = cryptoJs.SHA256(body).toString(cryptoJs.enc.Hex);",
+                  "const message = [",
+                  "  'stego',",
+                  "  'POST',",
+                  "  '/internal/authorization/check',",
+                  "  timestamp,",
+                  "  nonce,",
+                  "  digest",
+                  "].join('\\n');",
+                  "",
+                  "let signature = cryptoJs.HmacSHA256(message, cryptoJs.enc.Hex.parse(secret)).toString(cryptoJs.enc.Hex);",
+                  "",
+                  "",
+                  "",
+                  "pm.request.headers.upsert({ key: 'X-Service-Id', value: 'stego' });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Timestamp', value: timestamp });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Nonce', value: nonce });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Signature', value: signature });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('ADMIN receives any scope for results', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().scope).to.eql('any');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Internal USER analyze is denied with 200",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/internal/authorization/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "internal",
+                "authorization",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const cryptoJs = require('crypto-js');",
+                  "const token = pm.collectionVariables.get('userBToken');",
+                  "const action = 'steganography.analyze';",
+                  "const resourceId = null;",
+                  "const body = JSON.stringify({ subject_token: token, action: action, resource_id: resourceId });",
+                  "pm.request.body.raw = body;",
+                  "pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
+                  "",
+                  "const secret = pm.environment.get('authServiceSecret');",
+                  "const timestamp = Math.floor(Date.now() / 1000).toString();",
+                  "const nonce = cryptoJs.lib.WordArray.random(32).toString(cryptoJs.enc.Hex);",
+                  "const digest = cryptoJs.SHA256(body).toString(cryptoJs.enc.Hex);",
+                  "const message = [",
+                  "  'stego',",
+                  "  'POST',",
+                  "  '/internal/authorization/check',",
+                  "  timestamp,",
+                  "  nonce,",
+                  "  digest",
+                  "].join('\\n');",
+                  "",
+                  "let signature = cryptoJs.HmacSHA256(message, cryptoJs.enc.Hex.parse(secret)).toString(cryptoJs.enc.Hex);",
+                  "",
+                  "",
+                  "",
+                  "pm.request.headers.upsert({ key: 'X-Service-Id', value: 'stego' });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Timestamp', value: timestamp });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Nonce', value: nonce });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Signature', value: signature });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('USER receives insufficient permissions', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.allowed).to.eql(false);",
+                  "  pm.expect(body.scope).to.be.null;",
+                  "  pm.expect(body.reason).to.eql('insufficient_permissions');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Internal invalid HMAC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/internal/authorization/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "internal",
+                "authorization",
+                "check"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const cryptoJs = require('crypto-js');",
+                  "const token = pm.collectionVariables.get('adminToken');",
+                  "const action = 'steganography.analyze';",
+                  "const resourceId = null;",
+                  "const body = JSON.stringify({ subject_token: token, action: action, resource_id: resourceId });",
+                  "pm.request.body.raw = body;",
+                  "pm.request.headers.upsert({ key: 'Content-Type', value: 'application/json' });",
+                  "",
+                  "const secret = pm.environment.get('authServiceSecret');",
+                  "const timestamp = Math.floor(Date.now() / 1000).toString();",
+                  "const nonce = cryptoJs.lib.WordArray.random(32).toString(cryptoJs.enc.Hex);",
+                  "const digest = cryptoJs.SHA256(body).toString(cryptoJs.enc.Hex);",
+                  "const message = [",
+                  "  'stego',",
+                  "  'POST',",
+                  "  '/internal/authorization/check',",
+                  "  timestamp,",
+                  "  nonce,",
+                  "  digest",
+                  "].join('\\n');",
+                  "",
+                  "let signature = cryptoJs.HmacSHA256(message, cryptoJs.enc.Hex.parse(secret)).toString(cryptoJs.enc.Hex);",
+                  "",
+                  "signature = '0'.repeat(64);",
+                  "",
+                  "pm.request.headers.upsert({ key: 'X-Service-Id', value: 'stego' });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Timestamp', value: timestamp });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Nonce', value: nonce });",
+                  "pm.request.headers.upsert({ key: 'X-Service-Signature', value: signature });"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('invalid HMAC is rejected', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "  pm.expect(pm.response.json().code).to.eql('invalid_service_credentials');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - T12 Audit",
+      "description": "Admin-only audit query. Responses contain identifiers and reasons, never JWTs or passwords.",
+      "item": [
+        {
+          "name": "T12 - List audit events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/audit-events?page=1&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "audit-events"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('audit is returned to ADMIN', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.data).to.be.an('array').that.is.not.empty;",
+                  "  pm.expect(body.meta.total).to.be.at.least(1);",
+                  "  pm.expect(pm.response.text()).to.not.match(/eyJ/);",
+                  "  pm.expect(pm.response.text().toLowerCase()).to.not.include('password');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "T12 - Audit is forbidden to USER",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/audit-events",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "audit-events"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userBToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('non-admin cannot read audit events', function () {",
+                  "  pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - Logout",
+      "description": "Invalidates the current token through tokenVersion.",
+      "item": [
+        {
+          "name": "Logout user B",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userBToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('logout succeeds', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reuse the JWT after logout",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "profile"
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{userBToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('the logged-out token is rejected', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "  pm.expect(pm.response.json().message).to.eql('Session has expired');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "09 - Negative checks",
+      "description": "401 without token, 400 for forbidden role names and 403 for non-admin access.",
+      "item": [
+        {
+          "name": "Profile without token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "profile"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('missing JWT returns 401', function () {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Reject OPERADOR role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roles"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rol\": \"OPERADOR\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminToken}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('role outside the catalog is rejected', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

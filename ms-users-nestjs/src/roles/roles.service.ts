@@ -36,7 +36,7 @@ export class RolesService {
           }
         )?.code === '23505'
       ) {
-        throw new ConflictException('El rol ya existe');
+        throw new ConflictException('Role already exists');
       }
 
       throw error;
@@ -75,7 +75,7 @@ export class RolesService {
     });
 
     if (!role) {
-      throw new NotFoundException('Rol no encontrado');
+      throw new NotFoundException('Role not found');
     }
 
     return role;
@@ -105,7 +105,7 @@ export class RolesService {
           }
         )?.code === '23505'
       ) {
-        throw new ConflictException('El rol ya existe');
+        throw new ConflictException('Role already exists');
       }
 
       throw error;
@@ -116,7 +116,7 @@ export class RolesService {
     const result = await this.rolesRepository.softDelete(id);
 
     if (!result.affected) {
-      throw new NotFoundException('Rol no encontrado');
+      throw new NotFoundException('Role not found');
     }
   }
 }

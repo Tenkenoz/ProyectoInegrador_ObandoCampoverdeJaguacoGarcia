@@ -3,11 +3,12 @@ import {
   OnModuleInit,
   UnauthorizedException,
 } from '@nestjs/common';
-
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import * as argon2 from 'argon2';
 import { randomBytes } from 'node:crypto';
+import { AuditService } from '../audit/audit.service.js';
+import { PasswordHasher } from '../common/security/password-hasher.service.js';
+import { User } from '../users/entities/user.entity.js';
 import { UsersService } from '../users/users.service.js';
 import { LoginDto } from './dto/login.dto/login.dto.js';
 import { JwtPayload } from './interfaces/jwt-payload/jwt-payload.interface.js';
@@ -22,44 +23,48 @@ export class AuthService implements OnModuleInit {
     private readonly jwtService: JwtService,
 
     private readonly configService: ConfigService,
+
+    private readonly passwordHasher: PasswordHasher,
+
+    private readonly auditService: AuditService,
   ) {}
 
   async onModuleInit(): Promise<void> {
     /*
-     * Hash ficticio para reducir
-     * diferencias temporales entre:
-     *
-     * usuario inexistente
-     * contraseña incorrecta.
+     * Dummy hash used to reduce timing differences between a missing user and
+     * an invalid password.
      */
-    this.dummyHash = await argon2.hash(randomBytes(32).toString('hex'), {
-      type: argon2.argon2id,
-    });
+    this.dummyHash = await this.passwordHasher.hash(
+      randomBytes(32).toString('hex'),
+    );
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto, requestId?: string) {
     const user = await this.usersService.findForAuthentication(dto.identifier);
 
     /*
-     * Aunque no exista el usuario,
-     * ejecutamos argon2.verify()
-     * contra un hash ficticio.
+     * Even when the user does not exist, verification is executed against a
+     * dummy hash.
      */
     const hash = user?.passwordHash ?? this.dummyHash;
-
-    const validPassword = await argon2.verify(hash, dto.password);
+    const validPassword = await this.passwordHasher.verify(hash, dto.password);
 
     if (!user || !validPassword) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      await this.auditService.record({
+        eventType: 'auth.login.failed',
+        actorId: null,
+        subjectId: user?.id ?? null,
+        action: 'auth.login',
+        decision: 'failed',
+        reason: 'invalid_credentials',
+        requestId: requestId ?? null,
+      });
+
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     /*
-     * IMPORTANTE:
-     *
-     * El JWT solamente identifica
-     * al usuario.
-     *
-     * NO almacena roles.
+     * The JWT only identifies the user. It does NOT store roles.
      */
     const payload: JwtPayload = {
       sub: user.id,
@@ -69,19 +74,17 @@ export class AuthService implements OnModuleInit {
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
-
-    /*
-     * Los roles que retornamos al cliente
-     * también salen de PostgreSQL.
-     */
     const currentUser = await this.usersService.findActiveWithRoles(user.id);
 
-    const roles =
-      currentUser?.userRoles
-
-        ?.filter((userRole) => userRole.estado && userRole.role?.estado)
-
-        .map((userRole) => userRole.role.rol) ?? [];
+    await this.auditService.record({
+      eventType: 'auth.login.succeeded',
+      actorId: user.id,
+      subjectId: user.id,
+      action: 'auth.login',
+      decision: 'succeeded',
+      reason: 'authenticated',
+      requestId: requestId ?? null,
+    });
 
     return {
       accessToken,
@@ -98,12 +101,52 @@ export class AuthService implements OnModuleInit {
 
         email: user.email,
 
-        roles: [...new Set(roles)],
+        roles: currentUser ? this.getActiveRoles(currentUser) : [],
       },
     };
   }
 
-  async logout(userId: string): Promise<void> {
+  async getProfile(userId: string) {
+    const user = await this.usersService.findActiveWithRoles(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('User is not authorized');
+    }
+
+    return {
+      id: user.id,
+      cedula: user.cedula,
+      nombres: user.nombres,
+      apellidos: user.apellidos,
+      fechaNacimiento: user.fechaNacimiento,
+      username: user.username,
+      email: user.email,
+      telefono: user.telefono,
+      estado: user.estado,
+      roles: this.getActiveRoles(user),
+    };
+  }
+
+  async logout(userId: string, requestId?: string): Promise<void> {
     await this.usersService.incrementTokenVersion(userId);
+
+    await this.auditService.record({
+      eventType: 'auth.logout',
+      actorId: userId,
+      subjectId: userId,
+      action: 'auth.logout',
+      decision: 'succeeded',
+      reason: 'token_version_incremented',
+      requestId: requestId ?? null,
+    });
+  }
+
+  private getActiveRoles(user: User): string[] {
+    const roles =
+      user.userRoles
+        ?.filter((userRole) => userRole.estado && userRole.role?.estado)
+        .map((userRole) => userRole.role.rol) ?? [];
+
+    return [...new Set(roles)].sort();
   }
 }

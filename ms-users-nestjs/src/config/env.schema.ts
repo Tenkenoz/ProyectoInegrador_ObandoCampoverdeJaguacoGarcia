@@ -30,21 +30,68 @@ export const envSchema = z.object({
   RATE_LIMIT_BLOCK_MS: z.coerce.number().int().positive().default(60000),
 
   /*
-   * JWT
+   * JWT RS256
    */
 
-  JWT_SECRET: z
-    .string()
-    .min(32, 'JWT_SECRET debe tener al menos 32 caracteres'),
+  JWT_PRIVATE_KEY_PATH: z.string().min(1),
+
+  JWT_PUBLIC_KEY_PATH: z.string().min(1),
+
+  JWT_KEY_ID: z.preprocess(
+    (value) =>
+      typeof value === 'string' && value.trim() === '' ? undefined : value,
+    z.string().trim().min(1).max(128).optional(),
+  ),
 
   JWT_EXPIRES_IN_SECONDS: z.coerce
     .number()
     .int()
     .min(60)
-    .max(3600)
+    .max(900)
     .default(900),
 
-  JWT_ISSUER: z.string().min(1).default('user-service'),
+  JWT_ISSUER: z.string().min(1).default('secure-chat-auth'),
 
-  JWT_AUDIENCE: z.string().min(1).default('secure-shop-api'),
+  JWT_AUDIENCE: z.string().min(1).default('secure-chat-api'),
+
+  JWT_CLOCK_TOLERANCE_SECONDS: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(60)
+    .default(5),
+
+  /*
+   * Internal service authentication
+   */
+
+  AUTH_SERVICE_ID: z.literal('stego').default('stego'),
+
+  AUTH_SERVICE_SECRET: z
+    .string()
+    .regex(
+      /^[a-fA-F0-9]{64}$/,
+      'AUTH_SERVICE_SECRET must contain exactly 64 hexadecimal characters',
+    ),
+
+  AUTH_HMAC_CLOCK_SKEW_SECONDS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(300)
+    .default(30),
+
+  AUTH_HMAC_NONCE_TTL_SECONDS: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(600)
+    .default(60),
+
+  AUTH_HMAC_NONCE_CACHE_SIZE: z.coerce
+    .number()
+    .int()
+    .positive()
+    .max(1_000_000)
+    .default(10_000),
 });

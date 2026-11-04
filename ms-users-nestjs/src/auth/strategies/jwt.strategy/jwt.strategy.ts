@@ -7,12 +7,15 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from '../../interfaces/jwt-payload/jwt-payload.interface.js';
 import { AuthenticatedUser } from '../../interfaces/authenticated-user/authenticated-user.interface.js';
+import { JwtKeyService } from '../../jwt-keys/jwt-key.service.js';
 import { UsersService } from '../../../users/users.service.js';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     configService: ConfigService,
+
+    jwtKeyService: JwtKeyService,
 
     private readonly usersService: UsersService,
   ) {
@@ -25,29 +28,34 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
       ignoreExpiration: false,
 
-      secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
+      secretOrKey: jwtKeyService.getPublicKeyPem(),
 
       issuer: configService.getOrThrow<string>('JWT_ISSUER'),
 
       audience: configService.getOrThrow<string>('JWT_AUDIENCE'),
 
-      algorithms: ['HS256'],
+      algorithms: ['RS256'],
+
+      jsonWebTokenOptions: {
+        clockTolerance:
+          configService.get<number>('JWT_CLOCK_TOLERANCE_SECONDS') ?? 5,
+      },
     });
   }
 
   async validate(payload: JwtPayload): Promise<AuthenticatedUser> {
     /*
-     * Solamente aceptamos
-     * access tokens.
+     * Only access tokens are
+     * accepted.
      */
     if (payload.typ !== 'access') {
-      throw new UnauthorizedException('Token inválido');
+      throw new UnauthorizedException('Invalid token');
     }
 
     /*
-     * Consultamos PostgreSQL.
+     * Query PostgreSQL.
      *
-     * Aquí obtenemos:
+     * The following relation is loaded:
      *
      * users
      *   ↓
@@ -58,26 +66,26 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     const user = await this.usersService.findActiveWithRoles(payload.sub);
 
     if (!user) {
-      throw new UnauthorizedException('Usuario no autorizado');
+      throw new UnauthorizedException('User is not authorized');
     }
 
     /*
-     * Verificación de cierre de sesión.
+     * Session revocation check.
      *
-     * JWT viejo:
+     * Previous JWT:
      * tokenVersion = 0
      *
-     * PostgreSQL después del logout:
+     * PostgreSQL after logout:
      * tokenVersion = 1
      */
     if (payload.tokenVersion !== user.tokenVersion) {
-      throw new UnauthorizedException('La sesión ha expirado');
+      throw new UnauthorizedException('Session has expired');
     }
 
     /*
-     * Los roles NO salen del JWT.
+     * Roles are NOT read from the JWT.
      *
-     * Salen de:
+     * They are read from:
      *
      * user_roles
      *     ↓

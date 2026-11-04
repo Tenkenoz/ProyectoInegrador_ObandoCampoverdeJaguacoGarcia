@@ -6,7 +6,7 @@ import {
 
 import { IsNull, QueryFailedError, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as argon2 from 'argon2';
+import { PasswordHasher } from '../common/security/password-hasher.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { User } from './entities/user.entity.js';
@@ -29,15 +29,14 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+
+    private readonly passwordHasher: PasswordHasher,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
-    //0603977224
     const { password, ...data } = dto;
 
-    const passwordHash = await argon2.hash(password, {
-      type: argon2.argon2id,
-    });
+    const passwordHash = await this.passwordHasher.hash(password);
 
     const user = this.usersRepository.create({
       ...data,
@@ -50,7 +49,7 @@ export class UsersService {
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw new ConflictException(
-          'Los datos del usuario entran en conflicto con un registro existente',
+          'User data conflicts with an existing record',
         );
       }
       throw error;
@@ -103,7 +102,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
@@ -122,7 +121,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     return user;
@@ -142,7 +141,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     const { password, ...data } = dto;
@@ -150,9 +149,7 @@ export class UsersService {
     Object.assign(user, data);
 
     if (password) {
-      user.passwordHash = await argon2.hash(password, {
-        type: argon2.argon2id,
-      });
+      user.passwordHash = await this.passwordHasher.hash(password);
     }
 
     try {
@@ -161,7 +158,7 @@ export class UsersService {
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw new ConflictException(
-          'Los datos del usuario entran en conflicto con un registro existente',
+          'User data conflicts with an existing record',
         );
       }
       throw error;
@@ -171,7 +168,7 @@ export class UsersService {
   async remove(id: string): Promise<void> {
     const result = await this.usersRepository.softDelete(id);
     if (!result.affected) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
   }
 
@@ -183,11 +180,11 @@ export class UsersService {
         .createQueryBuilder('user')
 
         /*
-         * passwordHash tiene:
+         * passwordHash is configured with:
          *
          * select: false
          *
-         * por eso se solicita explícitamente.
+         * so it must be requested explicitly.
          */
         .addSelect('user.passwordHash')
 
@@ -268,7 +265,7 @@ export class UsersService {
     );
 
     if (!result.affected) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
   }
 }
