@@ -1,0 +1,14 @@
+node_modules
+dist
+coverage
+test
+docs
+info
+postman
+.env
+.env.*
+keys
+secrets
+*.log
+*.tsbuildinfo
+.git
