@@ -1,0 +1,221 @@
+name: secure-chat
+
+# Shared environment for every process that talks to the AUTH database.
+x-auth-environment: &auth-environment
+  NODE_ENV: production
+  PORT: "3001"
+  CORS_ORIGINS: http://localhost:3000
+  DB_HOST: auth-db
+  DB_PORT: "5432"
+  DB_USERNAME: ${AUTH_DB_USER:-auth_app}
+  DB_PASSWORD: ${AUTH_DB_PASSWORD:?Set AUTH_DB_PASSWORD in .env}
+  DB_DATABASE: ${AUTH_DB_NAME:-auth_db}
+  DB_SSL: "false"
+  JWT_PRIVATE_KEY_PATH: /app/keys/jwt-private.pem
+  JWT_PUBLIC_KEY_PATH: /app/keys/jwt-public.pem
+  JWT_EXPIRES_IN_SECONDS: "900"
+  JWT_ISSUER: secure-chat-auth
+  JWT_AUDIENCE: secure-chat-api
+  JWT_CLOCK_TOLERANCE_SECONDS: "5"
+  AUTH_SERVICE_ID: stego
+  AUTH_SERVICE_SECRET: ${AUTH_SERVICE_SECRET:?Set AUTH_SERVICE_SECRET in .env}
+  AUTH_HMAC_CLOCK_SKEW_SECONDS: "30"
+  AUTH_HMAC_NONCE_TTL_SECONDS: "60"
+  AUTH_HMAC_NONCE_CACHE_SIZE: "10000"
+
+# Shared environment for STEGO.
+x-stego-environment: &stego-environment
+  NODE_ENV: production
+  PORT: "3002"
+  DB_HOST: stego-db
+  DB_PORT: "5432"
+  DB_USERNAME: ${STEGO_DB_USER:-stego_app}
+  DB_PASSWORD: ${STEGO_DB_PASSWORD:?Set STEGO_DB_PASSWORD in .env}
+  DB_DATABASE: ${STEGO_DB_NAME:-stego_db}
+  AUTH_BASE_URL: https://auth:3001
+  AUTH_JWKS_URL: https://auth:3001/.well-known/jwks.json
+  AUTH_CA_CERT_PATH: /run/certs/auth-ca.pem
+  AUTH_SERVICE_ID: stego
+  AUTH_SERVICE_SECRET: ${AUTH_SERVICE_SECRET:?Set AUTH_SERVICE_SECRET in .env}
+  AUTH_TIMEOUT_MS: "3000"
+  QUARANTINE_DIR: /app/storage/quarantine
+
+services:
+  # ---------------------------------------------------------------------------
+  # AUTH: identity, JWTs, RBAC and the internal authorization decision.
+  # ---------------------------------------------------------------------------
+  auth-db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME:-auth_db}
+      POSTGRES_USER: ${AUTH_DB_USER:-auth_app}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD:?Set AUTH_DB_PASSWORD in .env}
+    volumes:
+      - auth-db-data:/var/lib/postgresql
+    networks:
+      - auth-net
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${AUTH_DB_USER:-auth_app} -d ${AUTH_DB_NAME:-auth_db}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+
+  auth-api:
+    build:
+      context: ./ms-users-nestjs
+    restart: unless-stopped
+    environment: *auth-environment
+    volumes:
+      - ./ms-users-nestjs/keys:/app/keys:ro
+    networks:
+      - auth-net
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+
+  # TLS terminator. STEGO expects https://auth:3001, so this service owns the
+  # DNS name "auth" and forwards plain HTTP to auth-api inside the network.
+  auth:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:3001:3001
+    volumes:
+      - ./docker/nginx/auth.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/certs:/etc/nginx/certs:ro
+    networks:
+      - auth-net
+      - integration-net
+    depends_on:
+      auth-api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - wget --no-check-certificate -qO- https://127.0.0.1:3001/api/v1/health >/dev/null || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  # ---------------------------------------------------------------------------
+  # STEGO: image validation, LSB analysis, results and private quarantine.
+  # ---------------------------------------------------------------------------
+  stego-db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${STEGO_DB_NAME:-stego_db}
+      POSTGRES_USER: ${STEGO_DB_USER:-stego_app}
+      POSTGRES_PASSWORD: ${STEGO_DB_PASSWORD:?Set STEGO_DB_PASSWORD in .env}
+    volumes:
+      - stego-db-data:/var/lib/postgresql
+    networks:
+      - stego-net
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U ${STEGO_DB_USER:-stego_app} -d ${STEGO_DB_NAME:-stego_db}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    security_opt:
+      - no-new-privileges:true
+
+  stego:
+    build:
+      context: ./ms-stego
+    restart: unless-stopped
+    environment: *stego-environment
+    volumes:
+      - ./docker/certs/auth-ca.pem:/run/certs/auth-ca.pem:ro
+      - stego-quarantine:/app/storage/quarantine
+    ports:
+      - 127.0.0.1:3002:3002
+    networks:
+      - stego-net
+      - integration-net
+    depends_on:
+      stego-db:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+
+  # Encrypted entry point for REST clients.
+  edge:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8443:8443
+    volumes:
+      - ./docker/nginx/edge.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/certs:/etc/nginx/certs:ro
+    networks:
+      - stego-net
+    depends_on:
+      stego:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+
+  # ---------------------------------------------------------------------------
+  # One-shot helpers. They never run as part of a plain "docker compose up".
+  # ---------------------------------------------------------------------------
+  migrate:
+    profiles:
+      - tools
+    build:
+      context: ./ms-users-nestjs
+    command:
+      - node
+      - dist/database/migrate.js
+    environment: *auth-environment
+    networks:
+      - auth-net
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    profiles:
+      - seed
+    build:
+      context: ./ms-users-nestjs
+    command:
+      - node
+      - dist/database/seed-demo.js
+    environment:
+      <<: *auth-environment
+      SEED_DEMO: "1"
+      SEED_DEFAULT_PASSWORD: ${SEED_DEFAULT_PASSWORD:-DemoSeguro2026!}
+    networks:
+      - auth-net
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  auth-db-data:
+  stego-db-data:
+  stego-quarantine:
+
+networks:
+  # AUTH and its database only.
+  auth-net:
+  # STEGO and its database only.
+  stego-net:
+  # The only bridge between the two services: HTTPS to the "auth" TLS name.
+  integration-net:
