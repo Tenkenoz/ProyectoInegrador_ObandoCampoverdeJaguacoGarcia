@@ -1,6 +1,6 @@
 FROM node:24-slim AS base
 WORKDIR /app
-RUN npm install --global pnpm@11.12.0
+RUN npm install --global pnpm@11.26.0
 
 FROM base AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
