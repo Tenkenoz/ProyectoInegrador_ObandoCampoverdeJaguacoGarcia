@@ -188,6 +188,26 @@ services:
         condition: service_healthy
     restart: "no"
 
+  # STEGO ships its own migrations and no TypeORM CLI in the runtime image.
+  # This throwaway container mounts a small runner over the compiled sources.
+  stego-migrate:
+    profiles:
+      - tools
+    build:
+      context: ./ms-stego
+    command:
+      - node
+      - /app/migrate.mjs
+    environment: *stego-environment
+    volumes:
+      - ./docker/stego/migrate.mjs:/app/migrate.mjs:ro
+    networks:
+      - stego-net
+    depends_on:
+      stego-db:
+        condition: service_healthy
+    restart: "no"
+
   seed:
     profiles:
       - seed
