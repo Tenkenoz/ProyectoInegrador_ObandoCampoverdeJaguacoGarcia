@@ -1,0 +1,16 @@
+sequenceDiagram
+  participant U as Usuario
+  participant S as STEGO
+  participant A as AUTH
+  U->>S: POST /steganography/analyze + Bearer JWT
+  S->>A: POST /internal/authorization/check (HMAC, subject_token)
+  A->>A: Valida JWT, usuario activo, tokenVersion y roles en BD
+  A-->>S: allowed / scope / reason
+  alt allowed = true
+    S->>S: Valida imagen, analiza, persiste, aplica política
+    S-->>U: 200 + resultado
+  else allowed = false
+    S-->>U: 403
+  else AUTH no disponible
+    S-->>U: 503 (sin análisis)
+  end

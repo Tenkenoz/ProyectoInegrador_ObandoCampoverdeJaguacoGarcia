@@ -1,0 +1,50 @@
+[
+  {
+    "name": "T05 - Assign ADMIN to user A",
+    "status": "201",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "001-t05-assign-admin-to-user-a.png"
+  },
+  {
+    "name": "T05 - Assign ANALYST to user A",
+    "status": "201",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "002-t05-assign-analyst-to-user-a.png"
+  },
+  {
+    "name": "T05 - Assign ADMIN to user B",
+    "status": "201",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "003-t05-assign-admin-to-user-b.png"
+  },
+  {
+    "name": "T05 - Assign USER to user B",
+    "status": "201",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "004-t05-assign-user-to-user-b.png"
+  },
+  {
+    "name": "T05 - Verify user A has two roles",
+    "status": "200",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "005-t05-verify-user-a-has-two-roles.png"
+  },
+  {
+    "name": "T05 - Verify one role is shared by two users",
+    "status": "200",
+    "missing": false,
+    "hasResponse": true,
+    "blurred": 0,
+    "file": "006-t05-verify-one-role-is-shared-by-two-users.png"
+  }
+]

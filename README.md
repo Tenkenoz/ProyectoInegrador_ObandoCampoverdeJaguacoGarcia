@@ -7,6 +7,73 @@ Monorepo de microservicios NestJS con pnpm Workspaces y Nx.
 | `ms-users-nestjs` | `ms-users-nestjs/` | Usuarios y autenticación (`user-service` en pnpm) |
 | `ms-stego` | `ms-stego/` | Análisis de esteganografía |
 
+## Inicio rápido con Docker
+
+Requisitos: Git, Docker con Compose, Node.js >=22 y OpenSSL 3 (en Windows, el
+de Git Bash). pnpm solo se necesita para desarrollo fuera de Docker.
+
+### 1. Clonar
+
+```bash
+git clone https://github.com/Tenkenoz/ProyectoInegrador_ObandoCampoverdeJaguacoGarcia.git
+cd ProyectoInegrador_ObandoCampoverdeJaguacoGarcia
+```
+
+### 2. Configurar
+
+```bash
+cp .env.example .env
+```
+
+Edite `.env`: contraseñas de ambas bases, `AUTH_SERVICE_SECRET` (64 caracteres
+hexadecimales, `openssl rand -hex 32`) y `SEED_DEFAULT_PASSWORD` (mínimo 12
+caracteres). Luego genere la CA y los certificados TLS locales y las claves JWT:
+
+```bash
+bash scripts/gen-certs.sh
+node ms-users-nestjs/scripts/generate-jwt-keys.mjs
+```
+
+`.env`, `docker/certs/` y `ms-users-nestjs/keys/` no se versionan.
+
+### 3. Iniciar
+
+```bash
+docker compose build
+docker compose up -d --wait
+docker compose --profile tools run --rm migrate
+docker compose --profile tools run --rm stego-migrate
+docker compose --profile seed run --rm seed
+```
+
+### 4. Verificar
+
+```bash
+curl --cacert docker/certs/auth-ca.pem https://localhost:3001/api/v1/health
+curl --cacert docker/certs/auth-ca.pem https://localhost:8443/api/v1/health
+```
+
+| Servicio | URL |
+| --- | --- |
+| AUTH | `https://localhost:3001` |
+| STEGO (borde HTTPS) | `https://localhost:8443` |
+
+Usuarios de demostración (contraseña `SEED_DEFAULT_PASSWORD`): ver
+[docs/SEED.md](docs/SEED.md). Para detener: `docker compose down` (con `-v` se
+borran también los datos).
+
+Notas para Windows:
+
+- Si `gen-certs.sh` termina sin crear `auth-ca.pem`, está usando un OpenSSL
+  antiguo sin configuración (por ejemplo el de Apache). Ejecútelo con el de Git
+  Bash: `bash -c 'export PATH=/usr/bin:$PATH; bash scripts/gen-certs.sh'`.
+- Con `curl.exe` añada `--ssl-no-revoke`.
+
+Pruebas T01–T12, Postman y evidencias: [docs/EJECUCION.md](docs/EJECUCION.md).
+Informe técnico: [docs/INFORME.md](docs/INFORME.md).
+
+## Desarrollo local con pnpm
+
 Requiere Node.js >=22 y pnpm 11.12.0. Desde la raíz:
 
 ```sh

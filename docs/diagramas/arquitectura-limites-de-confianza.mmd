@@ -1,0 +1,27 @@
+flowchart LR
+  subgraph Cliente["Zona no confiable"]
+    C[Navegador / Postman]
+  end
+
+  subgraph Edge["stego-net"]
+    E["edge (nginx TLS)<br/>:8443"]
+    S[STEGO NestJS]
+    SDB[(stego-db)]
+    Q[(stego-quarantine)]
+  end
+
+  subgraph Integ["integration-net (único puente)"]
+    A["auth (nginx TLS)<br/>:3001"]
+  end
+
+  subgraph AuthNet["auth-net"]
+    AA[AUTH NestJS]
+    ADB[(auth-db)]
+  end
+
+  C -- "HTTPS + JWT" --> E --> S
+  C -- "HTTPS login / admin" --> A --> AA
+  S --- SDB
+  S --- Q
+  AA --- ADB
+  S -- "HTTPS + HMAC<br/>POST /internal/authorization/check" --> A
